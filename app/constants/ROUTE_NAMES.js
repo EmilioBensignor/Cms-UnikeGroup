@@ -16,7 +16,7 @@ export const ROUTE_NAMES = {
         EDITAR_PRODUCTO: (id) => `/waterplast/productos/editar/${id}`,
         OPINIONES: "/waterplast/opiniones",
         CREAR_OPINION: "/waterplast/opiniones/crear",
-        EDITAR_OPINION: (id) => `/waterplast/opiniones/editar/${id}`,
+        EDITAR_OPINION: (id) => `/waterplast/opiniones/edit/${id}`,
         DISTRIBUIDORES: "/waterplast/distribuidores",
         CREAR_DISTRIBUIDOR: "/waterplast/distribuidores/crear",
         EDITAR_DISTRIBUIDOR: (id) => `/waterplast/distribuidores/editar/${id}`,

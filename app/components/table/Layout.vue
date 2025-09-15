@@ -29,7 +29,7 @@
                         <slot name="row-actions" :item="item" :index="index">
                             <div class="flex justify-center items-center gap-2">
                                 <button type="button" @click.prevent.stop="$emit('edit', item, index)" title="Editar">
-                                    <Icon name="tabler:edit" class="w-6 h-6 text-violet" />
+                                    <Icon name="tabler:edit" class="w-6 h-6 text-terciary" />
                                 </button>
                                 <button type="button" @click.prevent.stop="openDeleteModal(item, index)"
                                     title="Eliminar">

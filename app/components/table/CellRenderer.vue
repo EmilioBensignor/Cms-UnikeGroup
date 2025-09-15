@@ -2,8 +2,8 @@
     <div v-if="column.type === 'image'" class="flex items-center justify-center">
         <img :src="value" :alt="column.label" class="w-16 h-16 object-cover rounded-lg" />
     </div>
-    <div v-else-if="(column.type === 'text' || column.type === 'textarea') && column.key !== 'subgrupos'"
-        class="w-full max-w-[18.75rem] break-words">
+    <div v-else-if="(column.type === 'text' || column.type === 'textarea')"
+        class="w-full max-w-[18.75rem] max-h-32 overflow-auto whitespace-pre-wrap break-words">
         <span>{{ value || '-' }}</span>
     </div>
     <span v-else>{{ formatValue(value, column) }}</span>

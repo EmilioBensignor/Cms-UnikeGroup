@@ -2,7 +2,7 @@
     <DefaultSection>
         <HeadingH1>Opiniones</HeadingH1>
         <ButtonPrimary :to="ROUTE_NAMES.WATERPLAST.CREAR_OPINION">
-            Nueva Opinión
+            Crear Nueva Opinión
         </ButtonPrimary>
 
         <div v-if="loading" class="flex justify-center items-center py-12">

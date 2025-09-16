@@ -111,7 +111,7 @@ export const useOpiniones = () => {
 
             if (fetchError) throw fetchError
 
-            let imagePath = opinionData.imagen
+            let imagePath = currentData?.imagen
 
             if (imagen) {
                 // Si hay imagen anterior, eliminarla

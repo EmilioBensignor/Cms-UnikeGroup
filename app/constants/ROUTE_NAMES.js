@@ -19,7 +19,7 @@ export const ROUTE_NAMES = {
         EDITAR_OPINION: (id) => `/waterplast/opiniones/edit/${id}`,
         DISTRIBUIDORES: "/waterplast/distribuidores",
         CREAR_DISTRIBUIDOR: "/waterplast/distribuidores/crear",
-        EDITAR_DISTRIBUIDOR: (id) => `/waterplast/distribuidores/editar/${id}`,
+        EDITAR_DISTRIBUIDOR: (id) => `/waterplast/distribuidores/edit/${id}`,
     },
     // PRODUCTOS_CREAR: '/productos/crear',
     // PRODUCTOS_EDITAR: (id) => `/productos/edit/${id}`,

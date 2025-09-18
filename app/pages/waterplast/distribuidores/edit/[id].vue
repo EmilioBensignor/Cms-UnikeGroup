@@ -32,6 +32,7 @@
 
 <script setup>
 import { ROUTE_NAMES } from '~/constants/ROUTE_NAMES.js'
+import { useWaterplastDistribuidores } from '~/composables/waterplast/useDistribuidores.js'
 
 const route = useRoute()
 const distribuidorId = route.params.id
@@ -39,10 +40,9 @@ const distribuidorId = route.params.id
 const {
     currentDistribuidor,
     loading,
-    error,
     fetchDistribuidorById,
     updateDistribuidor
-} = useDistribuidores()
+} = useWaterplastDistribuidores()
 
 const { success, error: notificationError } = useNotification()
 

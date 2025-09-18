@@ -62,6 +62,10 @@ const props = defineProps({
     maxSize: {
         type: Number,
         default: 5 * 1024 * 1024 // 5MB por defecto
+    },
+    currentImage: {
+        type: String,
+        default: ''
     }
 })
 
@@ -79,6 +83,13 @@ const inputId = computed(() => props.id)
 
 watch(() => props.modelValue, (newValue) => {
     if (newValue && newValue !== imagePreview.value && !newValue.startsWith('data:')) {
+        imagePreview.value = newValue
+        fileName.value = typeof newValue === 'string' ? newValue.split('/').pop() || 'imagen.jpg' : 'imagen.jpg'
+    }
+}, { immediate: true })
+
+watch(() => props.currentImage, (newValue) => {
+    if (newValue && !imagePreview.value) {
         imagePreview.value = newValue
         fileName.value = typeof newValue === 'string' ? newValue.split('/').pop() || 'imagen.jpg' : 'imagen.jpg'
     }

@@ -10,7 +10,7 @@
         </div>
 
         <div v-else-if="distribuidores.length === 0" class="text-center py-12">
-            <Icon name="tabler:message-circle" class="w-16 h-16" />
+            <Icon name="tabler:map-pin" class="w-16 h-16" />
             <p class="text-dark text-lg">No hay distribuidores disponibles</p>
         </div>
 
@@ -22,8 +22,9 @@
 
 <script setup>
 import { ROUTE_NAMES } from '~/constants/ROUTE_NAMES.js'
+import { useWaterplastDistribuidores } from '~/composables/waterplast/useDistribuidores.js'
 
-const { distribuidores, loading, fetchDistribuidores, deleteDistribuidorCompleto } = useDistribuidores()
+const { distribuidores, loading, fetchDistribuidores, deleteDistribuidorCompleto } = useWaterplastDistribuidores()
 const { success, error: notificationError } = useNotification()
 
 

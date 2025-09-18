@@ -75,6 +75,11 @@ const menuWaterplast = [
         route: ROUTE_NAMES.WATERPLAST.DISTRIBUIDORES,
         title: "Distribuidores",
         icon: "map-pin",
+    },
+    {
+        route: ROUTE_NAMES.WATERPLAST.IMAGENES_DESTACADAS,
+        title: "Imagen Destacada",
+        icon: "photo-star",
     }
 ]
 

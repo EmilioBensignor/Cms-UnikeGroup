@@ -12,9 +12,10 @@
 
 <script setup>
 import { ROUTE_NAMES } from '~/constants/ROUTE_NAMES';
+import { useWaterplastDistribuidores } from '~/composables/waterplast/useDistribuidores.js'
 
 const { success, error } = useNotification()
-const { createDistribuidor } = useDistribuidores()
+const { createDistribuidor } = useWaterplastDistribuidores()
 
 const handleSubmit = async (formData) => {
     try {

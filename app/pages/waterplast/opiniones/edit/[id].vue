@@ -32,17 +32,17 @@
 
 <script setup>
 import { ROUTE_NAMES } from '~/constants/ROUTE_NAMES.js'
+import { useWaterplastOpiniones } from '~/composables/waterplast/useOpiniones.js'
 
 const route = useRoute()
 const opinionId = route.params.id
 
-const { 
-    currentOpinion, 
-    loading, 
-    error,
+const {
+    currentOpinion,
+    loading,
     fetchOpinionById,
     updateOpinion
-} = useOpiniones()
+} = useWaterplastOpiniones()
 
 const { success, error: notificationError } = useNotification()
 

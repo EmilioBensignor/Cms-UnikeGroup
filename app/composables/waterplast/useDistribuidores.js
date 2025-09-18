@@ -1,4 +1,4 @@
-export const useDistribuidores = () => {
+export const useWaterplastDistribuidores = () => {
     const supabase = useSupabaseClient()
     const loading = ref(false)
     const distribuidores = ref([])

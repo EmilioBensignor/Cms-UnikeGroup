@@ -1,4 +1,4 @@
-export const useOpiniones = () => {
+export const useWaterplastOpiniones = () => {
     const supabase = useSupabaseClient()
     const { uploadOpinionImage, deleteOpinionImage, getOpinionImageUrl } = useStorage()
     const loading = ref(false)
@@ -102,7 +102,6 @@ export const useOpiniones = () => {
         error.value = null
 
         try {
-            // Primero obtener la opinión actual para conocer la imagen anterior
             const { data: currentData, error: fetchError } = await supabase
                 .from('waterplast-opiniones')
                 .select('imagen')
@@ -114,11 +113,9 @@ export const useOpiniones = () => {
             let imagePath = currentData?.imagen
 
             if (imagen) {
-                // Si hay imagen anterior, eliminarla
                 if (currentData?.imagen) {
                     await deleteOpinionImage(currentData.imagen)
                 }
-                // Subir la nueva imagen
                 imagePath = await uploadOpinionImage(imagen, opinionData)
             }
 
@@ -136,7 +133,6 @@ export const useOpiniones = () => {
 
             if (supabaseError) throw supabaseError
 
-            // Convertir la imagen a URL completa para mostrar
             const dataWithUrl = {
                 ...data,
                 imagen: data.imagen ? getOpinionImageUrl(data.imagen) : null

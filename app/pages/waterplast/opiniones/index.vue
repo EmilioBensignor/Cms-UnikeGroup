@@ -22,8 +22,9 @@
 
 <script setup>
 import { ROUTE_NAMES } from '~/constants/ROUTE_NAMES.js'
+import { useWaterplastOpiniones } from '~/composables/waterplast/useOpiniones.js'
 
-const { opiniones, loading, fetchOpiniones, deleteOpinionCompleta } = useOpiniones()
+const { opiniones, loading, fetchOpiniones, deleteOpinionCompleta } = useWaterplastOpiniones()
 const { success, error: notificationError } = useNotification()
 
 

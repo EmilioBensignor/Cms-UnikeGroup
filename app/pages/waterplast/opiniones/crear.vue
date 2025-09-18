@@ -12,10 +12,10 @@
 
 <script setup>
 import { ROUTE_NAMES } from '~/constants/ROUTE_NAMES';
-
+import { useWaterplastOpiniones } from '~/composables/waterplast/useOpiniones.js'
 
 const { success, error } = useNotification()
-const { createOpinion } = useOpiniones()
+const { createOpinion } = useWaterplastOpiniones()
 
 const handleSubmit = async (formData) => {
     try {

@@ -10,7 +10,7 @@ export const ROUTE_NAMES = {
     HOME: '/',
     WATERPLAST: {
         CATEGORIAS: "/waterplast/categorias",
-        EDITAR_CATEGORIA: (id) => `/waterplast/categorias/editar/${id}`,
+        EDITAR_CATEGORIA: (id) => `/waterplast/categorias/edit/${id}`,
         PRODUCTOS: "/waterplast/productos",
         CREAR_PRODUCTO: "/waterplast/productos/crear",
         EDITAR_PRODUCTO: (id) => `/waterplast/productos/editar/${id}`,
@@ -20,6 +20,8 @@ export const ROUTE_NAMES = {
         DISTRIBUIDORES: "/waterplast/distribuidores",
         CREAR_DISTRIBUIDOR: "/waterplast/distribuidores/crear",
         EDITAR_DISTRIBUIDOR: (id) => `/waterplast/distribuidores/edit/${id}`,
+        IMAGENES_DESTACADAS: "/waterplast/imagenes-destacadas",
+        EDITAR_IMAGEN_DESTACADA: (id) => `/waterplast/imagenes-destacadas/edit/${id}`,
     },
     // PRODUCTOS_CREAR: '/productos/crear',
     // PRODUCTOS_EDITAR: (id) => `/productos/edit/${id}`,

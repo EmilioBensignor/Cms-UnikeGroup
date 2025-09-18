@@ -67,7 +67,7 @@ const handleSubmit = async (formData) => {
         await updateCategoria(
             categoriaId,
             formData.categoriaData,
-            formData.imagenPrincipal,
+            formData.imagenes,
             formData.iconos,
             formData.imagenesRedes
         )

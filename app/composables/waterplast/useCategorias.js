@@ -24,13 +24,15 @@ export const useWaterplastCategorias = () => {
             const { data, error: supabaseError } = await supabase
                 .from('waterplast-categorias')
                 .select('*')
-                .order('created_at', { ascending: false })
+                .order('orden', { ascending: true })
 
             if (supabaseError) throw supabaseError
 
             const categoriasWithUrls = (data || []).map(categoria => ({
                 ...categoria,
-                imagen: categoria.imagen ? getCategoriaImageUrl(categoria.imagen) : null,
+                imagen_menu: categoria.imagen_menu ? getCategoriaImageUrl(categoria.imagen_menu) : null,
+                imagen_hero_home: categoria.imagen_hero_home ? getCategoriaImageUrl(categoria.imagen_hero_home) : null,
+                imagen_pagina_categorias: categoria.imagen_pagina_categorias ? getCategoriaImageUrl(categoria.imagen_pagina_categorias) : null,
                 icono1: categoria.icono1 ? getCategoriaIconUrl(categoria.icono1) : null,
                 icono2: categoria.icono2 ? getCategoriaIconUrl(categoria.icono2) : null,
                 icono3: categoria.icono3 ? getCategoriaIconUrl(categoria.icono3) : null,
@@ -68,7 +70,9 @@ export const useWaterplastCategorias = () => {
 
             const categoriaWithUrls = {
                 ...data,
-                imagen: data.imagen ? getCategoriaImageUrl(data.imagen) : null,
+                imagen_menu: data.imagen_menu ? getCategoriaImageUrl(data.imagen_menu) : null,
+                imagen_hero_home: data.imagen_hero_home ? getCategoriaImageUrl(data.imagen_hero_home) : null,
+                imagen_pagina_categorias: data.imagen_pagina_categorias ? getCategoriaImageUrl(data.imagen_pagina_categorias) : null,
                 icono1: data.icono1 ? getCategoriaIconUrl(data.icono1) : null,
                 icono2: data.icono2 ? getCategoriaIconUrl(data.icono2) : null,
                 icono3: data.icono3 ? getCategoriaIconUrl(data.icono3) : null,
@@ -92,14 +96,14 @@ export const useWaterplastCategorias = () => {
     }
 
 
-    const updateCategoria = async (id, categoriaData, imagenPrincipal, iconos, imagenesRedes) => {
+    const updateCategoria = async (id, categoriaData, imagenes, iconos, imagenesRedes) => {
         loading.value = true
         error.value = null
 
         try {
             const { data: currentData, error: fetchError } = await supabase
                 .from('waterplast-categorias')
-                .select('nombre, imagen, icono1, icono2, icono3, imagenes_redes')
+                .select('nombre, imagen_menu, imagen_hero_home, imagen_pagina_categorias, icono1, icono2, icono3, imagenes_redes')
                 .eq('id', id)
                 .single()
 
@@ -107,7 +111,9 @@ export const useWaterplastCategorias = () => {
 
             const categoriaNombre = currentData?.nombre || 'categoria'
 
-            let imagenPath = currentData?.imagen
+            let imagenMenuPath = currentData?.imagen_menu
+            let imagenHeroHomePath = currentData?.imagen_hero_home
+            let imagenPaginaCategoriasPath = currentData?.imagen_pagina_categorias
             let iconPaths = {
                 icono1: currentData?.icono1,
                 icono2: currentData?.icono2,
@@ -115,11 +121,25 @@ export const useWaterplastCategorias = () => {
             }
             let imagenesRedesPaths = currentData?.imagenes_redes || []
 
-            if (imagenPrincipal) {
-                if (currentData?.imagen) {
-                    await deleteCategoriaImage(currentData.imagen)
+            if (imagenes.imagenMenu) {
+                if (currentData?.imagen_menu) {
+                    await deleteCategoriaImage(currentData.imagen_menu)
                 }
-                imagenPath = await uploadCategoriaImage(imagenPrincipal, categoriaNombre)
+                imagenMenuPath = await uploadCategoriaImage(imagenes.imagenMenu, categoriaNombre + '-menu')
+            }
+
+            if (imagenes.imagenHeroHome) {
+                if (currentData?.imagen_hero_home) {
+                    await deleteCategoriaImage(currentData.imagen_hero_home)
+                }
+                imagenHeroHomePath = await uploadCategoriaImage(imagenes.imagenHeroHome, categoriaNombre + '-hero')
+            }
+
+            if (imagenes.imagenPaginaCategorias) {
+                if (currentData?.imagen_pagina_categorias) {
+                    await deleteCategoriaImage(currentData.imagen_pagina_categorias)
+                }
+                imagenPaginaCategoriasPath = await uploadCategoriaImage(imagenes.imagenPaginaCategorias, categoriaNombre + '-categorias')
             }
 
             if (iconos.icono1) {
@@ -152,7 +172,9 @@ export const useWaterplastCategorias = () => {
 
             const finalCategoriaData = {
                 ...categoriaData,
-                imagen: imagenPath,
+                imagen_menu: imagenMenuPath,
+                imagen_hero_home: imagenHeroHomePath,
+                imagen_pagina_categorias: imagenPaginaCategoriasPath,
                 icono1: iconPaths.icono1,
                 icono2: iconPaths.icono2,
                 icono3: iconPaths.icono3,
@@ -172,7 +194,9 @@ export const useWaterplastCategorias = () => {
 
             const dataWithUrls = {
                 ...data,
-                imagen: data.imagen ? getCategoriaImageUrl(data.imagen) : null,
+                imagen_menu: data.imagen_menu ? getCategoriaImageUrl(data.imagen_menu) : null,
+                imagen_hero_home: data.imagen_hero_home ? getCategoriaImageUrl(data.imagen_hero_home) : null,
+                imagen_pagina_categorias: data.imagen_pagina_categorias ? getCategoriaImageUrl(data.imagen_pagina_categorias) : null,
                 icono1: data.icono1 ? getCategoriaIconUrl(data.icono1) : null,
                 icono2: data.icono2 ? getCategoriaIconUrl(data.icono2) : null,
                 icono3: data.icono3 ? getCategoriaIconUrl(data.icono3) : null,

@@ -1,6 +1,14 @@
 <template>
     <div v-if="column.type === 'image'" class="flex items-center justify-center">
-        <img :src="value" :alt="column.label" class="w-16 h-16 object-cover rounded-lg" />
+        <img :src="value" :alt="column.label" class="w-16 h-16 object-contain rounded-lg" />
+    </div>
+    <div v-else-if="column.type === 'color'" class="flex items-center justify-center gap-2">
+        <div
+            :style="{ backgroundColor: value }"
+            class="w-8 h-8 rounded-full border-2 border-gray-300 shadow-sm"
+            :title="value"
+        ></div>
+        <span class="text-sm">{{ value }}</span>
     </div>
     <div v-else-if="(column.type === 'text' || column.type === 'textarea')"
         class="w-full max-w-[18.75rem] max-h-32 overflow-auto whitespace-pre-wrap break-words">

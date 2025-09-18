@@ -25,12 +25,32 @@ const { categorias, loading, fetchCategorias } = useWaterplastCategorias()
 const tabla = {
     columns: [
         {
+            key: 'orden',
+            label: 'Orden',
+            type: 'number'
+        },
+        {
             key: 'nombre',
             label: 'Nombre',
         },
         {
-            key: 'imagen',
-            label: 'Imagen',
+            key: 'color',
+            label: 'Color',
+            type: 'color'
+        },
+        {
+            key: 'imagen_menu',
+            label: 'Img Menú',
+            type: 'image'
+        },
+        {
+            key: 'imagen_hero_home',
+            label: 'Img Hero',
+            type: 'image'
+        },
+        {
+            key: 'imagen_pagina_categorias',
+            label: 'Img Categorías',
             type: 'image'
         },
         {

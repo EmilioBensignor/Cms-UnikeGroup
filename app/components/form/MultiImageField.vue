@@ -3,7 +3,7 @@
         <FormLabel :id="id" :required="required" v-if="label">{{ label }}</FormLabel>
 
         <div class="flex flex-col gap-3">
-            <div @click="triggerFileInput" @dragover.prevent @dragenter.prevent @drop.prevent="handleDrop"
+            <div @click="triggerFileInput" @dragover.prevent @dragenter.prevent="isDragging = true" @dragleave.prevent="isDragging = false" @drop.prevent="handleDrop"
                 class="bg-light border-2 border-dashed rounded-[5px] text-center cursor-pointer transition-colors p-6"
                 :class="{
                     'border-primary bg-primary/5': isDragging,
@@ -211,15 +211,6 @@ const handleDrop = (event) => {
     }
 }
 
-const handleDragEnter = () => {
-    isDragging.value = true
-}
-
-const handleDragLeave = (event) => {
-    if (!event.currentTarget.contains(event.relatedTarget)) {
-        isDragging.value = false
-    }
-}
 
 const processFiles = async (files) => {
     try {

@@ -104,22 +104,39 @@ const errors = reactive({
     estado: ''
 })
 
-onMounted(() => {
-    if (props.isEditing && props.initialData) {
+watch(() => props.initialData, async (newData) => {
+    if (props.isEditing && newData) {
+        const processedImagenes = newData.imagenes_redes && Array.isArray(newData.imagenes_redes)
+            ? newData.imagenes_redes.map((img, index) => ({
+                id: img.id || `existing-${index}`,
+                name: img.name || `imagen-${index + 1}.jpg`,
+                url: img.url,
+                preview: img.url,
+                isExisting: true,
+                filename: img.name || `imagen-${index + 1}.jpg`,
+                file: null,
+                orden: index + 1,
+                es_principal: index === 0
+            })) : []
+
+        // Primero asignamos todos los campos excepto imagenesRedes
         Object.assign(formData, {
-            color: props.initialData.color || '',
-            imagenPrincipal: props.initialData.imagen || null,
-            caracteristica1: props.initialData.caracteristica1 || '',
-            icono1: props.initialData.icono1 || null,
-            caracteristica2: props.initialData.caracteristica2 || '',
-            icono2: props.initialData.icono2 || null,
-            caracteristica3: props.initialData.caracteristica3 || '',
-            icono3: props.initialData.icono3 || null,
-            imagenesRedes: props.initialData.imagenes_redes || [],
-            estado: props.initialData.estado !== false,
+            color: newData.color || '',
+            imagenPrincipal: newData.imagen || null,
+            caracteristica1: newData.caracteristica1 || '',
+            icono1: newData.icono1 || null,
+            caracteristica2: newData.caracteristica2 || '',
+            icono2: newData.icono2 || null,
+            caracteristica3: newData.caracteristica3 || '',
+            icono3: newData.icono3 || null,
+            estado: newData.estado !== false,
         })
+
+        // Esperamos al siguiente tick y asignamos las imágenes para asegurar la reactividad
+        await nextTick()
+        formData.imagenesRedes = processedImagenes
     }
-})
+}, { immediate: true, deep: true })
 
 const handleImageStart = (file) => {
     imagenPrincipal.value = file

@@ -18,10 +18,10 @@
 
         <FormFieldsContainer>
             <FormTextField v-model="formData.latitud" label="Latitud (Google Maps)" id="latitud"
-                placeholder="Ej: -34.6037 (usar punto, no coma)" :error="errors.latitud" type="number" step="any" />
+                placeholder="Ej: -34.6037 (usar punto, no coma)" :error="errors.latitud" type="text" />
 
             <FormTextField v-model="formData.longitud" label="Longitud (Google Maps)" id="longitud"
-                placeholder="Ej: -58.3816 (usar punto, no coma)" :error="errors.longitud" type="number" step="any" />
+                placeholder="Ej: -58.3816 (usar punto, no coma)" :error="errors.longitud" type="text" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
@@ -63,8 +63,8 @@ const formData = reactive({
     calle: '',
     provincia: '',
     localidad: '',
-    latitud: null,
-    longitud: null,
+    latitud: '',
+    longitud: '',
     estado: true,
 })
 
@@ -85,13 +85,12 @@ onMounted(() => {
             calle: props.initialData.calle || '',
             provincia: props.initialData.provincia || '',
             localidad: props.initialData.localidad || '',
-            latitud: props.initialData.latitud || null,
-            longitud: props.initialData.longitud || null,
+            latitud: props.initialData.latitud || '',
+            longitud: props.initialData.longitud || '',
             estado: props.initialData.estado !== false,
         })
     }
 })
-
 
 const validateForm = () => {
     Object.keys(errors).forEach(key => {
@@ -132,18 +131,18 @@ const validateForm = () => {
         isValid = false
     }
 
-    if (formData.latitud !== null && formData.latitud !== '') {
+    if (formData.latitud && formData.latitud.trim() !== '') {
         const lat = parseFloat(formData.latitud)
-        if (isNaN(lat) || lat < -90 || lat > 90) {
-            errors.latitud = 'La latitud debe ser un número entre -90 y 90'
+        if (isNaN(lat)) {
+            errors.latitud = 'La latitud debe ser un número válido'
             isValid = false
         }
     }
 
-    if (formData.longitud !== null && formData.longitud !== '') {
+    if (formData.longitud && formData.longitud.trim() !== '') {
         const lng = parseFloat(formData.longitud)
-        if (isNaN(lng) || lng < -180 || lng > 180) {
-            errors.longitud = 'La longitud debe ser un número entre -180 y 180'
+        if (isNaN(lng)) {
+            errors.longitud = 'La longitud debe ser un número válido'
             isValid = false
         }
     }
@@ -169,8 +168,8 @@ const handleSubmit = async () => {
             calle: formData.calle.trim(),
             provincia: formData.provincia.trim(),
             localidad: formData.localidad.trim(),
-            latitud: formData.latitud ? parseFloat(formData.latitud) : null,
-            longitud: formData.longitud ? parseFloat(formData.longitud) : null,
+            latitud: formData.latitud.trim() ? parseFloat(formData.latitud) : null,
+            longitud: formData.longitud.trim() ? parseFloat(formData.longitud) : null,
             estado: formData.estado,
         }
 

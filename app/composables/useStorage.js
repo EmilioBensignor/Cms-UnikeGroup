@@ -317,10 +317,8 @@ export const useStorage = () => {
 
             validateImageFile(file)
 
-            const cleanName = 'imagen-menu'
-
             const extension = file.type.split('/')[1] || 'png'
-            const fileName = `${cleanName}/chica.${extension}`
+            const fileName = `imagen-menu-waterplast-chica.${extension}`
 
 
             const { data, error: uploadError } = await supabase.storage
@@ -360,10 +358,8 @@ export const useStorage = () => {
 
             validateImageFile(file)
 
-            const cleanName = 'imagen-menu'
-
             const extension = file.type.split('/')[1] || 'png'
-            const fileName = `${cleanName}/mediana.${extension}`
+            const fileName = `imagen-menu-waterplast-mediana.${extension}`
 
             const { data, error: uploadError } = await supabase.storage
                 .from('waterplast-imagenes-destacadas')
@@ -399,10 +395,8 @@ export const useStorage = () => {
 
             validateImageFile(file)
 
-            const cleanName = 'imagen-menu'
-
             const extension = file.type.split('/')[1] || 'png'
-            const fileName = `${cleanName}/grande.${extension}`
+            const fileName = `imagen-menu-waterplast-grande.${extension}`
 
             const { data, error: uploadError } = await supabase.storage
                 .from('waterplast-imagenes-destacadas')

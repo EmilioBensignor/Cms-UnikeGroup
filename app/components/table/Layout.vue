@@ -111,7 +111,8 @@ const getRowKey = (item, index) => {
 const openDeleteModal = (item, index) => {
     let itemName = 'este elemento'
 
-    if (item.nombre) itemName = item.nombre
+    if (item.nombreComercio) itemName = item.nombreComercio
+    else if (item.nombre) itemName = item.nombre
     else if (item.titulo) itemName = item.titulo
     else if (item.descripcion) itemName = item.descripcion
     else if (item.name) itemName = item.name

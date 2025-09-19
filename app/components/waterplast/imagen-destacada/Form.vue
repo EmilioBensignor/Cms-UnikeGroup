@@ -9,7 +9,7 @@
         </FormFieldsContainer>
 
         <FormFieldsContainer>
-            <FormImageField v-model="formData.imagen_grande" label="Imagen Grande (280px x 290px)" id="imagen_grande"
+            <FormImageField v-model="formData.imagen_grande" label="Imagen Grande (645px x 290px)" id="imagen_grande"
                 required :error="errors.imagen_grande" :current-image="initialData?.imagen_grande" />
         </FormFieldsContainer>
 

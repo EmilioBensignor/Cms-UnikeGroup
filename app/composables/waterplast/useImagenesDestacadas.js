@@ -72,6 +72,93 @@ export const useWaterplastImagenesDestacadas = () => {
         }
     }
 
+    const fetchImagenDestacadaBySlug = async (slug) => {
+        loading.value = true
+        error.value = null
+        currentImagenDestacada.value = null
+
+        try {
+            const { data, error: supabaseError } = await supabase
+                .from('waterplast-imagenes-destacadas')
+                .select('*')
+                .eq('slug', slug)
+                .single()
+
+            if (supabaseError) throw supabaseError
+
+            const imagenWithUrls = {
+                ...data,
+                imagen_chica: data.imagen_chica ? getImagenDestacadaUrl(data.imagen_chica) : null,
+                imagen_mediana: data.imagen_mediana ? getImagenDestacadaUrl(data.imagen_mediana) : null,
+                imagen_grande: data.imagen_grande ? getImagenDestacadaUrl(data.imagen_grande) : null
+            }
+
+            currentImagenDestacada.value = imagenWithUrls
+            return imagenWithUrls
+        } catch (err) {
+            error.value = err.message
+            console.error('Error al obtener imagen destacada por slug:', err)
+            throw err
+        } finally {
+            loading.value = false
+        }
+    }
+
+    const createImagenDestacada = async (imagenData, imagenChica, imagenMediana, imagenGrande) => {
+        loading.value = true
+        error.value = null
+
+        try {
+            let imagenChicaPath = null
+            let imagenMedianaPath = null
+            let imagenGrandePath = null
+
+            if (imagenChica) {
+                imagenChicaPath = await uploadImagenDestacadaChica(imagenChica)
+            }
+
+            if (imagenMediana) {
+                imagenMedianaPath = await uploadImagenDestacadaMediana(imagenMediana)
+            }
+
+            if (imagenGrande) {
+                imagenGrandePath = await uploadImagenDestacadaGrande(imagenGrande)
+            }
+
+            const finalImagenData = {
+                ...imagenData,
+                imagen_chica: imagenChicaPath,
+                imagen_mediana: imagenMedianaPath,
+                imagen_grande: imagenGrandePath,
+                slug: null
+            }
+
+            const { data, error: supabaseError } = await supabase
+                .from('waterplast-imagenes-destacadas')
+                .insert(finalImagenData)
+                .select()
+                .single()
+
+            if (supabaseError) throw supabaseError
+
+            const dataWithUrls = {
+                ...data,
+                imagen_chica: data.imagen_chica ? getImagenDestacadaUrl(data.imagen_chica) : null,
+                imagen_mediana: data.imagen_mediana ? getImagenDestacadaUrl(data.imagen_mediana) : null,
+                imagen_grande: data.imagen_grande ? getImagenDestacadaUrl(data.imagen_grande) : null
+            }
+
+            imagenesDestacadas.value.unshift(dataWithUrls)
+            return dataWithUrls
+        } catch (err) {
+            error.value = err.message
+            console.error('Error al crear imagen destacada:', err)
+            throw err
+        } finally {
+            loading.value = false
+        }
+    }
+
 
     const updateImagenDestacada = async (id, imagenData, imagenChica, imagenMediana, imagenGrande) => {
         loading.value = true
@@ -86,8 +173,6 @@ export const useWaterplastImagenesDestacadas = () => {
                 .single()
 
             if (fetchError) throw fetchError
-
-            const imagenNombre = currentData?.nombre || 'imagen-destacada'
 
             let imagenChicaPath = currentData?.imagen_chica
             let imagenMedianaPath = currentData?.imagen_mediana
@@ -205,6 +290,8 @@ export const useWaterplastImagenesDestacadas = () => {
         error,
         fetchImagenesDestacadas,
         fetchImagenDestacadaById,
+        fetchImagenDestacadaBySlug,
+        createImagenDestacada,
         updateImagenDestacada,
         deleteImagenDestacadaCompleta
     }

@@ -165,7 +165,6 @@ export const useWaterplastImagenesDestacadas = () => {
         error.value = null
 
         try {
-            // Obtener imagen destacada actual para conocer las imágenes anteriores y el nombre
             const { data: currentData, error: fetchError } = await supabase
                 .from('waterplast-imagenes-destacadas')
                 .select('nombre, imagen_chica, imagen_mediana, imagen_grande')
@@ -178,7 +177,6 @@ export const useWaterplastImagenesDestacadas = () => {
             let imagenMedianaPath = currentData?.imagen_mediana
             let imagenGrandePath = currentData?.imagen_grande
 
-            // Actualizar imagen chica si hay una nueva
             if (imagenChica) {
                 if (currentData?.imagen_chica) {
                     await deleteImagenDestacada(currentData.imagen_chica)
@@ -186,7 +184,6 @@ export const useWaterplastImagenesDestacadas = () => {
                 imagenChicaPath = await uploadImagenDestacadaChica(imagenChica)
             }
 
-            // Actualizar imagen mediana si hay una nueva
             if (imagenMediana) {
                 if (currentData?.imagen_mediana) {
                     await deleteImagenDestacada(currentData.imagen_mediana)
@@ -194,7 +191,6 @@ export const useWaterplastImagenesDestacadas = () => {
                 imagenMedianaPath = await uploadImagenDestacadaMediana(imagenMediana)
             }
 
-            // Actualizar imagen grande si hay una nueva
             if (imagenGrande) {
                 if (currentData?.imagen_grande) {
                     await deleteImagenDestacada(currentData.imagen_grande)
@@ -218,7 +214,6 @@ export const useWaterplastImagenesDestacadas = () => {
 
             if (supabaseError) throw supabaseError
 
-            // Convertir las imágenes a URLs completas para mostrar
             const dataWithUrls = {
                 ...data,
                 imagen_chica: data.imagen_chica ? getImagenDestacadaUrl(data.imagen_chica) : null,
@@ -262,7 +257,6 @@ export const useWaterplastImagenesDestacadas = () => {
 
             if (supabaseError) throw supabaseError
 
-            // Eliminar todas las imágenes asociadas
             if (imagen?.imagen_chica) {
                 await deleteImagenDestacada(imagen.imagen_chica)
             }

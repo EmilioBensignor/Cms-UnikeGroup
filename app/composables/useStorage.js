@@ -25,7 +25,6 @@ export const useStorage = () => {
         return true
     }
 
-    // Funciones para Opiniones
     const uploadOpinionImage = async (file, opinionData) => {
         try {
             uploading.value = true
@@ -94,7 +93,6 @@ export const useStorage = () => {
         return url
     }
 
-    // Funciones para Categorías
     const uploadCategoriaImage = async (file, categoriaNombre) => {
         try {
             uploading.value = true
@@ -302,7 +300,6 @@ export const useStorage = () => {
         return url
     }
 
-    // Funciones para Imágenes Destacadas
     const uploadImagenDestacadaChica = async (dataUrl) => {
         try {
             uploading.value = true
@@ -310,7 +307,6 @@ export const useStorage = () => {
             error.value = null
 
 
-            // Convertir dataURL a File
             const response = await fetch(dataUrl)
             const blob = await response.blob()
             const file = new File([blob], 'image.png', { type: blob.type })
@@ -351,7 +347,6 @@ export const useStorage = () => {
             uploadProgress.value = 0
             error.value = null
 
-            // Convertir dataURL a File
             const response = await fetch(dataUrl)
             const blob = await response.blob()
             const file = new File([blob], 'image.png', { type: blob.type })
@@ -388,7 +383,6 @@ export const useStorage = () => {
             uploadProgress.value = 0
             error.value = null
 
-            // Convertir dataURL a File
             const response = await fetch(dataUrl)
             const blob = await response.blob()
             const file = new File([blob], 'image.png', { type: blob.type })
@@ -453,12 +447,10 @@ export const useStorage = () => {
         uploadProgress: readonly(uploadProgress),
         error: readonly(error),
 
-        // Opiniones
         uploadOpinionImage,
         deleteOpinionImage,
         getOpinionImageUrl,
 
-        // Categorías
         uploadCategoriaImage,
         uploadCategoriaIcon,
         uploadCategoriaImagenesRedes,
@@ -469,14 +461,12 @@ export const useStorage = () => {
         getCategoriaIconUrl,
         getCategoriaImagenRedUrl,
 
-        // Imágenes Destacadas
         uploadImagenDestacadaChica,
         uploadImagenDestacadaMediana,
         uploadImagenDestacadaGrande,
         deleteImagenDestacada,
         getImagenDestacadaUrl,
 
-        // Utilities
         validateImageFile
     }
 }

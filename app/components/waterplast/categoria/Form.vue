@@ -139,7 +139,6 @@ watch(() => props.initialData, async (newData) => {
                 es_principal: index === 0
             })) : []
 
-        // Primero asignamos todos los campos excepto imagenesRedes
         Object.assign(formData, {
             color: newData.color || '',
             orden: newData.orden || 0,
@@ -155,7 +154,6 @@ watch(() => props.initialData, async (newData) => {
             estado: newData.estado !== false,
         })
 
-        // Esperamos al siguiente tick y asignamos las imágenes para asegurar la reactividad
         await nextTick()
         formData.imagenesRedes = processedImagenes
     }

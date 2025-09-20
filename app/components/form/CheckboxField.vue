@@ -8,7 +8,7 @@
                 <label :for="inputId"
                     class="w-6 h-6 flex items-center justify-center relative border border-dark rounded-[5px] cursor-pointer"
                     :class="[
-                        modelValue ? 'bg-terciary text-light' : '',
+                        modelValue ? 'bg-primary text-light' : '',
                         'group'
                     ]">
                     <Icon v-show="modelValue" name="tabler:plus" class="w-6 h-6 rotate-45" />

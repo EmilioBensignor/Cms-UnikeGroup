@@ -17,7 +17,7 @@
                     </p>
                     <p class="text-sm text-dark font-light">
                         Puedes seleccionar múltiples archivos a la vez<br>
-                        Formatos admitidos: JPG, PNG, GIF (máx. 5MB c/u)
+                        Formatos admitidos: JPG, PNG, WEBP, GIF (máx. 5MB c/u)
                     </p>
                 </div>
             </div>

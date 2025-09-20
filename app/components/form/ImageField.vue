@@ -11,7 +11,7 @@
                         Haz clic aquí o arrastra una imagen
                     </p>
                     <p class="text-sm text-dark font-light">
-                        Formatos admitidos: JPG, PNG, GIF (máx. 5MB)
+                        Formatos admitidos: JPG, PNG, WEBP, GIF (máx. 5MB)
                     </p>
                 </div>
 

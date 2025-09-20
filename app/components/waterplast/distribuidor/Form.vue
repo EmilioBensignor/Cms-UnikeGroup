@@ -2,18 +2,18 @@
     <FormLayout @submit.prevent="handleSubmit">
         <FormFieldsContainer>
             <FormTextField v-model="formData.nombreComercio" label="Nombre del Comercio" id="nombreComercio"
-                placeholder="Ingresa el nombre del comercio" required :error="errors.nombreComercio" />
+                placeholder="Ingrese el nombre del comercio" required :error="errors.nombreComercio" />
 
             <FormTextField v-model="formData.calle" label="Calle" id="calle"
-                placeholder="Ingresa la dirección" required :error="errors.calle" />
+                placeholder="Ingrese la dirección" required :error="errors.calle" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
             <FormTextField v-model="formData.provincia" label="Provincia" id="provincia"
-                placeholder="Ingresa la provincia" required :error="errors.provincia" />
+                placeholder="Ingrese la provincia" required :error="errors.provincia" />
 
             <FormTextField v-model="formData.localidad" label="Localidad" id="localidad"
-                placeholder="Ingresa la localidad" required :error="errors.localidad" />
+                placeholder="Ingrese la localidad" required :error="errors.localidad" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>

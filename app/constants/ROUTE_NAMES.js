@@ -12,8 +12,8 @@ export const ROUTE_NAMES = {
         CATEGORIAS: "/waterplast/categorias",
         EDITAR_CATEGORIA: (id) => `/waterplast/categorias/edit/${id}`,
         PRODUCTOS: "/waterplast/productos",
-        CREAR_PRODUCTO: "/waterplast/productos/crear",
-        EDITAR_PRODUCTO: (id) => `/waterplast/productos/editar/${id}`,
+        CREAR_PRODUCTO: "/waterplast/productos/create",
+        EDITAR_PRODUCTO: (id) => `/waterplast/productos/edit/${id}`,
         OPINIONES: "/waterplast/opiniones",
         CREAR_OPINION: "/waterplast/opiniones/crear",
         EDITAR_OPINION: (id) => `/waterplast/opiniones/edit/${id}`,
@@ -23,11 +23,4 @@ export const ROUTE_NAMES = {
         IMAGENES_DESTACADAS: "/waterplast/imagenes-destacadas",
         EDITAR_IMAGEN_DESTACADA: (id) => `/waterplast/imagenes-destacadas/edit/${id}`,
     },
-    // PRODUCTOS_CREAR: '/productos/crear',
-    // PRODUCTOS_EDITAR: (id) => `/productos/edit/${id}`,
-    // PRODUCTOS_CATEGORIA: (nombre) => `/productos/${encodeURIComponent(nombre)}`,
-    // // Reviews
-    // REVIEWS: '/reviews',
-    // REVIEWS_CREAR: '/reviews/crear',
-    // REVIEWS_EDITAR: (id) => `/reviews/edit/${id}`
 };

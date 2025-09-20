@@ -76,7 +76,7 @@ const props = defineProps({
     }
 })
 
-const emit = defineEmits(['update:modelValue', 'upload-complete', 'upload-error'])
+const emit = defineEmits(['update:modelValue', 'upload-start', 'upload-complete', 'upload-error'])
 
 const fileInput = ref(null)
 const fileName = ref('')
@@ -156,6 +156,8 @@ const processFile = async (file) => {
         fileName.value = file.name
         fileSize.value = formatFileSize(file.size)
         fileType.value = file.name.split('.').pop()?.toLowerCase() || ''
+
+        emit('upload-start', file)
 
         await simulateUpload(file)
 

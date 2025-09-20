@@ -442,6 +442,267 @@ export const useStorage = () => {
         return url
     }
 
+    const uploadProductoImage = async (file, productoNombre) => {
+        try {
+            uploading.value = true
+            uploadProgress.value = 0
+            error.value = null
+
+            validateImageFile(file)
+
+            const cleanName = productoNombre.toLowerCase()
+                .replace(/[^a-z0-9\s]/g, '')
+                .replace(/\s+/g, '-')
+                .substring(0, 20)
+
+            const extension = file.name.split('.').pop().toLowerCase()
+            const fileName = `${cleanName}/imagen-principal.${extension}`
+
+            const { data, error: uploadError } = await supabase.storage
+                .from('waterplast-productos')
+                .upload(fileName, file, {
+                    cacheControl: '3600',
+                    upsert: true
+                })
+
+            if (uploadError) throw uploadError
+
+            uploadProgress.value = 100
+            return data.path
+
+        } catch (err) {
+            error.value = err.message
+            console.error('Error uploading producto image:', err)
+            throw err
+        } finally {
+            uploading.value = false
+        }
+    }
+
+    const uploadProductoFile = async (file, fileName) => {
+        try {
+            uploading.value = true
+            uploadProgress.value = 0
+            error.value = null
+
+            const cleanFileName = fileName.toLowerCase()
+                .replace(/[^a-z0-9\s-]/g, '')
+                .replace(/\s+/g, '-')
+
+            const extension = file.name.split('.').pop().toLowerCase()
+            const finalFileName = `archivos/${cleanFileName}.${extension}`
+
+            const { data, error: uploadError } = await supabase.storage
+                .from('waterplast-productos')
+                .upload(finalFileName, file, {
+                    cacheControl: '3600',
+                    upsert: true
+                })
+
+            if (uploadError) throw uploadError
+
+            uploadProgress.value = 100
+            return data.path
+
+        } catch (err) {
+            error.value = err.message
+            console.error('Error uploading producto file:', err)
+            throw err
+        } finally {
+            uploading.value = false
+        }
+    }
+
+    const uploadProductoIcon = async (file, productoNombre, iconoNumero) => {
+        try {
+            uploading.value = true
+            uploadProgress.value = 0
+            error.value = null
+
+            validateImageFile(file)
+
+            const cleanName = productoNombre.toLowerCase()
+                .replace(/[^a-z0-9\s]/g, '')
+                .replace(/\s+/g, '-')
+                .substring(0, 20)
+
+            const extension = file.name.split('.').pop().toLowerCase()
+            const fileName = `${cleanName}/iconos/icono-${iconoNumero}.${extension}`
+
+            const { data, error: uploadError } = await supabase.storage
+                .from('waterplast-productos')
+                .upload(fileName, file, {
+                    cacheControl: '3600',
+                    upsert: true
+                })
+
+            if (uploadError) throw uploadError
+
+            uploadProgress.value = 100
+            return data.path
+
+        } catch (err) {
+            error.value = err.message
+            console.error('Error uploading producto icon:', err)
+            throw err
+        } finally {
+            uploading.value = false
+        }
+    }
+
+    const deleteProductoImage = async (storagePath) => {
+        try {
+            error.value = null
+
+            const { error: deleteError } = await supabase.storage
+                .from('waterplast-productos')
+                .remove([storagePath])
+
+            if (deleteError) throw deleteError
+
+        } catch (err) {
+            error.value = err.message
+            console.error('Error deleting producto image:', err)
+            throw err
+        }
+    }
+
+    const deleteProductoFile = async (storagePath) => {
+        try {
+            error.value = null
+
+            const { error: deleteError } = await supabase.storage
+                .from('waterplast-productos')
+                .remove([storagePath])
+
+            if (deleteError) throw deleteError
+
+        } catch (err) {
+            error.value = err.message
+            console.error('Error deleting producto file:', err)
+            throw err
+        }
+    }
+
+    const deleteProductoIcon = async (storagePath) => {
+        try {
+            error.value = null
+
+            const { error: deleteError } = await supabase.storage
+                .from('waterplast-productos')
+                .remove([storagePath])
+
+            if (deleteError) throw deleteError
+
+        } catch (err) {
+            error.value = err.message
+            console.error('Error deleting producto icon:', err)
+            throw err
+        }
+    }
+
+    const getProductoImageUrl = (storagePath, cacheBust = false) => {
+        if (!storagePath) return null
+        let url = `${config.public.supabase.url}/storage/v1/object/public/waterplast-productos/${storagePath}`
+
+        if (cacheBust) {
+            const timestamp = Date.now()
+            url += `?v=${timestamp}`
+        }
+
+        return url
+    }
+
+    const getProductoFileUrl = (storagePath, cacheBust = false) => {
+        if (!storagePath) return null
+        let url = `${config.public.supabase.url}/storage/v1/object/public/waterplast-productos/${storagePath}`
+
+        if (cacheBust) {
+            const timestamp = Date.now()
+            url += `?v=${timestamp}`
+        }
+
+        return url
+    }
+
+    const getProductoIconUrl = (storagePath, cacheBust = false) => {
+        if (!storagePath) return null
+        let url = `${config.public.supabase.url}/storage/v1/object/public/waterplast-productos/${storagePath}`
+
+        if (cacheBust) {
+            const timestamp = Date.now()
+            url += `?v=${timestamp}`
+        }
+
+        return url
+    }
+
+    const uploadCaracteristicaImage = async (file, productoNombre, caracteristicaId) => {
+        try {
+            uploading.value = true
+            uploadProgress.value = 0
+            error.value = null
+
+            validateImageFile(file)
+
+            const cleanName = productoNombre.toLowerCase()
+                .replace(/[^a-z0-9\s]/g, '')
+                .replace(/\s+/g, '-')
+                .substring(0, 20)
+
+            const extension = file.name.split('.').pop().toLowerCase()
+            const fileName = `${cleanName}/caracteristicas/caracteristica-${caracteristicaId}.${extension}`
+
+            const { data, error: uploadError } = await supabase.storage
+                .from('waterplast-productos-caracteristicas')
+                .upload(fileName, file, {
+                    cacheControl: '3600',
+                    upsert: true
+                })
+
+            if (uploadError) throw uploadError
+
+            uploadProgress.value = 100
+            return data.path
+
+        } catch (err) {
+            error.value = err.message
+            console.error('Error uploading caracteristica image:', err)
+            throw err
+        } finally {
+            uploading.value = false
+        }
+    }
+
+    const deleteCaracteristicaImage = async (storagePath) => {
+        try {
+            error.value = null
+
+            const { error: deleteError } = await supabase.storage
+                .from('waterplast-productos-caracteristicas')
+                .remove([storagePath])
+
+            if (deleteError) throw deleteError
+
+        } catch (err) {
+            error.value = err.message
+            console.error('Error deleting caracteristica image:', err)
+            throw err
+        }
+    }
+
+    const getCaracteristicaImageUrl = (storagePath, cacheBust = false) => {
+        if (!storagePath) return null
+        let url = `${config.public.supabase.url}/storage/v1/object/public/waterplast-productos-caracteristicas/${storagePath}`
+
+        if (cacheBust) {
+            const timestamp = Date.now()
+            url += `?v=${timestamp}`
+        }
+
+        return url
+    }
+
     return {
         uploading: readonly(uploading),
         uploadProgress: readonly(uploadProgress),
@@ -466,6 +727,20 @@ export const useStorage = () => {
         uploadImagenDestacadaGrande,
         deleteImagenDestacada,
         getImagenDestacadaUrl,
+
+        uploadProductoImage,
+        uploadProductoFile,
+        uploadProductoIcon,
+        deleteProductoImage,
+        deleteProductoFile,
+        deleteProductoIcon,
+        getProductoImageUrl,
+        getProductoFileUrl,
+        getProductoIconUrl,
+
+        uploadCaracteristicaImage,
+        deleteCaracteristicaImage,
+        getCaracteristicaImageUrl,
 
         validateImageFile
     }

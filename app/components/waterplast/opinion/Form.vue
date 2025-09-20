@@ -2,10 +2,10 @@
     <FormLayout @submit.prevent="handleSubmit">
         <FormFieldsContainer>
             <FormTextField v-model="formData.titulo" label="Título" id="titulo"
-                placeholder="Ingresa el título de la opinión" required :error="errors.titulo" />
+                placeholder="Ingrese el título de la opinión" required :error="errors.titulo" />
 
             <FormTextField v-model="formData.nombre" label="Nombre" id="nombre"
-                placeholder="Ingresa el nombre de la persona" required :error="errors.nombre" />
+                placeholder="Ingrese el nombre de la persona" required :error="errors.nombre" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
@@ -13,7 +13,7 @@
                 targetFolder="waterplast-opiniones" @upload-start="handleImageStart"
                 @upload-complete="handleImageComplete" />
             <FormTextField v-model="formData.estrellas" label="Estrellas" id="estrellas"
-                placeholder="Ingresa las estrellas (1 al 5)" required :error="errors.estrellas" type="number" step="0.5"
+                placeholder="Ingrese las estrellas (1 al 5)" required :error="errors.estrellas" type="number" step="0.5"
                 min="1" max="5" />
         </FormFieldsContainer>
 
@@ -22,7 +22,7 @@
         </FormFieldsContainer>
 
         <FormFieldsContainer>
-            <FormTextarea v-model="formData.texto" label="Texto" id="texto" placeholder="Ingresa el texto" required
+            <FormTextarea v-model="formData.texto" label="Texto" id="texto" placeholder="Ingrese el texto" required
                 :error="errors.texto" />
         </FormFieldsContainer>
 

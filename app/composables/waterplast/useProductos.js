@@ -1,16 +1,5 @@
 export const useWaterplastProductos = () => {
     const supabase = useSupabaseClient()
-    const invokeProcessXR = async (productoId) => {
-        try {
-            // Llamar a nuestra API route que maneja la autenticación server-side
-            await $fetch('/api/xr-process', {
-                params: { id: productoId }
-            })
-        } catch (e) {
-            console.warn('process-xr invoke failed', e)
-        }
-    }
-
     const {
         uploadProductoImage,
         uploadProductoFile,

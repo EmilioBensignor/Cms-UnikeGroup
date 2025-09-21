@@ -1,5 +1,16 @@
 export const useWaterplastProductos = () => {
     const supabase = useSupabaseClient()
+    const invokeProcessXR = async (productoId) => {
+        try {
+            // Llamar a nuestra API route que maneja la autenticación server-side
+            await $fetch('/api/xr-process', {
+                params: { id: productoId }
+            })
+        } catch (e) {
+            console.warn('process-xr invoke failed', e)
+        }
+    }
+
     const {
         uploadProductoImage,
         uploadProductoFile,
@@ -274,6 +285,12 @@ export const useWaterplastProductos = () => {
             }
 
             productos.value.push(dataWithUrls)
+
+            if (data?.id) {
+                // pequeño delay para dar tiempo a que el trigger encole el job
+                setTimeout(() => { invokeProcessXR(data.id) }, 800)
+            }
+
             return dataWithUrls
         } catch (err) {
             error.value = err.message
@@ -467,6 +484,12 @@ export const useWaterplastProductos = () => {
             }
 
             currentProducto.value = dataWithUrls
+
+            const zipActualizado = Boolean(archivos?.render3d)
+            if (data?.id && zipActualizado) {
+                setTimeout(() => { invokeProcessXR(id) }, 800)
+            }
+
             return dataWithUrls
         } catch (err) {
             error.value = err.message
@@ -585,6 +608,7 @@ export const useWaterplastProductos = () => {
         deleteCaracteristicaAdicional,
         createProducto,
         updateProducto,
-        deleteProducto
+        deleteProducto,
+        invokeProcessXR
     }
 }

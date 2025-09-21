@@ -68,7 +68,7 @@ const props = defineProps({
     },
     maxSize: {
         type: Number,
-        default: 10 * 1024 * 1024
+        default: 100 * 1024 * 1024
     },
     acceptedTypes: {
         type: Array,
@@ -93,7 +93,8 @@ const acceptAttribute = computed(() => {
         pdf: 'application/pdf',
         doc: 'application/msword',
         docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        txt: 'text/plain'
+        txt: 'text/plain',
+        zip: 'application/zip'
     }
     return props.acceptedTypes.map(type => mimeTypes[type] || `.${type}`).join(',')
 })

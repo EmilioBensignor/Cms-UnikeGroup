@@ -57,7 +57,7 @@ const loadCaracteristicas = (existingCaracteristicas) => {
         ...c,
         localId: nextId + index,
         dbId: c.id,
-        imageFile: NonNullable
+        imageFile: null
     }))
 
     if (existingCaracteristicas.length > 0) {

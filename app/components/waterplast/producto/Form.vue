@@ -13,18 +13,24 @@
         </FormFieldsContainer>
 
         <FormFieldsContainer>
-            <FormFileField v-model="formData.render_3d" id="render_3d" label="Carpeta .zip con Render 3D"
+            <FormFileField v-model="formData.archivo_html" id="archivo_html" label="Archivo .html para 3D"
+                :error="errors.archivo_html" :acceptedTypes="['html']" targetFolder="waterplast-productos"
+                @upload-start="handleArchivoHtmlStart" @upload-complete="handleArchivoHtmlComplete" required />
+            <FormFileField v-model="formData.render_3d" id="render_3d" label="Carpeta .zip con imágenes para 3D"
                 :error="errors.render_3d" required :acceptedTypes="['zip']" targetFolder="waterplast-productos"
                 @upload-start="handleRender3dStart" @upload-complete="handleRender3dComplete" />
-            <FormImageField v-model="formData.imagen" id="imagen" label="Imagen" :error="errors.imagen" required
-                :acceptedTypes="['webp']" targetFolder="waterplast-productos" @upload-start="handleImagenStart"
-                @upload-complete="handleImagenComplete" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
+            <FormImageField v-model="formData.imagen" id="imagen" label="Imagen" :error="errors.imagen" required
+                :acceptedTypes="['webp']" targetFolder="waterplast-productos" @upload-start="handleImagenStart"
+                @upload-complete="handleImagenComplete" />
             <FormFileField v-model="formData.ficha_tecnica" id="ficha_tecnica" label="Ficha Técnica"
                 :error="errors.ficha_tecnica" required :acceptedTypes="['pdf']" targetFolder="waterplast-productos"
                 @upload-start="handleFichaTecnicaStart" @upload-complete="handleFichaTecnicaComplete" />
+        </FormFieldsContainer>
+
+        <FormFieldsContainer>
             <FormSwitch v-model="formData.estado" id="estado" label="Estado" required :error="errors.estado" />
         </FormFieldsContainer>
 
@@ -87,12 +93,8 @@
 
         <div v-if="productosRelacionados.length > 0" class="w-full flex flex-col gap-2">
             <FormLabel>Productos Relacionados</FormLabel>
-            <FormCheckboxGroupField
-                v-model="formData.productos_relacionados"
-                id="productos_relacionados"
-                :options="productosRelacionados"
-                :error="errors.productos_relacionados"
-            />
+            <FormCheckboxGroupField v-model="formData.productos_relacionados" id="productos_relacionados"
+                :options="productosRelacionados" :error="errors.productos_relacionados" />
         </div>
 
         <div v-if="showButtons" class="w-full flex flex-col lg:flex-row items-center gap-5 mt-8">
@@ -138,6 +140,7 @@ const submitting = ref(false)
 const imagen = ref(null)
 const render3d = ref(null)
 const fichaTecnica = ref(null)
+const archivoHtml = ref(null)
 const icono1 = ref(null)
 const icono2 = ref(null)
 const icono3 = ref(null)
@@ -192,6 +195,7 @@ const formData = reactive({
     imagen: null,
     render_3d: null,
     ficha_tecnica: null,
+    archivo_html: null,
     estado: true,
     altura_cm: null,
     ancho_cm: null,
@@ -218,6 +222,7 @@ const errors = reactive({
     imagen: '',
     render_3d: '',
     ficha_tecnica: '',
+    archivo_html: '',
     estado: '',
     altura_cm: '',
     ancho_cm: '',
@@ -268,6 +273,7 @@ watch(() => props.initialData, async (newData) => {
             imagen: newData.imagen || null,
             render_3d: newData.render_3d || null,
             ficha_tecnica: newData.ficha_tecnica || null,
+            archivo_html: newData.archivo_html || null,
             estado: newData.estado !== false,
             altura_cm: newData.altura_cm ?? null,
             ancho_cm: newData.ancho_cm ?? null,
@@ -322,6 +328,15 @@ const handleFichaTecnicaStart = (file) => {
 
 const handleFichaTecnicaComplete = () => {
     errors.ficha_tecnica = ''
+}
+
+const handleArchivoHtmlStart = (file) => {
+    archivoHtml.value = file
+    errors.archivo_html = ''
+}
+
+const handleArchivoHtmlComplete = () => {
+    errors.archivo_html = ''
 }
 
 const handleIconStart1 = (file) => {
@@ -507,6 +522,7 @@ const handleSubmit = async () => {
             if (!imagen.value) productoData.imagen = formData.imagen
             if (!render3d.value) productoData.render_3d = formData.render_3d
             if (!fichaTecnica.value) productoData.ficha_tecnica = formData.ficha_tecnica
+            if (!archivoHtml.value) productoData.archivo_html = formData.archivo_html
             if (!icono1.value) productoData.icono1 = formData.icono1
             if (!icono2.value) productoData.icono2 = formData.icono2
             if (!icono3.value) productoData.icono3 = formData.icono3
@@ -517,7 +533,8 @@ const handleSubmit = async () => {
             archivos: {
                 imagen: imagen.value,
                 render3d: render3d.value,
-                fichaTecnica: fichaTecnica.value
+                fichaTecnica: fichaTecnica.value,
+                archivoHtml: archivoHtml.value
             },
             iconos: {
                 icono1: icono1.value,

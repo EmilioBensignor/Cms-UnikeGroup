@@ -39,6 +39,7 @@ export const useWaterplastProductos = () => {
                 imagen: producto.imagen ? getProductoImageUrl(producto.imagen) : null,
                 render_3d: producto.render_3d ? getProductoFileUrl(producto.render_3d) : null,
                 ficha_tecnica: producto.ficha_tecnica ? getProductoFileUrl(producto.ficha_tecnica) : null,
+                archivo_html: producto.archivo_html ? getProductoFileUrl(producto.archivo_html) : null,
                 icono1: producto.icono1 ? getProductoIconUrl(producto.icono1) : null,
                 icono2: producto.icono2 ? getProductoIconUrl(producto.icono2) : null,
                 icono3: producto.icono3 ? getProductoIconUrl(producto.icono3) : null,
@@ -76,6 +77,7 @@ export const useWaterplastProductos = () => {
                 imagen: data.imagen ? getProductoImageUrl(data.imagen) : null,
                 render_3d: data.render_3d ? getProductoFileUrl(data.render_3d) : null,
                 ficha_tecnica: data.ficha_tecnica ? getProductoFileUrl(data.ficha_tecnica) : null,
+                archivo_html: data.archivo_html ? getProductoFileUrl(data.archivo_html) : null,
                 icono1: data.icono1 ? getProductoIconUrl(data.icono1) : null,
                 icono2: data.icono2 ? getProductoIconUrl(data.icono2) : null,
                 icono3: data.icono3 ? getProductoIconUrl(data.icono3) : null
@@ -181,6 +183,7 @@ export const useWaterplastProductos = () => {
             let imagenPath = null
             let render3dPath = null
             let fichaTecnicaPath = null
+            let archivoHtmlPath = null
             let iconPaths = {
                 icono1: null,
                 icono2: null,
@@ -199,6 +202,10 @@ export const useWaterplastProductos = () => {
                 fichaTecnicaPath = await uploadProductoFile(archivos.fichaTecnica, productoNombre + '-ficha')
             }
 
+            if (archivos.archivoHtml) {
+                archivoHtmlPath = await uploadProductoFile(archivos.archivoHtml, productoNombre + '-html')
+            }
+
             if (iconos.icono1) {
                 iconPaths.icono1 = await uploadProductoIcon(iconos.icono1, productoNombre, 1)
             }
@@ -214,6 +221,7 @@ export const useWaterplastProductos = () => {
                 imagen: imagenPath,
                 render_3d: render3dPath,
                 ficha_tecnica: fichaTecnicaPath,
+                archivo_html: archivoHtmlPath,
                 icono1: iconPaths.icono1,
                 icono2: iconPaths.icono2,
                 icono3: iconPaths.icono3
@@ -268,6 +276,7 @@ export const useWaterplastProductos = () => {
                 imagen: data.imagen ? getProductoImageUrl(data.imagen) : null,
                 render_3d: data.render_3d ? getProductoFileUrl(data.render_3d) : null,
                 ficha_tecnica: data.ficha_tecnica ? getProductoFileUrl(data.ficha_tecnica) : null,
+                archivo_html: data.archivo_html ? getProductoFileUrl(data.archivo_html) : null,
                 icono1: data.icono1 ? getProductoIconUrl(data.icono1) : null,
                 icono2: data.icono2 ? getProductoIconUrl(data.icono2) : null,
                 icono3: data.icono3 ? getProductoIconUrl(data.icono3) : null
@@ -292,7 +301,7 @@ export const useWaterplastProductos = () => {
         try {
             const { data: currentData, error: fetchError } = await supabase
                 .from('waterplast-productos')
-                .select('nombre, imagen, render_3d, ficha_tecnica, icono1, icono2, icono3')
+                .select('nombre, imagen, render_3d, ficha_tecnica, archivo_html, icono1, icono2, icono3')
                 .eq('id', id)
                 .single()
 
@@ -303,6 +312,7 @@ export const useWaterplastProductos = () => {
             let imagenPath = currentData?.imagen
             let render3dPath = currentData?.render_3d
             let fichaTecnicaPath = currentData?.ficha_tecnica
+            let archivoHtmlPath = currentData?.archivo_html
             let iconPaths = {
                 icono1: currentData?.icono1,
                 icono2: currentData?.icono2,
@@ -330,6 +340,13 @@ export const useWaterplastProductos = () => {
                 fichaTecnicaPath = await uploadProductoFile(archivos.fichaTecnica, productoNombre + '-ficha')
             }
 
+            if (archivos.archivoHtml) {
+                if (currentData?.archivo_html) {
+                    await deleteProductoFile(currentData.archivo_html)
+                }
+                archivoHtmlPath = await uploadProductoFile(archivos.archivoHtml, productoNombre + '-html')
+            }
+
             if (iconos.icono1) {
                 if (currentData?.icono1) {
                     await deleteProductoIcon(currentData.icono1)
@@ -354,6 +371,7 @@ export const useWaterplastProductos = () => {
                 imagen: imagenPath,
                 render_3d: render3dPath,
                 ficha_tecnica: fichaTecnicaPath,
+                archivo_html: archivoHtmlPath,
                 icono1: iconPaths.icono1,
                 icono2: iconPaths.icono2,
                 icono3: iconPaths.icono3
@@ -457,6 +475,7 @@ export const useWaterplastProductos = () => {
                 imagen: data.imagen ? getProductoImageUrl(data.imagen) : null,
                 render_3d: data.render_3d ? getProductoFileUrl(data.render_3d) : null,
                 ficha_tecnica: data.ficha_tecnica ? getProductoFileUrl(data.ficha_tecnica) : null,
+                archivo_html: data.archivo_html ? getProductoFileUrl(data.archivo_html) : null,
                 icono1: data.icono1 ? getProductoIconUrl(data.icono1) : null,
                 icono2: data.icono2 ? getProductoIconUrl(data.icono2) : null,
                 icono3: data.icono3 ? getProductoIconUrl(data.icono3) : null
@@ -488,7 +507,7 @@ export const useWaterplastProductos = () => {
         try {
             const { data: producto } = await supabase
                 .from('waterplast-productos')
-                .select('imagen, render_3d, ficha_tecnica, icono1, icono2, icono3')
+                .select('imagen, render_3d, ficha_tecnica, archivo_html, icono1, icono2, icono3')
                 .eq('id', id)
                 .single()
 
@@ -536,6 +555,13 @@ export const useWaterplastProductos = () => {
                         console.warn('Error deleting ficha tecnica:', error)
                     }
                 }
+                if (producto.archivo_html) {
+                    try {
+                        await deleteProductoFile(producto.archivo_html)
+                    } catch (error) {
+                        console.warn('Error deleting archivo html:', error)
+                    }
+                }
                 if (producto.icono1) {
                     try {
                         await deleteProductoIcon(producto.icono1)
@@ -576,6 +602,7 @@ export const useWaterplastProductos = () => {
             loading.value = false
         }
     }
+
 
     return {
         productos,

@@ -94,7 +94,9 @@ const acceptAttribute = computed(() => {
         doc: 'application/msword',
         docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         txt: 'text/plain',
-        zip: 'application/zip'
+        zip: 'application/zip',
+        html: 'text/html',
+        htm: 'text/html'
     }
     return props.acceptedTypes.map(type => mimeTypes[type] || `.${type}`).join(',')
 })

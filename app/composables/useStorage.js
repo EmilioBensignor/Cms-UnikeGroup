@@ -485,12 +485,27 @@ export const useStorage = () => {
             uploadProgress.value = 0
             error.value = null
 
-            const cleanFileName = fileName.toLowerCase()
-                .replace(/[^a-z0-9\s-]/g, '')
+            // Extraer el nombre del producto del fileName (formato: productoNombre-sufijo)
+            const parts = fileName.split('-')
+            const productoNombre = parts[0]
+            const sufijo = parts.slice(1).join('-') || 'archivo'
+
+            const cleanName = productoNombre.toLowerCase()
+                .replace(/[^a-z0-9\s]/g, '')
                 .replace(/\s+/g, '-')
+                .substring(0, 20)
 
             const extension = file.name.split('.').pop().toLowerCase()
-            const finalFileName = `archivos/${cleanFileName}.${extension}`
+
+            // Determinar la ubicación según el tipo de archivo
+            let finalFileName
+            if (extension === 'zip') {
+                // ZIP va en carpeta images/
+                finalFileName = `${cleanName}/images/${sufijo}.${extension}`
+            } else {
+                // PDF y HTML van en root del producto
+                finalFileName = `${cleanName}/${sufijo}.${extension}`
+            }
 
             const { data, error: uploadError } = await supabase.storage
                 .from('waterplast-productos')

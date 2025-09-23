@@ -23,36 +23,26 @@ const callUnzipImages = async (productoId) => {
   try {
     console.log('🚀 Iniciando llamada a unzip-images para producto:', productoId)
     
-    const { data: { session } } = await supabase.auth.getSession()
-    
-    if (!session?.access_token) {
-      console.error('❌ No hay session token disponible')
+    // Ensure we have a valid supabase client
+    if (!supabase || !supabase.functions) {
+      console.error('❌ Supabase client not properly initialized')
       return null
     }
     
     console.log('📡 Enviando request a edge function...')
 
-    const response = await fetch('https://fxytgajevhfuzwlyaorb.functions.supabase.co/unzip-images', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${session?.access_token}`
-      },
-      body: JSON.stringify({ id: productoId })
+    const { data, error } = await supabase.functions.invoke('unzip-images', {
+      body: { id: productoId }
     })
 
-    console.log('📨 Response status:', response.status)
-    
-    const result = await response.json()
-    console.log('📦 Response data:', result)
-
-    if (!response.ok) {
-      console.error('❌ Error al descomprimir:', result)
+    if (error) {
+      console.error('❌ Error al descomprimir:', error)
       return null
     }
 
-    console.log('✅ ZIP descomprimido exitosamente:', result)
-    return result
+    console.log('📦 Response data:', data)
+    console.log('✅ ZIP descomprimido exitosamente:', data)
+    return data
 
   } catch (error) {
     console.error('⚠️ Error llamando a unzip-images:', error)

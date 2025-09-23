@@ -19,6 +19,36 @@ export const useWaterplastProductos = () => {
     const currentProducto = ref(null)
     const error = ref(null)
 
+const callUnzipImages = async (productoId) => {
+  try {
+    const { data: { session } } = await supabase.auth.getSession()
+
+    const response = await fetch('https://fxytgajevhfuzwlyaorb.functions.supabase.co/unzip-images', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${session?.access_token}`
+      },
+      body: JSON.stringify({ id: productoId })
+    })
+
+    const result = await response.json()
+
+    if (!response.ok) {
+      console.error('❌ Error al descomprimir:', result)
+      return null
+    }
+
+    console.log('✅ ZIP descomprimido:', result)
+    return result
+
+  } catch (error) {
+    console.warn('⚠️ Error llamando a unzip-images:', error)
+    return null
+  }
+}
+
+
     const fetchProductos = async () => {
         loading.value = true
         error.value = null
@@ -284,6 +314,9 @@ export const useWaterplastProductos = () => {
 
             productos.value.push(dataWithUrls)
 
+            // Call unzip-images function after successful creation
+            await callUnzipImages(data.id)
+
             return dataWithUrls
         } catch (err) {
             error.value = err.message
@@ -489,6 +522,9 @@ export const useWaterplastProductos = () => {
             currentProducto.value = dataWithUrls
 
             const zipActualizado = Boolean(archivos?.render3d)
+
+            // Call unzip-images function after successful update
+            await callUnzipImages(id)
 
             return dataWithUrls
         } catch (err) {

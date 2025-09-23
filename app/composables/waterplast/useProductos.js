@@ -21,7 +21,16 @@ export const useWaterplastProductos = () => {
 
 const callUnzipImages = async (productoId) => {
   try {
+    console.log('🚀 Iniciando llamada a unzip-images para producto:', productoId)
+    
     const { data: { session } } = await supabase.auth.getSession()
+    
+    if (!session?.access_token) {
+      console.error('❌ No hay session token disponible')
+      return null
+    }
+    
+    console.log('📡 Enviando request a edge function...')
 
     const response = await fetch('https://fxytgajevhfuzwlyaorb.functions.supabase.co/unzip-images', {
       method: 'POST',
@@ -32,18 +41,21 @@ const callUnzipImages = async (productoId) => {
       body: JSON.stringify({ id: productoId })
     })
 
+    console.log('📨 Response status:', response.status)
+    
     const result = await response.json()
+    console.log('📦 Response data:', result)
 
     if (!response.ok) {
       console.error('❌ Error al descomprimir:', result)
       return null
     }
 
-    console.log('✅ ZIP descomprimido:', result)
+    console.log('✅ ZIP descomprimido exitosamente:', result)
     return result
 
   } catch (error) {
-    console.warn('⚠️ Error llamando a unzip-images:', error)
+    console.error('⚠️ Error llamando a unzip-images:', error)
     return null
   }
 }
@@ -315,7 +327,9 @@ const callUnzipImages = async (productoId) => {
             productos.value.push(dataWithUrls)
 
             // Call unzip-images function after successful creation
-            await callUnzipImages(data.id)
+            console.log('🔄 Llamando a callUnzipImages después de crear producto...')
+            const unzipResult = await callUnzipImages(data.id)
+            console.log('📊 Resultado de unzip:', unzipResult)
 
             return dataWithUrls
         } catch (err) {
@@ -524,7 +538,9 @@ const callUnzipImages = async (productoId) => {
             const zipActualizado = Boolean(archivos?.render3d)
 
             // Call unzip-images function after successful update
-            await callUnzipImages(id)
+            console.log('🔄 Llamando a callUnzipImages después de actualizar producto...')
+            const unzipResult = await callUnzipImages(id)
+            console.log('📊 Resultado de unzip:', unzipResult)
 
             return dataWithUrls
         } catch (err) {
@@ -653,5 +669,6 @@ const callUnzipImages = async (productoId) => {
         createProducto,
         updateProducto,
         deleteProducto,
+        callUnzipImages
     }
 }

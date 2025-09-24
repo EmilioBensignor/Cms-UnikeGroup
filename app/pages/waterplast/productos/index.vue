@@ -5,6 +5,14 @@
             Crear Nuevo Producto
         </ButtonPrimary>
 
+        <!-- Filtros de búsqueda -->
+        <div class="w-full flex flex-col md:flex-row justify-center gap-6">
+            <FormTextField v-model="filtros.nombre" id="buscar-nombre" label="Buscar por nombre"
+                placeholder="Buscar productos por nombre..." />
+            <FormSelect v-model="filtros.categoriaId" id="filtrar-categoria" label="Filtrar por categoría"
+                :options="opcionesCategorias" />
+        </div>
+
         <div v-if="loading" class="flex justify-center items-center py-12">
             <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
         </div>
@@ -14,7 +22,7 @@
             <p class="text-dark text-lg">No hay productos disponibles</p>
         </div>
 
-        <TableLayout v-else :data="productos" :columns="tabla.columns" :empty-state-text="`No hay productos creados`"
+        <TableLayout v-else :data="productosFiltrados" :columns="tabla.columns" :empty-state-text="textoEstadoVacio"
             table-name="productos" :show-actions="true" :show-delete="true" @edit="handleEdit" @delete="handleDelete" />
     </DefaultSection>
 </template>
@@ -22,9 +30,17 @@
 <script setup>
 import { ROUTE_NAMES } from '~/constants/ROUTE_NAMES.js'
 import { useWaterplastProductos } from '~/composables/waterplast/useProductos.js'
+import { useWaterplastCategorias } from '~/composables/waterplast/useCategorias.js'
 
 const { productos, loading, fetchProductos, deleteProducto } = useWaterplastProductos()
+const { categorias, fetchCategorias } = useWaterplastCategorias()
 const { success, error: notificationError } = useNotification()
+
+// Filtros reactivos
+const filtros = reactive({
+    nombre: '',
+    categoriaId: ''
+})
 
 const tabla = {
     columns: [
@@ -94,11 +110,75 @@ const tabla = {
     ]
 }
 
+// Opciones para el select de categorías
+const opcionesCategorias = computed(() => {
+    const opciones = [{ value: '', label: 'Todas las categorías' }]
+
+    if (categorias.value) {
+        categorias.value.forEach(categoria => {
+            opciones.push({
+                value: categoria.id.toString(),
+                label: categoria.nombre
+            })
+        })
+    }
+
+    return opciones
+})
+
+// Función para formatear valores snake_case a formato legible
+const formatearValor = (valor) => {
+    if (!valor) return valor
+
+    // Convertir snake_case a Title Case
+    return valor
+        .replace(/_/g, ' ')  // Reemplazar _ con espacios
+        .toLowerCase()       // Todo a minúsculas
+        .replace(/\b\w/g, l => l.toUpperCase())  // Primera letra de cada palabra en mayúscula
+}
+
+// Productos filtrados y formateados
+const productosFiltrados = computed(() => {
+    if (!productos.value) return []
+
+    return productos.value
+        .filter(producto => {
+            // Filtro por nombre
+            const cumpleNombre = !filtros.nombre ||
+                producto.nombre.toLowerCase().includes(filtros.nombre.toLowerCase())
+
+            // Filtro por categoría
+            const cumpleCategoria = !filtros.categoriaId ||
+                producto.categoria_id.toString() === filtros.categoriaId
+
+            return cumpleNombre && cumpleCategoria
+        })
+        .map(producto => ({
+            ...producto,
+            // Formatear campos que necesiten formato legible
+            orientacion: formatearValor(producto.orientacion),
+            color: formatearValor(producto.color),
+            tecnologia: formatearValor(producto.tecnologia),
+            opcion: formatearValor(producto.opcion)
+        }))
+})
+
+// Texto del estado vacío dinámico
+const textoEstadoVacio = computed(() => {
+    if (filtros.nombre || filtros.categoriaId) {
+        return 'No se encontraron productos que coincidan con los filtros'
+    }
+    return 'No hay productos creados'
+})
+
 onMounted(async () => {
     try {
-        await fetchProductos()
+        await Promise.all([
+            fetchProductos(),
+            fetchCategorias()
+        ])
     } catch (err) {
-        console.error('Error loading productos:', err)
+        console.error('Error loading data:', err)
     }
 })
 

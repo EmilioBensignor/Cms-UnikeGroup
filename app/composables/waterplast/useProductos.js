@@ -132,16 +132,30 @@ export const useWaterplastProductos = () => {
         error.value = null
 
         try {
+            // Verificar que tenemos un categoriaId válido
+            if (!categoriaId) {
+                return []
+            }
+
+            console.log('🔍 fetchProductosByCategoria - categoriaId:', categoriaId, 'tipo:', typeof categoriaId)
+
+            // Obtener todos los productos y filtrar por categoría (igual que en el select de la página principal)
             const { data, error: supabaseError } = await supabase
                 .from('waterplast-productos')
-                .select('id, nombre')
-                .eq('categoria_id', categoriaId)
+                .select('id, nombre, categoria_id')
                 .eq('estado', true)
                 .order('nombre', { ascending: true })
 
             if (supabaseError) throw supabaseError
 
-            return data || []
+            // Filtrar por categoría usando la misma lógica que el select principal
+            const filteredData = (data || []).filter(producto =>
+                producto.categoria_id.toString() === categoriaId
+            )
+
+            console.log('📦 Productos filtrados:', filteredData.length, 'de', data?.length || 0)
+
+            return filteredData
         } catch (err) {
             error.value = err.message
             console.error('Error al obtener productos por categoría:', err)

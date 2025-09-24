@@ -4,8 +4,8 @@
             {{ label }}
         </FormLabel>
 
-        <div class="flex flex-wrap justify-between gap-y-3" v-if="options && options.length > 0">
-            <FormCheckboxField class="w-[48%]" v-for="option in options" :key="option.value" :id="`${id}-${option.value}`"
+        <div class="flex flex-wrap gap-y-3" v-if="options && options.length > 0">
+            <FormCheckboxField class="w-[24%]" v-for="option in options" :key="option.value" :id="`${id}-${option.value}`"
                 :label="option.label" :modelValue="isOptionSelected(option.value)"
                 @update:modelValue="(checked) => handleOptionChange(option.value, checked)" :error="option.error"
                 label-position="right" />

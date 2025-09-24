@@ -152,7 +152,7 @@ const productosRelacionados = ref([])
 
 const categoriasOptions = computed(() => {
     return categorias.value.map(categoria => ({
-        value: categoria.id,
+        value: categoria.id.toString(),
         label: categoria.nombre
     }))
 })
@@ -245,7 +245,10 @@ const errors = reactive({
 watch(() => formData.categoria_id, async (newCategoriaId) => {
     if (newCategoriaId) {
         try {
+            console.log('🔍 Buscando productos para categoría:', newCategoriaId, 'tipo:', typeof newCategoriaId)
             const productos = await fetchProductosByCategoria(newCategoriaId)
+            console.log('📦 Productos encontrados:', productos.length, productos)
+
             const filteredProductos = props.isEditing && props.initialData?.id
                 ? productos.filter(p => p.id !== props.initialData.id)
                 : productos
@@ -254,6 +257,8 @@ watch(() => formData.categoria_id, async (newCategoriaId) => {
                 value: p.id,
                 label: p.nombre
             }))
+
+            console.log('✅ Productos relacionados finales:', productosRelacionados.value.length)
         } catch (error) {
             console.error('Error al cargar productos relacionados:', error)
             productosRelacionados.value = []

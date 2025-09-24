@@ -91,7 +91,7 @@ const formatValue = (value, column) => {
             return new Intl.NumberFormat('es-AR').format(value)
 
         case 'boolean':
-            return value ? 'Sí' : 'No'
+            return value ? 'Habilitado' : 'Deshabilitado'
 
         case 'image':
             return value

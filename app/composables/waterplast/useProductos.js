@@ -12,43 +12,44 @@ export const useWaterplastProductos = () => {
         getProductoIconUrl,
         uploadCaracteristicaImage,
         deleteCaracteristicaImage,
-        getCaracteristicaImageUrl
+        getCaracteristicaImageUrl,
+        deleteProductoFolder
     } = useStorage()
     const loading = ref(false)
     const productos = ref([])
     const currentProducto = ref(null)
     const error = ref(null)
 
-const callUnzipImages = async (productoId) => {
-  try {
-    console.log('🚀 Iniciando llamada a unzip-images para producto:', productoId)
-    
-    // Ensure we have a valid supabase client
-    if (!supabase || !supabase.functions) {
-      console.error('❌ Supabase client not properly initialized')
-      return null
+    const callUnzipImages = async (productoId) => {
+        try {
+            console.log('🚀 Iniciando llamada a unzip-images para producto:', productoId)
+
+            // Ensure we have a valid supabase client
+            if (!supabase || !supabase.functions) {
+                console.error('❌ Supabase client not properly initialized')
+                return null
+            }
+
+            console.log('📡 Enviando request a edge function...')
+
+            const { data, error } = await supabase.functions.invoke('unzip-images', {
+                body: { id: productoId }
+            })
+
+            if (error) {
+                console.error('❌ Error al descomprimir:', error)
+                return null
+            }
+
+            console.log('📦 Response data:', data)
+            console.log('✅ ZIP descomprimido exitosamente:', data)
+            return data
+
+        } catch (error) {
+            console.error('⚠️ Error llamando a unzip-images:', error)
+            return null
+        }
     }
-    
-    console.log('📡 Enviando request a edge function...')
-
-    const { data, error } = await supabase.functions.invoke('unzip-images', {
-      body: { id: productoId }
-    })
-
-    if (error) {
-      console.error('❌ Error al descomprimir:', error)
-      return null
-    }
-
-    console.log('📦 Response data:', data)
-    console.log('✅ ZIP descomprimido exitosamente:', data)
-    return data
-
-  } catch (error) {
-    console.error('⚠️ Error llamando a unzip-images:', error)
-    return null
-  }
-}
 
 
     const fetchProductos = async () => {
@@ -547,92 +548,37 @@ const callUnzipImages = async (productoId) => {
         error.value = null
 
         try {
+            // Obtener el nombre del producto para eliminar la carpeta completa
             const { data: producto } = await supabase
                 .from('waterplast-productos')
-                .select('imagen, render_3d, ficha_tecnica, archivo_html, icono1, icono2, icono3')
+                .select('nombre, imagen, render_3d, ficha_tecnica, archivo_html, icono1, icono2, icono3')
                 .eq('id', id)
                 .single()
 
-            const { data: caracteristicas } = await supabase
-                .from('waterplast-productos-caracteristicas-adicionales')
-                .select('imagen')
-                .eq('producto_id', id)
 
-            if (caracteristicas && caracteristicas.length > 0) {
-                for (const caracteristica of caracteristicas) {
-                    if (caracteristica.imagen) {
-                        try {
-                            await deleteCaracteristicaImage(caracteristica.imagen)
-                        } catch (error) {
-                            console.warn('Error deleting caracteristica image:', error)
-                        }
-                    }
-                }
-            }
-
+            // Eliminar características adicionales de la base de datos
             await supabase
                 .from('waterplast-productos-caracteristicas-adicionales')
                 .delete()
                 .eq('producto_id', id)
 
-            if (producto) {
-                if (producto.imagen) {
-                    try {
-                        await deleteProductoImage(producto.imagen)
-                    } catch (error) {
-                        console.warn('Error deleting product image:', error)
-                    }
-                }
-                if (producto.render_3d) {
-                    try {
-                        await deleteProductoFile(producto.render_3d)
-                    } catch (error) {
-                        console.warn('Error deleting render 3d:', error)
-                    }
-                }
-                if (producto.ficha_tecnica) {
-                    try {
-                        await deleteProductoFile(producto.ficha_tecnica)
-                    } catch (error) {
-                        console.warn('Error deleting ficha tecnica:', error)
-                    }
-                }
-                if (producto.archivo_html) {
-                    try {
-                        await deleteProductoFile(producto.archivo_html)
-                    } catch (error) {
-                        console.warn('Error deleting archivo html:', error)
-                    }
-                }
-                if (producto.icono1) {
-                    try {
-                        await deleteProductoIcon(producto.icono1)
-                    } catch (error) {
-                        console.warn('Error deleting icono1:', error)
-                    }
-                }
-                if (producto.icono2) {
-                    try {
-                        await deleteProductoIcon(producto.icono2)
-                    } catch (error) {
-                        console.warn('Error deleting icono2:', error)
-                    }
-                }
-                if (producto.icono3) {
-                    try {
-                        await deleteProductoIcon(producto.icono3)
-                    } catch (error) {
-                        console.warn('Error deleting icono3:', error)
-                    }
-                }
-            }
-
+            // Eliminar el producto de la base de datos
             const { error: deleteError } = await supabase
                 .from('waterplast-productos')
                 .delete()
                 .eq('id', id)
 
             if (deleteError) throw deleteError
+
+            // Eliminar toda la carpeta del producto del storage
+            if (producto && producto.nombre) {
+                try {
+                    await deleteProductoFolder(producto.nombre)
+                    console.log(`✅ Carpeta del producto "${producto.nombre}" eliminada completamente`)
+                } catch (error) {
+                    console.warn('Error deleting producto folder:', error)
+                }
+            }
 
             productos.value = productos.value.filter(p => p.id !== id)
 

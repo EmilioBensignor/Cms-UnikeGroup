@@ -18,10 +18,10 @@
 
         <FormFieldsContainer>
             <FormTextField v-model="formData.latitud" label="Latitud (Google Maps)" id="latitud"
-                placeholder="Ej: -34.6037 (usar punto, no coma)" :error="errors.latitud" type="text" />
+                placeholder="Ej: -34.6037 (usar punto, no coma)" :error="errors.latitud" required type="text" />
 
             <FormTextField v-model="formData.longitud" label="Longitud (Google Maps)" id="longitud"
-                placeholder="Ej: -58.3816 (usar punto, no coma)" :error="errors.longitud" type="text" />
+                placeholder="Ej: -58.3816 (usar punto, no coma)" :error="errors.longitud" required type="text" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>

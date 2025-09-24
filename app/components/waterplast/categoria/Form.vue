@@ -1,7 +1,7 @@
 <template>
     <FormLayout @submit.prevent="handleSubmit">
         <FormFieldsContainer>
-            <FormImageField v-model="formData.imagenMenu" id="imagenMenu" label="Imagen Menú" :error="errors.imagenMenu"
+            <FormImageField v-model="formData.imagenMenu" id="imagenMenu" label="Imagen Menú (295px x 280px)" :error="errors.imagenMenu"
                 required targetFolder="waterplast-categorias" @upload-start="handleImageMenuStart"
                 @upload-complete="handleImageMenuComplete" />
             <FormTextField v-model="formData.color" label="Color (Hex con #)" id="color"
@@ -9,7 +9,7 @@
         </FormFieldsContainer>
 
         <FormFieldsContainer>
-            <FormImageField v-model="formData.imagenHeroHome" id="imagenHeroHome" label="Imagen Hero Home"
+            <FormImageField v-model="formData.imagenHeroHome" id="imagenHeroHome" label="Imagen Hero Home (430px x 320px)"
                 :error="errors.imagenHeroHome" required targetFolder="waterplast-categorias"
                 @upload-start="handleImageHeroHomeStart" @upload-complete="handleImageHeroHomeComplete" />
             <FormImageField v-model="formData.imagenPaginaCategorias" id="imagenPaginaCategorias"
@@ -26,32 +26,32 @@
 
         <FormFieldsContainer>
             <FormTextField v-model="formData.caracteristica1" label="Característica 1" id="caracteristica1"
-                placeholder="Ingrese la primera característica" required :error="errors.caracteristica1" />
+                placeholder="Ingrese la primera característica" :error="errors.caracteristica1" />
 
-            <FormImageField v-model="formData.icono1" id="icono1" label="Icono 1" :error="errors.icono1" required
+            <FormImageField v-model="formData.icono1" id="icono1" label="Icono 1 (56px x 56px)" :error="errors.icono1"
                 targetFolder="waterplast-categorias" @upload-start="handleIconStart1"
                 @upload-complete="handleIconComplete1" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
             <FormTextField v-model="formData.caracteristica2" label="Característica 2" id="caracteristica2"
-                placeholder="Ingrese la segunda característica" required :error="errors.caracteristica2" />
+                placeholder="Ingrese la segunda característica" :error="errors.caracteristica2" />
 
-            <FormImageField v-model="formData.icono2" id="icono2" label="Icono 2" :error="errors.icono2" required
+            <FormImageField v-model="formData.icono2" id="icono2" label="Icono 2 (56px x 56px)" :error="errors.icono2"
                 targetFolder="waterplast-categorias" @upload-start="handleIconStart2"
                 @upload-complete="handleIconComplete2" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
             <FormTextField v-model="formData.caracteristica3" label="Característica 3" id="caracteristica3"
-                placeholder="Ingrese la tercera característica" required :error="errors.caracteristica3" />
+                placeholder="Ingrese la tercera característica" :error="errors.caracteristica3" />
 
-            <FormImageField v-model="formData.icono3" id="icono3" label="Icono 3" :error="errors.icono3" required
+            <FormImageField v-model="formData.icono3" id="icono3" label="Icono 3 (56px x 56px)" :error="errors.icono3"
                 targetFolder="waterplast-categorias" @upload-start="handleIconStart3"
                 @upload-complete="handleIconComplete3" />
         </FormFieldsContainer>
 
-        <MultiImageField v-model="formData.imagenesRedes" id="imagenesRedes" label="Imágenes para Redes (mínimo 1)"
+        <MultiImageField v-model="formData.imagenesRedes" id="imagenesRedes" label="Imágenes para Redes (320px x 400px) - Mínimo 1, recomendado 4/5"
             :error="errors.imagenesRedes" required targetFolder="waterplast-categorias"
             @upload-start="handleImagenesRedesStart" @upload-complete="handleImagenesRedesComplete" />
 

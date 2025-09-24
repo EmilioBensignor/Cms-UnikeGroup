@@ -13,21 +13,21 @@
         </FormFieldsContainer>
 
         <FormFieldsContainer>
-            <FormFileField v-model="formData.archivo_html" id="archivo_html" label="Archivo .html para 3D"
-                :error="errors.archivo_html" :acceptedTypes="['html']" targetFolder="waterplast-productos"
-                @upload-start="handleArchivoHtmlStart" @upload-complete="handleArchivoHtmlComplete" required />
-            <FormFileField v-model="formData.render_3d" id="render_3d" label="Carpeta .zip con imágenes para 3D"
-                :error="errors.render_3d" required :acceptedTypes="['zip']" targetFolder="waterplast-productos"
-                @upload-start="handleRender3dStart" @upload-complete="handleRender3dComplete" />
-        </FormFieldsContainer>
-
-        <FormFieldsContainer>
-            <FormImageField v-model="formData.imagen" id="imagen" label="Imagen" :error="errors.imagen" required
+            <FormImageField v-model="formData.imagen" id="imagen" label="Imagen (450px x 380px)" :error="errors.imagen" required
                 :acceptedTypes="['webp']" targetFolder="waterplast-productos" @upload-start="handleImagenStart"
                 @upload-complete="handleImagenComplete" />
             <FormFileField v-model="formData.ficha_tecnica" id="ficha_tecnica" label="Ficha Técnica"
-                :error="errors.ficha_tecnica" required :acceptedTypes="['pdf']" targetFolder="waterplast-productos"
+                :error="errors.ficha_tecnica" :acceptedTypes="['pdf']" targetFolder="waterplast-productos"
                 @upload-start="handleFichaTecnicaStart" @upload-complete="handleFichaTecnicaComplete" />
+        </FormFieldsContainer>
+
+        <FormFieldsContainer>
+            <FormFileField v-model="formData.archivo_html" id="archivo_html" label="Archivo .html para 3D"
+                :error="errors.archivo_html" :acceptedTypes="['html']" targetFolder="waterplast-productos"
+                @upload-start="handleArchivoHtmlStart" @upload-complete="handleArchivoHtmlComplete" />
+            <FormFileField v-model="formData.render_3d" id="render_3d" label="Carpeta .zip con imágenes para 3D"
+                :error="errors.render_3d" :acceptedTypes="['zip']" targetFolder="waterplast-productos"
+                @upload-start="handleRender3dStart" @upload-complete="handleRender3dComplete" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
@@ -36,57 +36,57 @@
 
         <FormFieldsContainer>
             <FormTextField v-model="formData.altura_cm" label="Altura (cm)" id="altura_cm" type="number"
-                placeholder="Ingrese la altura en centímetros" required :error="errors.altura_cm" />
+                placeholder="Ingrese la altura en centímetros" :error="errors.altura_cm" />
             <FormTextField v-model="formData.ancho_cm" label="Ancho (cm)" id="ancho_cm" type="number"
-                placeholder="Ingrese el ancho en centímetros" required :error="errors.ancho_cm" />
+                placeholder="Ingrese el ancho en centímetros" :error="errors.ancho_cm" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
             <FormTextField v-model="formData.largo_cm" label="Largo (cm)" id="largo_cm" type="number"
-                placeholder="Ingrese el largo en centímetros" required :error="errors.largo_cm" />
+                placeholder="Ingrese el largo en centímetros" :error="errors.largo_cm" />
             <FormTextField v-model="formData.diametro_cm" label="Diámetro (cm)" id="diametro_cm" type="number"
-                placeholder="Ingrese el diámetro en centímetros" required :error="errors.diametro_cm" />
+                placeholder="Ingrese el diámetro en centímetros" :error="errors.diametro_cm" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
             <FormTextField v-model="formData.capacidad_lts" label="Capacidad (lts)" id="capacidad_lts" type="number"
-                placeholder="Ingrese la capacidad en litros" required :error="errors.capacidad_lts" />
+                placeholder="Ingrese la capacidad en litros" :error="errors.capacidad_lts" />
             <FormSelect v-model="formData.orientacion" label="Orientación" id="orientacion" :error="errors.orientacion"
-                required :options="orientacionOptions" placeholder="Seleccione orientación" />
+                :options="orientacionOptions" placeholder="Seleccione orientación" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
-            <FormSelect v-model="formData.color" label="Color" id="color" :error="errors.color" required
-                :options="colorOptions" placeholder="Seleccione color" />
+            <FormSelect v-model="formData.color" label="Color" id="color" :error="errors.color" :options="colorOptions"
+                placeholder="Seleccione color" />
             <FormSelect v-model="formData.tecnologia" label="Tecnología" id="tecnologia" :error="errors.tecnologia"
-                required :options="tecnologiaOptions" placeholder="Seleccione tecnología" />
+                :options="tecnologiaOptions" placeholder="Seleccione tecnología" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
-            <FormSelect v-model="formData.opcion" label="Opción" id="opcion" :error="errors.opcion" required
+            <FormSelect v-model="formData.opcion" label="Opción" id="opcion" :error="errors.opcion"
                 :options="opcionOptions" placeholder="Seleccione opción" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
             <FormTextField v-model="formData.caracteristica1" label="Característica 1" id="caracteristica1"
                 placeholder="Ingrese la primera característica" required :error="errors.caracteristica1" />
-            <FormImageField v-model="formData.icono1" id="icono1" label="Icono 1" :error="errors.icono1" required
+            <FormImageField v-model="formData.icono1" id="icono1" label="Icono 1 (48px x 48px)" :error="errors.icono1" required
                 :acceptedTypes="['webp']" targetFolder="waterplast-productos" @upload-start="handleIconStart1"
                 @upload-complete="handleIconComplete1" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
             <FormTextField v-model="formData.caracteristica2" label="Característica 2" id="caracteristica2"
-                placeholder="Ingrese la segunda característica" required :error="errors.caracteristica2" />
-            <FormImageField v-model="formData.icono2" id="icono2" label="Icono 2" :error="errors.icono2" required
+                placeholder="Ingrese la segunda característica" :error="errors.caracteristica2" />
+            <FormImageField v-model="formData.icono2" id="icono2" label="Icono 2 (48px x 48px)" :error="errors.icono2"
                 :acceptedTypes="['webp']" targetFolder="waterplast-productos" @upload-start="handleIconStart2"
                 @upload-complete="handleIconComplete2" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
             <FormTextField v-model="formData.caracteristica3" label="Característica 3" id="caracteristica3"
-                placeholder="Ingrese la tercera característica" required :error="errors.caracteristica3" />
-            <FormImageField v-model="formData.icono3" id="icono3" label="Icono 3" :error="errors.icono3" required
+                placeholder="Ingrese la tercera característica" :error="errors.caracteristica3" />
+            <FormImageField v-model="formData.icono3" id="icono3" label="Icono 3 (48px x 48px)" :error="errors.icono3"
                 :acceptedTypes="['webp']" targetFolder="waterplast-productos" @upload-start="handleIconStart3"
                 @upload-complete="handleIconComplete3" />
         </FormFieldsContainer>

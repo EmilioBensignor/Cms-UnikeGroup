@@ -718,6 +718,97 @@ export const useStorage = () => {
         return url
     }
 
+    const deleteProductoFolder = async (productoNombre) => {
+        try {
+            error.value = null
+
+            const cleanName = productoNombre.toLowerCase()
+                .replace(/[^a-z0-9\s]/g, '')
+                .replace(/\s+/g, '-')
+                .substring(0, 20)
+
+            // Listar todos los archivos en la carpeta del producto
+            const { data: files, error: listError } = await supabase.storage
+                .from('waterplast-productos')
+                .list(cleanName, {
+                    limit: 1000,
+                    sortBy: { column: 'name', order: 'asc' }
+                })
+
+            if (listError) {
+                console.warn('Error listing files for deletion:', listError)
+                return
+            }
+
+            if (files && files.length > 0) {
+                // Recopilar todos los paths de archivos y subcarpetas
+                const allPaths = []
+
+                // Función recursiva para obtener todos los archivos
+                const getFilesRecursively = async (folderPath = '') => {
+                    const fullPath = folderPath ? `${cleanName}/${folderPath}` : cleanName
+
+                    const { data: items, error: subListError } = await supabase.storage
+                        .from('waterplast-productos')
+                        .list(fullPath, {
+                            limit: 1000,
+                            sortBy: { column: 'name', order: 'asc' }
+                        })
+
+                    if (subListError || !items) return
+
+                    for (const item of items) {
+                        const itemPath = folderPath ? `${folderPath}/${item.name}` : item.name
+                        const fullItemPath = `${cleanName}/${itemPath}`
+
+                        if (item.metadata) {
+                            // Es un archivo
+                            allPaths.push(fullItemPath)
+                        } else {
+                            // Es una carpeta, buscar recursivamente
+                            await getFilesRecursively(itemPath)
+                        }
+                    }
+                }
+
+                await getFilesRecursively()
+
+                // Eliminar todos los archivos encontrados
+                if (allPaths.length > 0) {
+                    const { error: deleteError } = await supabase.storage
+                        .from('waterplast-productos')
+                        .remove(allPaths)
+
+                    if (deleteError) {
+                        console.warn('Error deleting some files:', deleteError)
+                    }
+                }
+
+                // Intentar eliminar las carpetas vacías (iconos, caracteristicas, images)
+                const commonFolders = [
+                    `${cleanName}/iconos/`,
+                    `${cleanName}/caracteristicas/`,
+                    `${cleanName}/images/`
+                ]
+
+                for (const folderPath of commonFolders) {
+                    try {
+                        await supabase.storage
+                            .from('waterplast-productos')
+                            .remove([folderPath])
+                    } catch (error) {
+                        // Ignorar errores de carpetas que no existen
+                    }
+                }
+            }
+
+        } catch (err) {
+            error.value = err.message
+            console.error('Error deleting producto folder:', err)
+            throw err
+        }
+    }
+
     return {
         uploading: readonly(uploading),
         uploadProgress: readonly(uploadProgress),
@@ -756,6 +847,8 @@ export const useStorage = () => {
         uploadCaracteristicaImage,
         deleteCaracteristicaImage,
         getCaracteristicaImageUrl,
+
+        deleteProductoFolder,
 
         validateImageFile
     }

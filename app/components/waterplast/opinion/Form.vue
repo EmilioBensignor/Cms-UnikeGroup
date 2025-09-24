@@ -9,7 +9,7 @@
         </FormFieldsContainer>
 
         <FormFieldsContainer>
-            <FormImageField v-model="formData.imagen" id="imagen" label="Imagen" :error="errors.imagen" required
+            <FormImageField v-model="formData.imagen" id="imagen" label="Imagen (48px x 48px)" :error="errors.imagen" required
                 targetFolder="waterplast-opiniones" @upload-start="handleImageStart"
                 @upload-complete="handleImageComplete" />
             <FormTextField v-model="formData.estrellas" label="Estrellas" id="estrellas"

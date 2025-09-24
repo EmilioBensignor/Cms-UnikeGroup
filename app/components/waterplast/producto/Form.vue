@@ -388,95 +388,27 @@ const validateForm = () => {
         isValid = false
     }
 
-    if (!render3d.value && !formData.render_3d) {
-        errors.render_3d = 'El archivo ZIP del Render 3D es requerido'
-        isValid = false
-    }
 
     if (!imagen.value && !formData.imagen) {
         errors.imagen = 'La imagen es requerida'
         isValid = false
     }
 
-    if (!fichaTecnica.value && !formData.ficha_tecnica) {
-        errors.ficha_tecnica = 'La ficha técnica es requerida'
-        isValid = false
-    }
 
-    if (formData.altura_cm === null || formData.altura_cm === undefined || formData.altura_cm === '') {
-        errors.altura_cm = 'La altura es requerida'
-        isValid = false
-    }
 
-    if (formData.ancho_cm === null || formData.ancho_cm === undefined || formData.ancho_cm === '') {
-        errors.ancho_cm = 'El ancho es requerido'
-        isValid = false
-    }
 
-    if (formData.largo_cm === null || formData.largo_cm === undefined || formData.largo_cm === '') {
-        errors.largo_cm = 'El largo es requerido'
-        isValid = false
-    }
 
-    if (formData.diametro_cm === null || formData.diametro_cm === undefined || formData.diametro_cm === '') {
-        errors.diametro_cm = 'El diámetro es requerido'
-        isValid = false
-    }
 
-    if (formData.capacidad_lts === null || formData.capacidad_lts === undefined || formData.capacidad_lts === '') {
-        errors.capacidad_lts = 'La capacidad es requerida'
-        isValid = false
-    }
 
-    if (!formData.orientacion) {
-        errors.orientacion = 'La orientación es requerida'
-        isValid = false
-    }
 
-    if (!formData.color) {
-        errors.color = 'El color es requerido'
-        isValid = false
-    }
 
-    if (!formData.tecnologia) {
-        errors.tecnologia = 'La tecnología es requerida'
-        isValid = false
-    }
 
-    if (!formData.opcion) {
-        errors.opcion = 'La opción es requerida'
-        isValid = false
-    }
 
-    if (!formData.caracteristica1.trim()) {
-        errors.caracteristica1 = 'La característica 1 es requerida'
-        isValid = false
-    }
 
-    if (!icono1.value && !formData.icono1) {
-        errors.icono1 = 'El icono 1 es requerido'
-        isValid = false
-    }
 
-    if (!formData.caracteristica2.trim()) {
-        errors.caracteristica2 = 'La característica 2 es requerida'
-        isValid = false
-    }
 
-    if (!icono2.value && !formData.icono2) {
-        errors.icono2 = 'El icono 2 es requerido'
-        isValid = false
-    }
 
-    if (!formData.caracteristica3.trim()) {
-        errors.caracteristica3 = 'La característica 3 es requerida'
-        isValid = false
-    }
 
-    if (!icono3.value && !formData.icono3) {
-        errors.icono3 = 'El icono 3 es requerido'
-        isValid = false
-    }
 
     if (typeof formData.estado !== 'boolean') {
         errors.estado = 'El estado debe ser válido'

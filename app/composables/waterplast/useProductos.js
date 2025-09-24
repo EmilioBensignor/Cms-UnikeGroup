@@ -345,7 +345,8 @@ export const useWaterplastProductos = () => {
 
             if (fetchError) throw fetchError
 
-            const productoNombre = currentData?.nombre || 'producto'
+            const productoNombre = productoData?.nombre || currentData?.nombre || 'producto'
+            const nombreCambio = productoData?.nombre && productoData.nombre !== currentData?.nombre
 
             let imagenPath = currentData?.imagen
             let render3dPath = currentData?.render_3d
@@ -415,7 +416,6 @@ export const useWaterplastProductos = () => {
                 icono3: iconPaths.icono3
             }
 
-            delete finalProductoData.nombre
 
             const { data, error: supabaseError } = await supabase
                 .from('waterplast-productos')
@@ -463,7 +463,7 @@ export const useWaterplastProductos = () => {
                         if (caracteristica.imagen instanceof File || caracteristica.imagen instanceof Blob) {
                             imagenPath = await uploadCaracteristicaImage(
                                 caracteristica.imagen,
-                                currentData?.nombre || 'producto',
+                                productoNombre,
                                 index + 1
                             )
                         } else {
@@ -528,10 +528,12 @@ export const useWaterplastProductos = () => {
 
             const zipActualizado = Boolean(archivos?.render3d)
 
-            // Call unzip-images function after successful update
-            console.log('🔄 Llamando a callUnzipImages después de actualizar producto...')
-            const unzipResult = await callUnzipImages(id)
-            console.log('📊 Resultado de unzip:', unzipResult)
+            // Call unzip-images function only if render3d was updated
+            if (zipActualizado) {
+                console.log('🔄 Llamando a callUnzipImages después de actualizar producto...')
+                const unzipResult = await callUnzipImages(id)
+                console.log('📊 Resultado de unzip:', unzipResult)
+            }
 
             return dataWithUrls
         } catch (err) {

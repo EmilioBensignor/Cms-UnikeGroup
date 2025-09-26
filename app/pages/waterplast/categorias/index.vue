@@ -49,8 +49,8 @@ const tabla = {
             type: 'image'
         },
         {
-            key: 'imagen_pagina_categorias',
-            label: 'Img Categorías',
+            key: 'imagen_xl_categorias',
+            label: 'Img XL Categorías',
             type: 'image'
         },
         {

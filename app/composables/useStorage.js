@@ -25,6 +25,16 @@ export const useStorage = () => {
         return true
     }
 
+    const cleanCategoryName = (name) => {
+        return name.toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/[^a-z0-9\s]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/bio-?360/g, 'bio360')
+            .substring(0, 20)
+    }
+
     const uploadOpinionImage = async (file, opinionData) => {
         try {
             uploading.value = true
@@ -101,26 +111,115 @@ export const useStorage = () => {
 
             validateImageFile(file)
 
-            const cleanName = categoriaNombre.toLowerCase()
-                .replace(/[^a-z0-9\s]/g, '')
-                .replace(/\s+/g, '-')
-                .substring(0, 20)
-
             const extension = file.name.split('.').pop().toLowerCase()
 
-            const fileName = `${cleanName}/imagen-principal.${extension}`
+            // Determinar el tipo de imagen y estructura de carpeta
+            if (categoriaNombre.includes('-xl-categorias')) {
+                const baseName = cleanCategoryName(categoriaNombre.replace('-xl-categorias', ''))
+                const fileName = `${baseName}/pagina-categoria/imagen-xl.${extension}`
 
-            const { data, error: uploadError } = await supabase.storage
-                .from('waterplast-categorias')
-                .upload(fileName, file, {
-                    cacheControl: '3600',
-                    upsert: true
-                })
+                const { data, error: uploadError } = await supabase.storage
+                    .from('waterplast-categorias')
+                    .upload(fileName, file, {
+                        cacheControl: '3600',
+                        upsert: true
+                    })
 
-            if (uploadError) throw uploadError
+                if (uploadError) throw uploadError
+                uploadProgress.value = 100
+                return data.path
 
-            uploadProgress.value = 100
-            return data.path
+            } else if (categoriaNombre.includes('-l-categorias')) {
+                const baseName = cleanCategoryName(categoriaNombre.replace('-l-categorias', ''))
+                const fileName = `${baseName}/pagina-categoria/imagen-l.${extension}`
+
+                const { data, error: uploadError } = await supabase.storage
+                    .from('waterplast-categorias')
+                    .upload(fileName, file, {
+                        cacheControl: '3600',
+                        upsert: true
+                    })
+
+                if (uploadError) throw uploadError
+                uploadProgress.value = 100
+                return data.path
+
+            } else if (categoriaNombre.includes('-m-categorias')) {
+                const baseName = cleanCategoryName(categoriaNombre.replace('-m-categorias', ''))
+                const fileName = `${baseName}/pagina-categoria/imagen-m.${extension}`
+
+                const { data, error: uploadError } = await supabase.storage
+                    .from('waterplast-categorias')
+                    .upload(fileName, file, {
+                        cacheControl: '3600',
+                        upsert: true
+                    })
+
+                if (uploadError) throw uploadError
+                uploadProgress.value = 100
+                return data.path
+
+            } else if (categoriaNombre.includes('-s-categorias')) {
+                const baseName = cleanCategoryName(categoriaNombre.replace('-s-categorias', ''))
+                const fileName = `${baseName}/pagina-categoria/imagen-s.${extension}`
+
+                const { data, error: uploadError } = await supabase.storage
+                    .from('waterplast-categorias')
+                    .upload(fileName, file, {
+                        cacheControl: '3600',
+                        upsert: true
+                    })
+
+                if (uploadError) throw uploadError
+                uploadProgress.value = 100
+                return data.path
+
+            } else if (categoriaNombre.includes('-menu')) {
+                const baseName = cleanCategoryName(categoriaNombre.replace('-menu', ''))
+                const fileName = `${baseName}/imagen-menu.${extension}`
+
+                const { data, error: uploadError } = await supabase.storage
+                    .from('waterplast-categorias')
+                    .upload(fileName, file, {
+                        cacheControl: '3600',
+                        upsert: true
+                    })
+
+                if (uploadError) throw uploadError
+                uploadProgress.value = 100
+                return data.path
+
+            } else if (categoriaNombre.includes('-hero')) {
+                const baseName = cleanCategoryName(categoriaNombre.replace('-hero', ''))
+                const fileName = `${baseName}/imagen-hero.${extension}`
+
+                const { data, error: uploadError } = await supabase.storage
+                    .from('waterplast-categorias')
+                    .upload(fileName, file, {
+                        cacheControl: '3600',
+                        upsert: true
+                    })
+
+                if (uploadError) throw uploadError
+                uploadProgress.value = 100
+                return data.path
+
+            } else {
+                // Imagen principal por defecto
+                const cleanName = cleanCategoryName(categoriaNombre)
+                const fileName = `${cleanName}/imagen-principal.${extension}`
+
+                const { data, error: uploadError } = await supabase.storage
+                    .from('waterplast-categorias')
+                    .upload(fileName, file, {
+                        cacheControl: '3600',
+                        upsert: true
+                    })
+
+                if (uploadError) throw uploadError
+                uploadProgress.value = 100
+                return data.path
+            }
 
         } catch (err) {
             error.value = err.message
@@ -139,10 +238,8 @@ export const useStorage = () => {
 
             validateImageFile(file)
 
-            const cleanName = categoriaNombre.toLowerCase()
-                .replace(/[^a-z0-9\s]/g, '')
-                .replace(/\s+/g, '-')
-                .substring(0, 20)
+            // Obtener el nombre base de la categoría en minúsculas
+            const cleanName = cleanCategoryName(categoriaNombre)
 
             const extension = file.name.split('.').pop().toLowerCase()
 
@@ -174,10 +271,8 @@ export const useStorage = () => {
             uploading.value = true
             error.value = null
 
-            const cleanName = categoriaNombre.toLowerCase()
-                .replace(/[^a-z0-9\s]/g, '')
-                .replace(/\s+/g, '-')
-                .substring(0, 20)
+            // Obtener el nombre base de la categoría en minúsculas
+            const cleanName = cleanCategoryName(categoriaNombre)
 
             const uploadPromises = files.map(async (file, index) => {
                 uploadProgress.value = Math.round((index / files.length) * 100)
@@ -850,6 +945,7 @@ export const useStorage = () => {
 
         deleteProductoFolder,
 
-        validateImageFile
+        validateImageFile,
+        cleanCategoryName
     }
 }

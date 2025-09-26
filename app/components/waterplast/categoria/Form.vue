@@ -1,21 +1,40 @@
 <template>
     <FormLayout @submit.prevent="handleSubmit">
         <FormFieldsContainer>
-            <FormImageField v-model="formData.imagenMenu" id="imagenMenu" label="Imagen Menú (295px x 280px)" :error="errors.imagenMenu"
-                required targetFolder="waterplast-categorias" @upload-start="handleImageMenuStart"
-                @upload-complete="handleImageMenuComplete" />
+            <FormImageField v-model="formData.imagenMenu" id="imagenMenu" label="Imagen Menú (295px x 280px)"
+                :error="errors.imagenMenu" required targetFolder="waterplast-categorias"
+                @upload-start="handleImageMenuStart" @upload-complete="handleImageMenuComplete" />
             <FormTextField v-model="formData.color" label="Color (Hex con #)" id="color"
                 placeholder="Ingrese el color (ej: #FFFFFF)" required :error="errors.color" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
-            <FormImageField v-model="formData.imagenHeroHome" id="imagenHeroHome" label="Imagen Hero Home (430px x 320px)"
-                :error="errors.imagenHeroHome" required targetFolder="waterplast-categorias"
-                @upload-start="handleImageHeroHomeStart" @upload-complete="handleImageHeroHomeComplete" />
-            <FormImageField v-model="formData.imagenPaginaCategorias" id="imagenPaginaCategorias"
-                label="Imagen Página Categorías" :error="errors.imagenPaginaCategorias" required
-                targetFolder="waterplast-categorias" @upload-start="handleImagePaginaCategoriasStart"
-                @upload-complete="handleImagePaginaCategoriasComplete" />
+            <FormImageField v-model="formData.imagenHeroHome" id="imagenHeroHome"
+                label="Imagen Hero Home (430px x 320px)" :error="errors.imagenHeroHome" required
+                targetFolder="waterplast-categorias" @upload-start="handleImageHeroHomeStart"
+                @upload-complete="handleImageHeroHomeComplete" />
+            <FormImageField v-model="formData.imagenXLCategorias" id="imagenXLCategorias"
+                label="Imagen XL Categorías (1512px x 800px)" required :error="errors.imagenXLCategorias"
+                targetFolder="waterplast-categorias" @upload-start="handleImageXLCategoriasStart"
+                @upload-complete="handleImageXLCategoriasComplete" />
+        </FormFieldsContainer>
+
+        <FormFieldsContainer>
+            <FormImageField v-model="formData.imagenLCategorias" id="imagenLCategorias"
+                label="Imagen L Categorías (1080px x 700px)" required :error="errors.imagenLCategorias"
+                targetFolder="waterplast-categorias" @upload-start="handleImageLCategoriasStart"
+                @upload-complete="handleImageLCategoriasComplete" />
+            <FormImageField v-model="formData.imagenMCategorias" id="imagenMCategorias"
+                label="Imagen M Categorías (768px x 400px)" required :error="errors.imagenMCategorias"
+                targetFolder="waterplast-categorias" @upload-start="handleImageMCategoriasStart"
+                @upload-complete="handleImageMCategoriasComplete" />
+        </FormFieldsContainer>
+
+        <FormFieldsContainer>
+            <FormImageField v-model="formData.imagenSCategorias" id="imagenSCategorias"
+                label="Imagen S Categorías (320px x 320px)" required :error="errors.imagenSCategorias"
+                targetFolder="waterplast-categorias" @upload-start="handleImageSCategoriasStart"
+                @upload-complete="handleImageSCategoriasComplete" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
@@ -51,9 +70,10 @@
                 @upload-complete="handleIconComplete3" />
         </FormFieldsContainer>
 
-        <MultiImageField v-model="formData.imagenesRedes" id="imagenesRedes" label="Imágenes para Redes (320px x 400px) - Mínimo 1, recomendado 4/5"
-            :error="errors.imagenesRedes" required targetFolder="waterplast-categorias"
-            @upload-start="handleImagenesRedesStart" @upload-complete="handleImagenesRedesComplete" />
+        <MultiImageField v-model="formData.imagenesRedes" id="imagenesRedes"
+            label="Imágenes para Redes (320px x 400px) - Mínimo 1, recomendado 4/5" :error="errors.imagenesRedes"
+            required targetFolder="waterplast-categorias" @upload-start="handleImagenesRedesStart"
+            @upload-complete="handleImagenesRedesComplete" />
 
         <div class="w-full flex flex-col lg:flex-row items-center gap-5 mt-8">
             <ButtonPrimary @click="$emit('cancel')" type="button" class="!bg-gray-mid !text-dark">
@@ -86,7 +106,10 @@ const emit = defineEmits(['submit', 'cancel'])
 const submitting = ref(false)
 const imagenMenu = ref(null)
 const imagenHeroHome = ref(null)
-const imagenPaginaCategorias = ref(null)
+const imagenXLCategorias = ref(null)
+const imagenLCategorias = ref(null)
+const imagenMCategorias = ref(null)
+const imagenSCategorias = ref(null)
 const icono1 = ref(null)
 const icono2 = ref(null)
 const icono3 = ref(null)
@@ -97,7 +120,10 @@ const formData = reactive({
     orden: 0,
     imagenMenu: null,
     imagenHeroHome: null,
-    imagenPaginaCategorias: null,
+    imagenXLCategorias: null,
+    imagenLCategorias: null,
+    imagenMCategorias: null,
+    imagenSCategorias: null,
     caracteristica1: '',
     icono1: null,
     caracteristica2: '',
@@ -113,7 +139,10 @@ const errors = reactive({
     orden: '',
     imagenMenu: '',
     imagenHeroHome: '',
-    imagenPaginaCategorias: '',
+    imagenXLCategorias: '',
+    imagenLCategorias: '',
+    imagenMCategorias: '',
+    imagenSCategorias: '',
     caracteristica1: '',
     icono1: '',
     caracteristica2: '',
@@ -144,7 +173,10 @@ watch(() => props.initialData, async (newData) => {
             orden: newData.orden || 0,
             imagenMenu: newData.imagen_menu || null,
             imagenHeroHome: newData.imagen_hero_home || null,
-            imagenPaginaCategorias: newData.imagen_pagina_categorias || null,
+            imagenXLCategorias: newData.imagen_xl_categorias || null,
+            imagenLCategorias: newData.imagen_l_categorias || null,
+            imagenMCategorias: newData.imagen_m_categorias || null,
+            imagenSCategorias: newData.imagen_s_categorias || null,
             caracteristica1: newData.caracteristica1 || '',
             icono1: newData.icono1 || null,
             caracteristica2: newData.caracteristica2 || '',
@@ -177,13 +209,40 @@ const handleImageHeroHomeComplete = () => {
     errors.imagenHeroHome = ''
 }
 
-const handleImagePaginaCategoriasStart = (file) => {
-    imagenPaginaCategorias.value = file
-    errors.imagenPaginaCategorias = ''
+const handleImageXLCategoriasStart = (file) => {
+    imagenXLCategorias.value = file
+    errors.imagenXLCategorias = ''
 }
 
-const handleImagePaginaCategoriasComplete = () => {
-    errors.imagenPaginaCategorias = ''
+const handleImageXLCategoriasComplete = () => {
+    errors.imagenXLCategorias = ''
+}
+
+const handleImageLCategoriasStart = (file) => {
+    imagenLCategorias.value = file
+    errors.imagenLCategorias = ''
+}
+
+const handleImageLCategoriasComplete = () => {
+    errors.imagenLCategorias = ''
+}
+
+const handleImageMCategoriasStart = (file) => {
+    imagenMCategorias.value = file
+    errors.imagenMCategorias = ''
+}
+
+const handleImageMCategoriasComplete = () => {
+    errors.imagenMCategorias = ''
+}
+
+const handleImageSCategoriasStart = (file) => {
+    imagenSCategorias.value = file
+    errors.imagenSCategorias = ''
+}
+
+const handleImageSCategoriasComplete = () => {
+    errors.imagenSCategorias = ''
 }
 
 const handleIconStart1 = (file) => {
@@ -267,8 +326,23 @@ const validateForm = () => {
         isValid = false
     }
 
-    if (!imagenPaginaCategorias.value && !formData.imagenPaginaCategorias) {
-        errors.imagenPaginaCategorias = 'La imagen de página categorías es requerida'
+    if (!imagenXLCategorias.value && !formData.imagenXLCategorias) {
+        errors.imagenXLCategorias = 'La imagen XL de categorías es requerida'
+        isValid = false
+    }
+
+    if (!imagenLCategorias.value && !formData.imagenLCategorias) {
+        errors.imagenLCategorias = 'La imagen L de categorías es requerida'
+        isValid = false
+    }
+
+    if (!imagenMCategorias.value && !formData.imagenMCategorias) {
+        errors.imagenMCategorias = 'La imagen M de categorías es requerida'
+        isValid = false
+    }
+
+    if (!imagenSCategorias.value && !formData.imagenSCategorias) {
+        errors.imagenSCategorias = 'La imagen S de categorías es requerida'
         isValid = false
     }
 
@@ -320,7 +394,10 @@ const handleSubmit = async () => {
         if (props.isEditing) {
             if (!imagenMenu.value) categoriaData.imagen_menu = formData.imagenMenu
             if (!imagenHeroHome.value) categoriaData.imagen_hero_home = formData.imagenHeroHome
-            if (!imagenPaginaCategorias.value) categoriaData.imagen_pagina_categorias = formData.imagenPaginaCategorias
+            if (!imagenXLCategorias.value) categoriaData.imagen_xl_categorias = formData.imagenXLCategorias
+            if (!imagenLCategorias.value) categoriaData.imagen_l_categorias = formData.imagenLCategorias
+            if (!imagenMCategorias.value) categoriaData.imagen_m_categorias = formData.imagenMCategorias
+            if (!imagenSCategorias.value) categoriaData.imagen_s_categorias = formData.imagenSCategorias
             if (!icono1.value) categoriaData.icono1 = formData.icono1
             if (!icono2.value) categoriaData.icono2 = formData.icono2
             if (!icono3.value) categoriaData.icono3 = formData.icono3
@@ -332,7 +409,10 @@ const handleSubmit = async () => {
             imagenes: {
                 imagenMenu: imagenMenu.value,
                 imagenHeroHome: imagenHeroHome.value,
-                imagenPaginaCategorias: imagenPaginaCategorias.value
+                imagenXLCategorias: imagenXLCategorias.value,
+                imagenLCategorias: imagenLCategorias.value,
+                imagenMCategorias: imagenMCategorias.value,
+                imagenSCategorias: imagenSCategorias.value
             },
             iconos: {
                 icono1: icono1.value,

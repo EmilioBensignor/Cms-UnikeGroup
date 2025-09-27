@@ -45,7 +45,7 @@
 
         <FormFieldsContainer>
             <FormTextField v-model="formData.caracteristica1" label="Característica 1" id="caracteristica1"
-                placeholder="Ingrese la primera característica" :error="errors.caracteristica1" />
+                placeholder="Ingrese la primera característica" required :error="errors.caracteristica1" />
 
             <FormImageField v-model="formData.icono1" id="icono1" label="Icono 1 (56px x 56px)" :error="errors.icono1"
                 targetFolder="waterplast-categorias" @upload-start="handleIconStart1"
@@ -54,7 +54,7 @@
 
         <FormFieldsContainer>
             <FormTextField v-model="formData.caracteristica2" label="Característica 2" id="caracteristica2"
-                placeholder="Ingrese la segunda característica" :error="errors.caracteristica2" />
+                placeholder="Ingrese la segunda característica" required :error="errors.caracteristica2" />
 
             <FormImageField v-model="formData.icono2" id="icono2" label="Icono 2 (56px x 56px)" :error="errors.icono2"
                 targetFolder="waterplast-categorias" @upload-start="handleIconStart2"
@@ -63,7 +63,7 @@
 
         <FormFieldsContainer>
             <FormTextField v-model="formData.caracteristica3" label="Característica 3" id="caracteristica3"
-                placeholder="Ingrese la tercera característica" :error="errors.caracteristica3" />
+                placeholder="Ingrese la tercera característica" required :error="errors.caracteristica3" />
 
             <FormImageField v-model="formData.icono3" id="icono3" label="Icono 3 (56px x 56px)" :error="errors.icono3"
                 targetFolder="waterplast-categorias" @upload-start="handleIconStart3"

@@ -91,7 +91,7 @@
                 @upload-complete="handleIconComplete3" />
         </FormFieldsContainer>
 
-        <div v-if="productosRelacionados.length > 0" class="w-full flex flex-col gap-2">
+        <div v-if="formData.categoria_id && productosRelacionados.length > 0" class="w-full flex flex-col gap-2">
             <FormLabel>Productos Relacionados</FormLabel>
             <FormCheckboxGroupField v-model="formData.productos_relacionados" id="productos_relacionados"
                 :options="productosRelacionados" :error="errors.productos_relacionados" />

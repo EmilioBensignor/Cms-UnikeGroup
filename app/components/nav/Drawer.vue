@@ -2,7 +2,7 @@
     <Transition enter-active-class="transition-opacity duration-300" enter-from-class="opacity-0"
         enter-to-class="opacity-100" leave-active-class="transition-opacity duration-300" leave-from-class="opacity-100"
         leave-to-class="opacity-0">
-        <div v-if="isOpen" @click="$emit('close')" class="fixed inset-0 z-40"></div>
+        <div v-if="isOpen" @click="$emit('close')" class="fixed inset-0 z-60"></div>
     </Transition>
 
     <Transition enter-active-class="transition-transform duration-300 ease-out" enter-from-class="-translate-x-full"

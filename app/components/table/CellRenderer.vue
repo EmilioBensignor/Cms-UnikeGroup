@@ -1,6 +1,6 @@
 <template>
     <div v-if="column.type === 'image'" class="flex items-center justify-center">
-        <img :src="value" :alt="column.label" class="w-16 h-16 object-contain rounded-lg" />
+        <img :src="getImageUrl(value)" :alt="column.label" class="w-16 h-16 object-contain rounded-lg" />
     </div>
     <div v-else-if="column.type === 'color'" class="flex items-center justify-center gap-2">
         <div
@@ -32,6 +32,12 @@ const props = defineProps({
         default: () => ({})
     }
 })
+
+const getImageUrl = (url) => {
+    if (!url) return ''
+    const separator = url.includes('?') ? '&' : '?'
+    return `${url}${separator}t=${Date.now()}`
+}
 
 const formatValue = (value, column) => {
     if (value === null || value === undefined) return '-'

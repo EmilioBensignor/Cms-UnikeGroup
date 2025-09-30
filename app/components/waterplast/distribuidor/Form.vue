@@ -85,8 +85,8 @@ onMounted(() => {
             calle: props.initialData.calle || '',
             provincia: props.initialData.provincia || '',
             localidad: props.initialData.localidad || '',
-            latitud: props.initialData.latitud || '',
-            longitud: props.initialData.longitud || '',
+            latitud: props.initialData.latitud != null ? String(props.initialData.latitud) : '',
+            longitud: props.initialData.longitud != null ? String(props.initialData.longitud) : '',
             estado: props.initialData.estado !== false,
         })
     }
@@ -131,7 +131,7 @@ const validateForm = () => {
         isValid = false
     }
 
-    if (formData.latitud && formData.latitud.trim() !== '') {
+    if (formData.latitud && String(formData.latitud).trim() !== '') {
         const lat = parseFloat(formData.latitud)
         if (isNaN(lat)) {
             errors.latitud = 'La latitud debe ser un número válido'
@@ -139,7 +139,7 @@ const validateForm = () => {
         }
     }
 
-    if (formData.longitud && formData.longitud.trim() !== '') {
+    if (formData.longitud && String(formData.longitud).trim() !== '') {
         const lng = parseFloat(formData.longitud)
         if (isNaN(lng)) {
             errors.longitud = 'La longitud debe ser un número válido'
@@ -168,8 +168,8 @@ const handleSubmit = async () => {
             calle: formData.calle.trim(),
             provincia: formData.provincia.trim(),
             localidad: formData.localidad.trim(),
-            latitud: formData.latitud.trim() ? parseFloat(formData.latitud) : null,
-            longitud: formData.longitud.trim() ? parseFloat(formData.longitud) : null,
+            latitud: String(formData.latitud).trim() ? parseFloat(formData.latitud) : null,
+            longitud: String(formData.longitud).trim() ? parseFloat(formData.longitud) : null,
             estado: formData.estado,
         }
 

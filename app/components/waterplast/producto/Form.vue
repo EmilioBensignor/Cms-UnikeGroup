@@ -393,30 +393,23 @@ const validateForm = () => {
         isValid = false
     }
 
-
     if (!imagen.value && !formData.imagen) {
         errors.imagen = 'La imagen es requerida'
         isValid = false
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     if (typeof formData.estado !== 'boolean') {
         errors.estado = 'El estado debe ser válido'
+        isValid = false
+    }
+
+    if (!formData.caracteristica1.trim()) {
+        errors.caracteristica1 = 'La característica 1 es requerida'
+        isValid = false
+    }
+
+    if (!icono1.value && !formData.icono1) {
+        errors.icono1 = 'El icono 1 es requerido'
         isValid = false
     }
 

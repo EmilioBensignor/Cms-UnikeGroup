@@ -17,12 +17,15 @@
                 <tr v-for="(item, index) in data" :key="getRowKey(item, index)"
                     class="odd:bg-gray-light even:bg-gray-mid border-b border-gray-dark last:border-none">
                     <td v-for="column in columns" :key="column.key"
-                        class="border-r border-gray-dark text-dark font-light p-3">
-                        <slot :name="`cell-${column.key}`" :item="item" :value="getNestedValue(item, column.key)"
-                            :column="column" :index="index">
-                            <TableCellRenderer :value="getNestedValue(item, column.key)" :column="column"
-                                :related-data="relatedData" />
-                        </slot>
+                        class="border-r border-gray-dark text-dark font-light p-3 text-center"
+                        style="max-height: 8rem; height: auto; vertical-align: middle;">
+                        <div class="max-h-32 overflow-y-auto flex items-center justify-center" style="max-height: 8rem;">
+                            <slot :name="`cell-${column.key}`" :item="item" :value="getNestedValue(item, column.key)"
+                                :column="column" :index="index">
+                                <TableCellRenderer :value="getNestedValue(item, column.key)" :column="column"
+                                    :related-data="relatedData" />
+                            </slot>
+                        </div>
                     </td>
 
                     <td v-if="showActions" class="font-light whitespace-nowrap p-3">

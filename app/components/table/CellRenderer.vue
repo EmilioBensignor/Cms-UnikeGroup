@@ -11,7 +11,8 @@
         <span class="text-sm">{{ value }}</span>
     </div>
     <div v-else-if="(column.type === 'text' || column.type === 'textarea')"
-        class="w-full max-h-32 overflow-auto whitespace-pre-wrap break-words">
+        class="w-full max-h-32 overflow-y-auto whitespace-pre-wrap break-words"
+        style="max-height: 8rem;">
         <span>{{ value || '-' }}</span>
     </div>
     <span v-else>{{ formatValue(value, column) }}</span>

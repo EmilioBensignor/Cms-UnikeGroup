@@ -2,7 +2,8 @@ const errorMessages = {
     'Invalid login credentials': 'El correo o contraseña no coinciden. Por favor verifica tus datos e intenta nuevamente.',
     'Email not confirmed': 'Tu correo electrónico aún no ha sido verificado. Por favor revisa tu bandeja de entrada y haz click en el enlace de confirmación.',
     'User not found': 'No encontramos una cuenta con esos datos.',
-    'Password recovery token is invalid or has expired': 'El enlace de recuperación ha expirado. Por favor solicita uno nuevo.',
+    'Password recovery token is invalid or has expired': 'El enlace de recuperación ha expirado o no es válido. Por favor solicita uno nuevo.',
+    'Session from session_id claim in JWT does not exist': 'Tu sesión de recuperación ha expirado. Por favor solicita un nuevo enlace.',
     'Rate limit exceeded': 'Has realizado demasiados intentos. Por favor espera unos minutos antes de intentar nuevamente.',
     'Email already taken': 'Este correo ya está registrado.',
     'Username taken': 'Este nombre de usuario ya está en uso. Por favor elige otro.',
@@ -17,6 +18,8 @@ const errorMessages = {
     'Unique constraint violation': 'Ya existe información con estos datos. Por favor utiliza valores únicos.',
     'Value too long for type': 'Uno de los campos contiene demasiados caracteres. Por favor acorta tu texto.',
     'New password should be different from the old password.': 'La nueva contraseña debe ser diferente a la anterior.',
+    'Email link is invalid or has expired': 'El enlace de correo es inválido o ha expirado. Por favor solicita uno nuevo.',
+    'Token has expired or is invalid': 'El token de recuperación ha expirado o no es válido. Por favor solicita un nuevo enlace.',
 }
 
 export function handleSupabaseError(error) {

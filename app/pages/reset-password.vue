@@ -63,12 +63,47 @@ const isValid = computed(() => {
 
 onMounted(async () => {
     try {
-        const { data, error } = await client.auth.getSession()
+        // Verificar que el usuario llegó con un token de recuperación válido
+        const { data: { session }, error } = await client.auth.getSession()
+
         if (error) {
-            console.warn('Error al verificar sesión:', error)
+            console.error('Error al verificar sesión:', error)
+            errorMsg.value = 'El enlace de recuperación es inválido o ha expirado. Por favor solicita uno nuevo.'
+            setTimeout(() => {
+                router.push(ROUTE_NAMES.FORGOT_PASSWORD)
+            }, 3000)
+            return
         }
+
+        // Verificar que existe una sesión activa (significa que el token fue válido)
+        if (!session) {
+            errorMsg.value = 'No tienes una sesión de recuperación activa. Por favor solicita un nuevo enlace de recuperación.'
+            setTimeout(() => {
+                router.push(ROUTE_NAMES.FORGOT_PASSWORD)
+            }, 3000)
+            return
+        }
+
+        // Verificar que la sesión es de tipo recovery
+        const accessToken = session.access_token
+        if (accessToken) {
+            try {
+                // Decodificar el JWT para verificar el tipo de sesión
+                const payload = JSON.parse(atob(accessToken.split('.')[1]))
+                if (payload.aal !== 'aal1' && !payload.recovery) {
+                    console.warn('Sesión no es de tipo recovery')
+                }
+            } catch (e) {
+                console.error('Error al decodificar token:', e)
+            }
+        }
+
     } catch (error) {
         console.error('Error al inicializar recuperación:', error)
+        errorMsg.value = 'Ha ocurrido un error al verificar el enlace de recuperación.'
+        setTimeout(() => {
+            router.push(ROUTE_NAMES.FORGOT_PASSWORD)
+        }, 3000)
     }
 })
 
@@ -116,12 +151,31 @@ const handleResetPassword = async () => {
     }
 
     try {
+        // Verificar nuevamente la sesión antes de actualizar
+        const { data: { session } } = await client.auth.getSession()
+
+        if (!session) {
+            errorMsg.value = 'Tu sesión de recuperación ha expirado. Por favor solicita un nuevo enlace.'
+            setTimeout(() => {
+                router.push(ROUTE_NAMES.FORGOT_PASSWORD)
+            }, 3000)
+            return
+        }
+
         const { error } = await client.auth.updateUser({
             password: form.password
         })
 
         if (error) {
-            errorMsg.value = handleSupabaseError(error)
+            // Manejar errores específicos
+            if (error.message?.includes('session') || error.message?.includes('expired')) {
+                errorMsg.value = 'Tu sesión de recuperación ha expirado. Por favor solicita un nuevo enlace.'
+                setTimeout(() => {
+                    router.push(ROUTE_NAMES.FORGOT_PASSWORD)
+                }, 3000)
+            } else {
+                errorMsg.value = handleSupabaseError(error)
+            }
             passwordUpdateAttempted.value = false
         } else {
             form.password = ''
@@ -132,12 +186,14 @@ const handleResetPassword = async () => {
                 duration: 7000
             })
 
+            // Cerrar la sesión de recuperación y redirigir al login
+            await client.auth.signOut()
             await router.push(ROUTE_NAMES.LOGIN)
         }
 
     } catch (error) {
         console.error('Error al restablecer contraseña:', error)
-        errorMsg.value = 'Error al restablecer la contraseña'
+        errorMsg.value = 'Error al restablecer la contraseña. Por favor intenta nuevamente.'
         passwordUpdateAttempted.value = false
     } finally {
         loading.value = false

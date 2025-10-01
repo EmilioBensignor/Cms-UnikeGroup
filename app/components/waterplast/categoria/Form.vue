@@ -32,7 +32,7 @@
 
         <FormFieldsContainer>
             <FormImageField v-model="formData.imagenSCategorias" id="imagenSCategorias"
-                label="Imagen S Categorías (320px x 320px)" required :error="errors.imagenSCategorias"
+                label="Imagen S Categorías (320px x 385px)" required :error="errors.imagenSCategorias"
                 targetFolder="waterplast-categorias" @upload-start="handleImageSCategoriasStart"
                 @upload-complete="handleImageSCategoriasComplete" />
         </FormFieldsContainer>

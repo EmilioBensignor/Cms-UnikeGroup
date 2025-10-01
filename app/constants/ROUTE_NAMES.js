@@ -6,6 +6,7 @@ export const ROUTE_NAMES = {
     FORGOT_PASSWORD: "/forgot-password",
     FORGOT_PASSWORD_CONFIRMATION: "/forgot-password-confirmation",
     RESET_PASSWORD: "/reset-password",
+    CALLBACK: "/callback",
     // Auth
     HOME: '/',
     WATERPLAST: {

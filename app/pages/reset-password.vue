@@ -71,39 +71,27 @@ onMounted(async () => {
             errorMsg.value = 'El enlace de recuperación es inválido o ha expirado. Por favor solicita uno nuevo.'
             setTimeout(() => {
                 router.push(ROUTE_NAMES.FORGOT_PASSWORD)
-            }, 3000)
+            }, 2500)
             return
         }
 
         // Verificar que existe una sesión activa (significa que el token fue válido)
         if (!session) {
-            errorMsg.value = 'No tienes una sesión de recuperación activa. Por favor solicita un nuevo enlace de recuperación.'
+            errorMsg.value = 'No tienes una sesión de recuperación activa. Por favor usa el enlace que te enviamos por correo.'
             setTimeout(() => {
                 router.push(ROUTE_NAMES.FORGOT_PASSWORD)
-            }, 3000)
+            }, 2500)
             return
         }
 
-        // Verificar que la sesión es de tipo recovery
-        const accessToken = session.access_token
-        if (accessToken) {
-            try {
-                // Decodificar el JWT para verificar el tipo de sesión
-                const payload = JSON.parse(atob(accessToken.split('.')[1]))
-                if (payload.aal !== 'aal1' && !payload.recovery) {
-                    console.warn('Sesión no es de tipo recovery')
-                }
-            } catch (e) {
-                console.error('Error al decodificar token:', e)
-            }
-        }
+        console.log('✅ Sesión de recuperación válida')
 
     } catch (error) {
         console.error('Error al inicializar recuperación:', error)
         errorMsg.value = 'Ha ocurrido un error al verificar el enlace de recuperación.'
         setTimeout(() => {
             router.push(ROUTE_NAMES.FORGOT_PASSWORD)
-        }, 3000)
+        }, 2500)
     }
 })
 

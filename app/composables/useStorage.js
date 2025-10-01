@@ -67,7 +67,6 @@ export const useStorage = () => {
 
         } catch (err) {
             error.value = err.message
-            console.error('Error uploading opinion image:', err)
             throw err
         } finally {
             uploading.value = false
@@ -86,7 +85,6 @@ export const useStorage = () => {
 
         } catch (err) {
             error.value = err.message
-            console.error('Error deleting opinion image:', err)
             throw err
         }
     }
@@ -221,7 +219,6 @@ export const useStorage = () => {
 
         } catch (err) {
             error.value = err.message
-            console.error('Error uploading categoria image:', err)
             throw err
         } finally {
             uploading.value = false
@@ -256,7 +253,6 @@ export const useStorage = () => {
 
         } catch (err) {
             error.value = err.message
-            console.error('Error uploading categoria icon:', err)
             throw err
         } finally {
             uploading.value = false
@@ -297,7 +293,6 @@ export const useStorage = () => {
 
         } catch (err) {
             error.value = err.message
-            console.error('Error uploading categoria imagenes redes:', err)
             throw err
         } finally {
             uploading.value = false
@@ -316,7 +311,6 @@ export const useStorage = () => {
 
         } catch (err) {
             error.value = err.message
-            console.error('Error deleting categoria image:', err)
             throw err
         }
     }
@@ -333,7 +327,6 @@ export const useStorage = () => {
 
         } catch (err) {
             error.value = err.message
-            console.error('Error deleting categoria icon:', err)
             throw err
         }
     }
@@ -350,7 +343,6 @@ export const useStorage = () => {
 
         } catch (err) {
             error.value = err.message
-            console.error('Error deleting categoria imagen red:', err)
             throw err
         }
     }
@@ -416,7 +408,6 @@ export const useStorage = () => {
                 })
 
             if (uploadError) {
-                console.error('Supabase upload error:', uploadError)
                 throw uploadError
             }
 
@@ -425,7 +416,6 @@ export const useStorage = () => {
 
         } catch (err) {
             error.value = err.message
-            console.error('Error uploading imagen destacada chica:', err)
             throw err
         } finally {
             uploading.value = false
@@ -461,7 +451,6 @@ export const useStorage = () => {
 
         } catch (err) {
             error.value = err.message
-            console.error('Error uploading imagen destacada mediana:', err)
             throw err
         } finally {
             uploading.value = false
@@ -497,7 +486,6 @@ export const useStorage = () => {
 
         } catch (err) {
             error.value = err.message
-            console.error('Error uploading imagen destacada grande:', err)
             throw err
         } finally {
             uploading.value = false
@@ -516,7 +504,6 @@ export const useStorage = () => {
 
         } catch (err) {
             error.value = err.message
-            console.error('Error deleting imagen destacada:', err)
             throw err
         }
     }
@@ -563,7 +550,6 @@ export const useStorage = () => {
 
         } catch (err) {
             error.value = err.message
-            console.error('Error uploading producto image:', err)
             throw err
         } finally {
             uploading.value = false
@@ -608,7 +594,6 @@ export const useStorage = () => {
 
         } catch (err) {
             error.value = err.message
-            console.error('Error uploading producto file:', err)
             throw err
         } finally {
             uploading.value = false
@@ -645,7 +630,6 @@ export const useStorage = () => {
 
         } catch (err) {
             error.value = err.message
-            console.error('Error uploading producto icon:', err)
             throw err
         } finally {
             uploading.value = false
@@ -664,7 +648,6 @@ export const useStorage = () => {
 
         } catch (err) {
             error.value = err.message
-            console.error('Error deleting producto image:', err)
             throw err
         }
     }
@@ -681,7 +664,6 @@ export const useStorage = () => {
 
         } catch (err) {
             error.value = err.message
-            console.error('Error deleting producto file:', err)
             throw err
         }
     }
@@ -698,7 +680,6 @@ export const useStorage = () => {
 
         } catch (err) {
             error.value = err.message
-            console.error('Error deleting producto icon:', err)
             throw err
         }
     }
@@ -769,7 +750,6 @@ export const useStorage = () => {
 
         } catch (err) {
             error.value = err.message
-            console.error('Error uploading caracteristica image:', err)
             throw err
         } finally {
             uploading.value = false
@@ -788,7 +768,6 @@ export const useStorage = () => {
 
         } catch (err) {
             error.value = err.message
-            console.error('Error deleting caracteristica image:', err)
             throw err
         }
     }
@@ -822,7 +801,6 @@ export const useStorage = () => {
                 })
 
             if (listError) {
-                console.warn('Error listing files for deletion:', listError)
                 return
             }
 
@@ -883,7 +861,6 @@ export const useStorage = () => {
 
         } catch (err) {
             error.value = err.message
-            console.error('Error deleting producto folder:', err)
             throw err
         }
     }

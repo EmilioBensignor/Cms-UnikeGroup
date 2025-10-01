@@ -20,7 +20,6 @@ export const useWaterplastDistribuidores = () => {
             distribuidores.value = data || []
         } catch (err) {
             error.value = err.message
-            console.error('Error al obtener distribuidores:', err)
         } finally {
             loading.value = false
         }
@@ -44,7 +43,6 @@ export const useWaterplastDistribuidores = () => {
             return data
         } catch (err) {
             error.value = err.message
-            console.error('Error al obtener distribuidor:', err)
             throw err
         } finally {
             loading.value = false
@@ -68,7 +66,6 @@ export const useWaterplastDistribuidores = () => {
             return data
         } catch (err) {
             error.value = err.message
-            console.error('Error al crear distribuidor:', err)
             throw err
         } finally {
             loading.value = false
@@ -98,7 +95,6 @@ export const useWaterplastDistribuidores = () => {
             return data
         } catch (err) {
             error.value = err.message
-            console.error('Error al actualizar distribuidor:', err)
             throw err
         } finally {
             loading.value = false
@@ -120,7 +116,6 @@ export const useWaterplastDistribuidores = () => {
             distribuidores.value = distribuidores.value.filter(dist => dist.id !== id)
         } catch (err) {
             error.value = err.message
-            console.error('Error al eliminar distribuidor:', err)
             throw err
         } finally {
             loading.value = false

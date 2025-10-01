@@ -26,7 +26,6 @@ export const useWaterplastOpiniones = () => {
             opiniones.value = opinionesWithUrls
         } catch (err) {
             error.value = err.message
-            console.error('Error al obtener opiniones:', err)
         } finally {
             loading.value = false
         }
@@ -55,7 +54,6 @@ export const useWaterplastOpiniones = () => {
             return opinionWithUrl
         } catch (err) {
             error.value = err.message
-            console.error('Error al obtener opinión:', err)
             throw err
         } finally {
             loading.value = false
@@ -90,7 +88,6 @@ export const useWaterplastOpiniones = () => {
             return data
         } catch (err) {
             error.value = err.message
-            console.error('Error al crear opinión:', err)
             throw err
         } finally {
             loading.value = false
@@ -147,7 +144,6 @@ export const useWaterplastOpiniones = () => {
             return dataWithUrl
         } catch (err) {
             error.value = err.message
-            console.error('Error al actualizar opinión:', err)
             throw err
         } finally {
             loading.value = false
@@ -181,7 +177,6 @@ export const useWaterplastOpiniones = () => {
             opiniones.value = opiniones.value.filter(op => op.id !== id)
         } catch (err) {
             error.value = err.message
-            console.error('Error al eliminar opinión:', err)
             throw err
         } finally {
             loading.value = false

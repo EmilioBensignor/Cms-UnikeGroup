@@ -12,7 +12,6 @@ export const useSupabaseCache = () => {
 
             return data;
         } catch (error) {
-            console.error('Error al recuperar datos de cache:', error);
             localStorage.removeItem(key);
             return null;
         }

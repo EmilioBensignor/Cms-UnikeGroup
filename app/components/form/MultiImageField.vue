@@ -257,7 +257,6 @@ const processFiles = async (files) => {
                 uploadProgress.value = ((i + 1) / files.length) * 100
 
             } catch (error) {
-                console.error(`Error procesando ${file.name}:`, error)
                 emit('upload-error', `${file.name}: ${error.message}`)
             }
         }
@@ -282,7 +281,6 @@ const processFiles = async (files) => {
         uploading.value = false
         uploadProgress.value = 0
         emit('upload-error', error.message)
-        console.error('Error al procesar archivos:', error)
 
         if (fileInput.value) {
             fileInput.value.value = ''

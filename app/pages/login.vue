@@ -114,7 +114,6 @@ const handleSignIn = async () => {
         router.push(ROUTE_NAMES.HOME)
 
     } catch (error) {
-        console.error('Error en login:', error)
         errors.password = 'Credenciales incorrectas'
     } finally {
         isLoading.value = false

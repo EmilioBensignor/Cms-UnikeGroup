@@ -40,7 +40,6 @@ onMounted(async () => {
     try {
         await fetchImagenDestacadaById(imagenId)
     } catch (err) {
-        console.error('Error loading imagen destacada:', err)
         await navigateTo(ROUTE_NAMES.WATERPLAST.IMAGENES_DESTACADAS)
     }
 })

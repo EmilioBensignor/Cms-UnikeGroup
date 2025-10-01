@@ -91,7 +91,6 @@ const handleFormSubmit = async (formData) => {
         })
         await navigateTo(ROUTE_NAMES.WATERPLAST.PRODUCTOS)
     } catch (error) {
-        console.error('Error al crear producto:', error)
         notificationError('Error al crear el producto: ' + error.message, {
             title: 'Error al crear producto',
             duration: 8000

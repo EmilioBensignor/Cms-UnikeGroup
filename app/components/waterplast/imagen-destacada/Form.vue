@@ -117,7 +117,6 @@ const handleSubmit = async () => {
         emit('submit', imagenDestacadaData)
 
     } catch (error) {
-        console.error('Error in form submission:', error)
         errors.general = 'Error al procesar el formulario'
     } finally {
         submitting.value = false

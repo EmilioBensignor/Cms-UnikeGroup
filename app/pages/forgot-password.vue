@@ -98,7 +98,7 @@ const handleForgotPassword = async () => {
 
     try {
         const baseUrl = import.meta.env.PROD
-            ? 'https://cms-unikegroup.vercel.app'
+            ? 'https://cms-unike-group.vercel.app'
             : 'http://localhost:3000'
 
         const redirectUrl = `${baseUrl}${ROUTE_NAMES.RESET_PASSWORD}`
@@ -125,7 +125,6 @@ const handleForgotPassword = async () => {
 
         resetForm()
     } catch (error) {
-        console.error('Error al enviar correo de recuperación:', error)
         errorMsg.value = 'Ha ocurrido un error al restablecer la contraseña'
     } finally {
         loading.value = false

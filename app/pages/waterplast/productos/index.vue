@@ -184,7 +184,6 @@ const handleDelete = async (producto) => {
             title: 'Producto eliminado'
         })
     } catch (error) {
-        console.error('Error al eliminar producto:', error)
         notificationError('Error al eliminar el producto: ' + error.message, {
             title: 'Error al eliminar producto',
             duration: 8000

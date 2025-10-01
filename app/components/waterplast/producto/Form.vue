@@ -245,9 +245,7 @@ const errors = reactive({
 watch(() => formData.categoria_id, async (newCategoriaId) => {
     if (newCategoriaId) {
         try {
-            console.log('🔍 Buscando productos para categoría:', newCategoriaId, 'tipo:', typeof newCategoriaId)
             const productos = await fetchProductosByCategoria(newCategoriaId)
-            console.log('📦 Productos encontrados:', productos.length, productos)
 
             const filteredProductos = props.isEditing && props.initialData?.id
                 ? productos.filter(p => p.id !== props.initialData.id)
@@ -258,9 +256,7 @@ watch(() => formData.categoria_id, async (newCategoriaId) => {
                 label: p.nombre
             }))
 
-            console.log('✅ Productos relacionados finales:', productosRelacionados.value.length)
         } catch (error) {
-            console.error('Error al cargar productos relacionados:', error)
             productosRelacionados.value = []
         }
     } else {
@@ -474,7 +470,6 @@ const handleSubmit = async () => {
         })
 
     } catch (error) {
-        console.error('Error in form submission:', error)
         errors.general = 'Error al procesar el formulario'
     } finally {
         submitting.value = false

@@ -72,7 +72,6 @@ export const useWaterplastProductos = () => {
             productos.value = productosWithUrls
         } catch (err) {
             error.value = err.message
-            console.error('Error al obtener productos:', err)
         } finally {
             loading.value = false
         }
@@ -110,7 +109,6 @@ export const useWaterplastProductos = () => {
             return productoWithUrls
         } catch (err) {
             error.value = err.message
-            console.error('Error al obtener producto:', err)
             throw err
         } finally {
             loading.value = false
@@ -138,12 +136,9 @@ export const useWaterplastProductos = () => {
                 producto.categoria_id.toString() === categoriaId
             )
 
-            console.log('📦 Productos filtrados:', filteredData.length, 'de', data?.length || 0)
-
             return filteredData
         } catch (err) {
             error.value = err.message
-            console.error('Error al obtener productos por categoría:', err)
             return []
         } finally {
             loading.value = false
@@ -171,7 +166,6 @@ export const useWaterplastProductos = () => {
                 }
             }))
         } catch (err) {
-            console.error('Error al obtener características adicionales:', err)
             return []
         }
     }
@@ -195,12 +189,10 @@ export const useWaterplastProductos = () => {
                 try {
                     await deleteCaracteristicaImage(caracteristica.imagen)
                 } catch (error) {
-                    console.warn('Error deleting caracteristica image:', error)
                 }
             }
 
         } catch (err) {
-            console.error('Error al eliminar característica adicional:', err)
             throw err
         }
     }
@@ -530,7 +522,6 @@ export const useWaterplastProductos = () => {
             return dataWithUrls
         } catch (err) {
             error.value = err.message
-            console.error('Error al actualizar producto:', err)
             throw err
         } finally {
             loading.value = false
@@ -573,7 +564,6 @@ export const useWaterplastProductos = () => {
 
         } catch (err) {
             error.value = err.message
-            console.error('Error al eliminar producto:', err)
             throw err
         } finally {
             loading.value = false

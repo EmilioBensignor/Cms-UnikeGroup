@@ -235,7 +235,6 @@ async function checkPasswordLeak(password) {
         clearTimeout(timeoutId)
 
         if (!response.ok) {
-            console.warn('Error al consultar API de contraseñas comprometidas')
             return false
         }
 
@@ -246,7 +245,6 @@ async function checkPasswordLeak(password) {
             return hashSuffix.toUpperCase() === suffix
         })
     } catch (error) {
-        console.error('Error al verificar contraseña:', error)
         return false
     }
 }
@@ -301,7 +299,6 @@ const signUp = async () => {
         await router.push(ROUTE_NAMES.LOGIN)
 
     } catch (error) {
-        console.error('Error en registro:', error)
         errorMsg.value = 'Error al crear la cuenta'
     } finally {
         loading.value = false

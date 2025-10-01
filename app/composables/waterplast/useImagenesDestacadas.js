@@ -34,7 +34,6 @@ export const useWaterplastImagenesDestacadas = () => {
             imagenesDestacadas.value = imagenesWithUrls
         } catch (err) {
             error.value = err.message
-            console.error('Error al obtener imágenes destacadas:', err)
         } finally {
             loading.value = false
         }
@@ -65,7 +64,6 @@ export const useWaterplastImagenesDestacadas = () => {
             return imagenWithUrls
         } catch (err) {
             error.value = err.message
-            console.error('Error al obtener imagen destacada:', err)
             throw err
         } finally {
             loading.value = false
@@ -97,7 +95,6 @@ export const useWaterplastImagenesDestacadas = () => {
             return imagenWithUrls
         } catch (err) {
             error.value = err.message
-            console.error('Error al obtener imagen destacada por slug:', err)
             throw err
         } finally {
             loading.value = false
@@ -152,7 +149,6 @@ export const useWaterplastImagenesDestacadas = () => {
             return dataWithUrls
         } catch (err) {
             error.value = err.message
-            console.error('Error al crear imagen destacada:', err)
             throw err
         } finally {
             loading.value = false
@@ -230,7 +226,6 @@ export const useWaterplastImagenesDestacadas = () => {
             return dataWithUrls
         } catch (err) {
             error.value = err.message
-            console.error('Error al actualizar imagen destacada:', err)
             throw err
         } finally {
             loading.value = false
@@ -270,7 +265,6 @@ export const useWaterplastImagenesDestacadas = () => {
             imagenesDestacadas.value = imagenesDestacadas.value.filter(img => img.id !== id)
         } catch (err) {
             error.value = err.message
-            console.error('Error al eliminar imagen destacada:', err)
             throw err
         } finally {
             loading.value = false

@@ -423,7 +423,6 @@ const handleSubmit = async () => {
         })
 
     } catch (error) {
-        console.error('Error in form submission:', error)
         errors.general = 'Error al procesar el formulario'
     } finally {
         submitting.value = false

@@ -109,7 +109,6 @@ const handleFormSubmit = async (formData) => {
         })
         await navigateTo(ROUTE_NAMES.WATERPLAST.PRODUCTOS)
     } catch (error) {
-        console.error('Error al actualizar producto:', error)
         notificationError('Error al actualizar el producto: ' + error.message, {
             title: 'Error al actualizar producto',
             duration: 8000
@@ -143,7 +142,6 @@ onMounted(async () => {
         }
         await fetchProductoById(id)
     } catch (err) {
-        console.error('Error loading producto:', err)
         notificationError('Error al cargar el producto', {
             title: 'Error al cargar producto'
         })

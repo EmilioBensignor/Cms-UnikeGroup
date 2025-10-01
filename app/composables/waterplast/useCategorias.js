@@ -51,7 +51,6 @@ export const useWaterplastCategorias = () => {
             categorias.value = categoriasWithUrls
         } catch (err) {
             error.value = err.message
-            console.error('Error al obtener categorías:', err)
         } finally {
             loading.value = false
         }
@@ -94,7 +93,6 @@ export const useWaterplastCategorias = () => {
             return categoriaWithUrls
         } catch (err) {
             error.value = err.message
-            console.error('Error al obtener categoría:', err)
             throw err
         } finally {
             loading.value = false
@@ -249,7 +247,6 @@ export const useWaterplastCategorias = () => {
             return dataWithUrls
         } catch (err) {
             error.value = err.message
-            console.error('Error al actualizar categoría:', err)
             throw err
         } finally {
             loading.value = false

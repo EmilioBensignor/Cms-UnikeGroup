@@ -37,6 +37,7 @@ definePageMeta({
 
 const client = useSupabaseClient()
 const router = useRouter()
+const { success } = useNotification()
 
 const form = reactive({
     password: '',

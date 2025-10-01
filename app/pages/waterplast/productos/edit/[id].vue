@@ -119,13 +119,11 @@ const handleFormSubmit = async (formData) => {
     }
 }
 
-// Load existing characteristics when product is loaded
 watch(() => currentProducto.value, async (newProducto) => {
     if (newProducto && newProducto.id) {
         try {
             const existingCaracteristicas = await fetchCaracteristicasAdicionales(newProducto.id)
 
-            // Wait for next tick to ensure component is mounted
             await nextTick()
 
             if (caracteristicasFormRef.value) {
@@ -153,7 +151,6 @@ onMounted(async () => {
 })
 
 const handleSubmit = async () => {
-    // Trigger validation and submission from the form component
     if (productoFormRef.value) {
         await productoFormRef.value.handleSubmit()
     } else {

@@ -22,31 +22,21 @@ export const useWaterplastProductos = () => {
 
     const callUnzipImages = async (productoId) => {
         try {
-            console.log('🚀 Iniciando llamada a unzip-images para producto:', productoId)
-
-            // Ensure we have a valid supabase client
             if (!supabase || !supabase.functions) {
-                console.error('❌ Supabase client not properly initialized')
                 return null
             }
-
-            console.log('📡 Enviando request a edge function...')
 
             const { data, error } = await supabase.functions.invoke('unzip-images', {
                 body: { id: productoId }
             })
 
             if (error) {
-                console.error('❌ Error al descomprimir:', error)
                 return null
             }
 
-            console.log('📦 Response data:', data)
-            console.log('✅ ZIP descomprimido exitosamente:', data)
             return data
 
         } catch (error) {
-            console.error('⚠️ Error llamando a unzip-images:', error)
             return null
         }
     }
@@ -132,14 +122,10 @@ export const useWaterplastProductos = () => {
         error.value = null
 
         try {
-            // Verificar que tenemos un categoriaId válido
             if (!categoriaId) {
                 return []
             }
 
-            console.log('🔍 fetchProductosByCategoria - categoriaId:', categoriaId, 'tipo:', typeof categoriaId)
-
-            // Obtener todos los productos y filtrar por categoría (igual que en el select de la página principal)
             const { data, error: supabaseError } = await supabase
                 .from('waterplast-productos')
                 .select('id, nombre, categoria_id')
@@ -148,7 +134,6 @@ export const useWaterplastProductos = () => {
 
             if (supabaseError) throw supabaseError
 
-            // Filtrar por categoría usando la misma lógica que el select principal
             const filteredData = (data || []).filter(producto =>
                 producto.categoria_id.toString() === categoriaId
             )
@@ -331,15 +316,11 @@ export const useWaterplastProductos = () => {
 
             productos.value.push(dataWithUrls)
 
-            // Call unzip-images function after successful creation
-            console.log('🔄 Llamando a callUnzipImages después de crear producto...')
             const unzipResult = await callUnzipImages(data.id)
-            console.log('📊 Resultado de unzip:', unzipResult)
 
             return dataWithUrls
         } catch (err) {
             error.value = err.message
-            console.error('Error al crear producto:', err)
             throw err
         } finally {
             loading.value = false
@@ -542,11 +523,8 @@ export const useWaterplastProductos = () => {
 
             const zipActualizado = Boolean(archivos?.render3d)
 
-            // Call unzip-images function only if render3d was updated
             if (zipActualizado) {
-                console.log('🔄 Llamando a callUnzipImages después de actualizar producto...')
                 const unzipResult = await callUnzipImages(id)
-                console.log('📊 Resultado de unzip:', unzipResult)
             }
 
             return dataWithUrls
@@ -564,7 +542,6 @@ export const useWaterplastProductos = () => {
         error.value = null
 
         try {
-            // Obtener el nombre del producto para eliminar la carpeta completa
             const { data: producto } = await supabase
                 .from('waterplast-productos')
                 .select('nombre, imagen, render_3d, ficha_tecnica, archivo_html, icono1, icono2, icono3')
@@ -572,13 +549,11 @@ export const useWaterplastProductos = () => {
                 .single()
 
 
-            // Eliminar características adicionales de la base de datos
             await supabase
                 .from('waterplast-productos-caracteristicas-adicionales')
                 .delete()
                 .eq('producto_id', id)
 
-            // Eliminar el producto de la base de datos
             const { error: deleteError } = await supabase
                 .from('waterplast-productos')
                 .delete()
@@ -586,11 +561,9 @@ export const useWaterplastProductos = () => {
 
             if (deleteError) throw deleteError
 
-            // Eliminar toda la carpeta del producto del storage
             if (producto && producto.nombre) {
                 try {
                     await deleteProductoFolder(producto.nombre)
-                    console.log(`✅ Carpeta del producto "${producto.nombre}" eliminada completamente`)
                 } catch (error) {
                     console.warn('Error deleting producto folder:', error)
                 }

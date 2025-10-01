@@ -102,7 +102,6 @@ const handleFormSubmit = async (formData) => {
 }
 
 const handleSubmit = async () => {
-    // Trigger validation and submission from the form component
     if (productoFormRef.value) {
         await productoFormRef.value.handleSubmit()
     } else {

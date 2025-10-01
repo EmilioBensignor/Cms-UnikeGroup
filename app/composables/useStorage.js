@@ -113,7 +113,6 @@ export const useStorage = () => {
 
             const extension = file.name.split('.').pop().toLowerCase()
 
-            // Determinar el tipo de imagen y estructura de carpeta
             if (categoriaNombre.includes('-xl-categorias')) {
                 const baseName = cleanCategoryName(categoriaNombre.replace('-xl-categorias', ''))
                 const fileName = `${baseName}/pagina-categoria/imagen-xl.${extension}`
@@ -205,7 +204,6 @@ export const useStorage = () => {
                 return data.path
 
             } else {
-                // Imagen principal por defecto
                 const cleanName = cleanCategoryName(categoriaNombre)
                 const fileName = `${cleanName}/imagen-principal.${extension}`
 
@@ -238,7 +236,6 @@ export const useStorage = () => {
 
             validateImageFile(file)
 
-            // Obtener el nombre base de la categoría en minúsculas
             const cleanName = cleanCategoryName(categoriaNombre)
 
             const extension = file.name.split('.').pop().toLowerCase()
@@ -271,7 +268,6 @@ export const useStorage = () => {
             uploading.value = true
             error.value = null
 
-            // Obtener el nombre base de la categoría en minúsculas
             const cleanName = cleanCategoryName(categoriaNombre)
 
             const uploadPromises = files.map(async (file, index) => {
@@ -580,7 +576,6 @@ export const useStorage = () => {
             uploadProgress.value = 0
             error.value = null
 
-            // Extraer el nombre del producto del fileName (formato: productoNombre-sufijo)
             const parts = fileName.split('-')
             const productoNombre = parts[0]
             const sufijo = parts.slice(1).join('-') || 'archivo'
@@ -592,13 +587,10 @@ export const useStorage = () => {
 
             const extension = file.name.split('.').pop().toLowerCase()
 
-            // Determinar la ubicación según el tipo de archivo
             let finalFileName
             if (extension === 'zip') {
-                // ZIP va en carpeta images/
                 finalFileName = `${cleanName}/images/${sufijo}.${extension}`
             } else {
-                // PDF y HTML van en root del producto
                 finalFileName = `${cleanName}/${sufijo}.${extension}`
             }
 
@@ -822,7 +814,6 @@ export const useStorage = () => {
                 .replace(/\s+/g, '-')
                 .substring(0, 20)
 
-            // Listar todos los archivos en la carpeta del producto
             const { data: files, error: listError } = await supabase.storage
                 .from('waterplast-productos')
                 .list(cleanName, {
@@ -836,10 +827,8 @@ export const useStorage = () => {
             }
 
             if (files && files.length > 0) {
-                // Recopilar todos los paths de archivos y subcarpetas
                 const allPaths = []
 
-                // Función recursiva para obtener todos los archivos
                 const getFilesRecursively = async (folderPath = '') => {
                     const fullPath = folderPath ? `${cleanName}/${folderPath}` : cleanName
 
@@ -857,10 +846,8 @@ export const useStorage = () => {
                         const fullItemPath = `${cleanName}/${itemPath}`
 
                         if (item.metadata) {
-                            // Es un archivo
                             allPaths.push(fullItemPath)
                         } else {
-                            // Es una carpeta, buscar recursivamente
                             await getFilesRecursively(itemPath)
                         }
                     }
@@ -868,7 +855,6 @@ export const useStorage = () => {
 
                 await getFilesRecursively()
 
-                // Eliminar todos los archivos encontrados
                 if (allPaths.length > 0) {
                     const { error: deleteError } = await supabase.storage
                         .from('waterplast-productos')
@@ -879,7 +865,6 @@ export const useStorage = () => {
                     }
                 }
 
-                // Intentar eliminar las carpetas vacías (iconos, caracteristicas, images)
                 const commonFolders = [
                     `${cleanName}/iconos/`,
                     `${cleanName}/caracteristicas/`,
@@ -892,7 +877,6 @@ export const useStorage = () => {
                             .from('waterplast-productos')
                             .remove([folderPath])
                     } catch (error) {
-                        // Ignorar errores de carpetas que no existen
                     }
                 }
             }

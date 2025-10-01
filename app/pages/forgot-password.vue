@@ -101,7 +101,7 @@ const handleForgotPassword = async () => {
             ? 'https://cms-unikegroup.vercel.app'
             : 'http://localhost:3000'
 
-        const redirectUrl = `${baseUrl}${ROUTE_NAMES.CALLBACK}`
+        const redirectUrl = `${baseUrl}${ROUTE_NAMES.RESET_PASSWORD}`
 
         const { error } = await client.auth.resetPasswordForEmail(cleanEmail, {
             redirectTo: redirectUrl

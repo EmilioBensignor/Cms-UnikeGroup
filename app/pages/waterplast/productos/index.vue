@@ -36,7 +36,6 @@ const { productos, loading, fetchProductos, deleteProducto } = useWaterplastProd
 const { categorias, fetchCategorias } = useWaterplastCategorias()
 const { success, error: notificationError } = useNotification()
 
-// Filtros reactivos
 const filtros = reactive({
     nombre: '',
     categoriaId: ''
@@ -110,7 +109,6 @@ const tabla = {
     ]
 }
 
-// Opciones para el select de categorías
 const opcionesCategorias = computed(() => {
     const opciones = [{ value: '', label: 'Todas las categorías' }]
 
@@ -126,28 +124,23 @@ const opcionesCategorias = computed(() => {
     return opciones
 })
 
-// Función para formatear valores snake_case a formato legible
 const formatearValor = (valor) => {
     if (!valor) return valor
 
-    // Convertir snake_case a Title Case
     return valor
-        .replace(/_/g, ' ')  // Reemplazar _ con espacios
-        .toLowerCase()       // Todo a minúsculas
-        .replace(/\b\w/g, l => l.toUpperCase())  // Primera letra de cada palabra en mayúscula
+        .replace(/_/g, ' ')
+        .toLowerCase()
+        .replace(/\b\w/g, l => l.toUpperCase())
 }
 
-// Productos filtrados y formateados
 const productosFiltrados = computed(() => {
     if (!productos.value) return []
 
     return productos.value
         .filter(producto => {
-            // Filtro por nombre
             const cumpleNombre = !filtros.nombre ||
                 producto.nombre.toLowerCase().includes(filtros.nombre.toLowerCase())
 
-            // Filtro por categoría
             const cumpleCategoria = !filtros.categoriaId ||
                 producto.categoria_id.toString() === filtros.categoriaId
 
@@ -155,7 +148,6 @@ const productosFiltrados = computed(() => {
         })
         .map(producto => ({
             ...producto,
-            // Formatear campos que necesiten formato legible
             orientacion: formatearValor(producto.orientacion),
             color: formatearValor(producto.color),
             tecnologia: formatearValor(producto.tecnologia),
@@ -163,7 +155,6 @@ const productosFiltrados = computed(() => {
         }))
 })
 
-// Texto del estado vacío dinámico
 const textoEstadoVacio = computed(() => {
     if (filtros.nombre || filtros.categoriaId) {
         return 'No se encontraron productos que coincidan con los filtros'

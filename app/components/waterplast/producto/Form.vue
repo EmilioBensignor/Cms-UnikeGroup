@@ -409,6 +409,26 @@ const validateForm = () => {
         isValid = false
     }
 
+    if (formData.caracteristica2.trim() && !icono2.value && !formData.icono2) {
+        errors.icono2 = 'El icono 2 es requerido cuando se ingresa la característica 2'
+        isValid = false
+    }
+
+    if (!formData.caracteristica2.trim() && (icono2.value || formData.icono2)) {
+        errors.caracteristica2 = 'La característica 2 es requerida cuando se ingresa el icono 2'
+        isValid = false
+    }
+
+    if (formData.caracteristica3.trim() && !icono3.value && !formData.icono3) {
+        errors.icono3 = 'El icono 3 es requerido cuando se ingresa la característica 3'
+        isValid = false
+    }
+
+    if (!formData.caracteristica3.trim() && (icono3.value || formData.icono3)) {
+        errors.caracteristica3 = 'La característica 3 es requerida cuando se ingresa el icono 3'
+        isValid = false
+    }
+
     if (!isValid) {
         return
     }

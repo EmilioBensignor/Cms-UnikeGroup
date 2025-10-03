@@ -20,6 +20,18 @@ export const useWaterplastProductos = () => {
     const currentProducto = ref(null)
     const error = ref(null)
 
+    const dataURLtoFile = (dataurl, filename) => {
+        const arr = dataurl.split(',')
+        const mime = arr[0].match(/:(.*?);/)[1]
+        const bstr = atob(arr[1])
+        let n = bstr.length
+        const u8arr = new Uint8Array(n)
+        while (n--) {
+            u8arr[n] = bstr.charCodeAt(n)
+        }
+        return new File([u8arr], filename, { type: mime })
+    }
+
     const callUnzipImages = async (productoId) => {
         try {
             if (!supabase || !supabase.functions) {
@@ -264,19 +276,29 @@ export const useWaterplastProductos = () => {
                     const caracteristica = caracteristicasAdicionales[index]
                     if (caracteristica.imagen && caracteristica.descripcion) {
                         let imagenPath = null
+                        let fileToUpload = null
+
                         if (caracteristica.imagen instanceof File || caracteristica.imagen instanceof Blob) {
+                            fileToUpload = caracteristica.imagen
+                        } else if (typeof caracteristica.imagen === 'string' && caracteristica.imagen.startsWith('data:')) {
+                            fileToUpload = dataURLtoFile(caracteristica.imagen, `caracteristica-${index + 1}.webp`)
+                        } else if (typeof caracteristica.imagen === 'string' && caracteristica.imagen.includes('/')) {
+                            try {
+                                const url = new URL(caracteristica.imagen)
+                                imagenPath = url.pathname.split('/public/waterplast-productos-caracteristicas/')[1] || caracteristica.imagen
+                            } catch {
+                                imagenPath = caracteristica.imagen
+                            }
+                        } else {
+                            imagenPath = caracteristica.imagen
+                        }
+
+                        if (fileToUpload) {
                             imagenPath = await uploadCaracteristicaImage(
-                                caracteristica.imagen,
+                                fileToUpload,
                                 productoNombre,
                                 index + 1
                             )
-                        } else {
-                            if (typeof caracteristica.imagen === 'string' && caracteristica.imagen.includes('/')) {
-                                const url = new URL(caracteristica.imagen)
-                                imagenPath = url.pathname.split('/').slice(-1)[0]
-                            } else {
-                                imagenPath = caracteristica.imagen
-                            }
                         }
 
                         const { error: caracteristicaError } = await supabase
@@ -445,25 +467,30 @@ export const useWaterplastProductos = () => {
                     const caracteristica = caracteristicasAdicionales[index]
                     if (caracteristica.imagen && caracteristica.descripcion) {
                         let imagenPath = null
+                        let fileToUpload = null
                         const caracteristicaDbId = caracteristica.dbId || caracteristica.id
 
                         if (caracteristica.imagen instanceof File || caracteristica.imagen instanceof Blob) {
+                            fileToUpload = caracteristica.imagen
+                        } else if (typeof caracteristica.imagen === 'string' && caracteristica.imagen.startsWith('data:')) {
+                            fileToUpload = dataURLtoFile(caracteristica.imagen, `caracteristica-${index + 1}.webp`)
+                        } else if (typeof caracteristica.imagen === 'string' && caracteristica.imagen.includes('/')) {
+                            try {
+                                const url = new URL(caracteristica.imagen)
+                                imagenPath = url.pathname.split('/public/waterplast-productos-caracteristicas/')[1] || caracteristica.imagen
+                            } catch {
+                                imagenPath = caracteristica.imagen
+                            }
+                        } else {
+                            imagenPath = caracteristica.imagen
+                        }
+
+                        if (fileToUpload) {
                             imagenPath = await uploadCaracteristicaImage(
-                                caracteristica.imagen,
+                                fileToUpload,
                                 productoNombre,
                                 index + 1
                             )
-                        } else {
-                            if (typeof caracteristica.imagen === 'string' && caracteristica.imagen.includes('/')) {
-                                try {
-                                    const url = new URL(caracteristica.imagen)
-                                    imagenPath = url.pathname.split('/public/waterplast-productos-caracteristicas/')[1] || caracteristica.imagen
-                                } catch {
-                                    imagenPath = caracteristica.imagen
-                                }
-                            } else {
-                                imagenPath = caracteristica.imagen
-                            }
                         }
 
                         const caracteristicaData = {

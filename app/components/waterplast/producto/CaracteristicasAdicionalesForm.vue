@@ -28,7 +28,7 @@
                                 label="Imagen (72px x 72px)" :error="caracteristica.errors.imagen" required :acceptedTypes="['webp']"
                                 targetFolder="waterplast-productos-caracteristicas"
                                 @upload-start="(file) => handleImagenStart(caracteristica.localId || caracteristica.id, file)"
-                                @upload-complete="handleImagenComplete(caracteristica.localId || caracteristica.id)" />
+                                @upload-complete="(dataUrl) => handleImagenComplete(caracteristica.localId || caracteristica.id, dataUrl)" />
 
                             <FormTextarea v-model="caracteristica.descripcion" :id="`descripcion_${caracteristica.localId || caracteristica.id}`"
                                 label="Descripción" placeholder="Ingrese la descripción de la característica"
@@ -112,6 +112,9 @@ const handleImagenComplete = (id, dataUrl) => {
     const caracteristica = caracteristicas.value.find(c => (c.localId || c.id) === id)
     if (caracteristica) {
         caracteristica.errors.imagen = ''
+        if (caracteristica.imageFile) {
+            caracteristica.imagen = dataUrl
+        }
     }
     emitUpdate()
 }
@@ -140,6 +143,7 @@ const validateCaracteristicas = () => {
 const emitUpdate = () => {
     const caracteristicasData = caracteristicas.value.map(c => ({
         id: c.id,
+        dbId: c.dbId,
         imagen: c.imageFile || c.imagen,
         descripcion: c.descripcion.trim()
     }))

@@ -25,7 +25,7 @@
                     <div v-show="caracteristica.isOpen" class="pt-3">
                         <FormFieldsContainer>
                             <FormImageField v-model="caracteristica.imagen" :id="`imagen_${caracteristica.localId || caracteristica.id}`"
-                                label="Imagen (72px x 72px)" :error="caracteristica.errors.imagen" required :acceptedTypes="['webp']"
+                                label="Imagen (72px x 72px)" :error="caracteristica.errors.imagen" required :acceptedTypes="['webp', 'svg']"
                                 targetFolder="waterplast-productos-caracteristicas"
                                 @upload-start="(file) => handleImagenStart(caracteristica.localId || caracteristica.id, file)"
                                 @upload-complete="(dataUrl) => handleImagenComplete(caracteristica.localId || caracteristica.id, dataUrl)" />

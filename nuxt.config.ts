@@ -46,9 +46,6 @@ export default defineNuxtConfig({
       weights: [300, 400, 500, 700, 900],
     }
   },
-  // plugins: [
-  //   { src: '~/plugins/preload-data.js', mode: 'client' }
-  // ],
   icon: {
     size: '1rem',
     class: 'tablerIcon',

@@ -266,17 +266,19 @@ export const useStorage = () => {
 
             const cleanName = cleanCategoryName(categoriaNombre)
 
-            const uploadPromises = files.map(async (file, index) => {
+            const uploadPromises = files.map(async (imageObj, index) => {
                 uploadProgress.value = Math.round((index / files.length) * 100)
 
-                validateImageFile(file)
+                const actualFile = imageObj.file || imageObj
 
-                const extension = file.name.split('.').pop().toLowerCase()
+                validateImageFile(actualFile)
+
+                const extension = actualFile.name.split('.').pop().toLowerCase()
                 const fileName = `${cleanName}/imagenes-redes/red-${index + 1}.${extension}`
 
                 const { data, error: uploadError } = await supabase.storage
                     .from('waterplast-categorias')
-                    .upload(fileName, file, {
+                    .upload(fileName, actualFile, {
                         cacheControl: '3600',
                         upsert: true
                     })

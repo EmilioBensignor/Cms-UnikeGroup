@@ -85,7 +85,8 @@ export const useWaterplastCategorias = () => {
                     data.imagenes_redes.map((img, index) => ({
                         id: `red-${index}`,
                         name: `imagen-red-${index + 1}.jpg`,
-                        url: getCategoriaImagenRedUrl(img)
+                        url: getCategoriaImagenRedUrl(img),
+                        storagePath: img  // Guardar el path del storage original
                     })) : []
             }
 
@@ -189,13 +190,57 @@ export const useWaterplastCategorias = () => {
                 iconPaths.icono3 = await uploadCategoriaIcon(iconos.icono3, categoriaNombre, 3)
             }
 
-            if (imagenesRedes && imagenesRedes.length > 0) {
-                if (currentData?.imagenes_redes) {
+            // Procesar imágenes de redes
+            if (imagenesRedes && Array.isArray(imagenesRedes) && imagenesRedes.length > 0) {
+                // Separar imágenes existentes que se mantienen y las nuevas que se suben
+                const imagenesExistentesQueSeMantienen = imagenesRedes
+                    .filter(img => img.isExisting && img.storagePath)
+                    .map(img => img.storagePath)
+
+                const nuevasImagenes = imagenesRedes.filter(img => img.file && !img.isExisting)
+                const imagenesAntiguasEnDB = currentData?.imagenes_redes || []
+
+                // Identificar imágenes que se eliminaron (están en DB pero no en el form)
+                const imagenesAEliminar = imagenesAntiguasEnDB.filter(
+                    imgDB => !imagenesExistentesQueSeMantienen.includes(imgDB)
+                )
+
+                // Eliminar solo las imágenes que ya no están en el formulario
+                if (imagenesAEliminar.length > 0) {
+                    for (const imagen of imagenesAEliminar) {
+                        await deleteCategoriaImagenRed(imagen)
+                    }
+                }
+
+                // Subir las nuevas imágenes
+                let pathsNuevasImagenes = []
+                if (nuevasImagenes.length > 0) {
+                    pathsNuevasImagenes = await uploadCategoriaImagenesRedes(nuevasImagenes, categoriaNombre)
+                }
+
+                // Construir el array final con las existentes que se mantienen + las nuevas
+                // Respetar el orden del formulario
+                imagenesRedesPaths = []
+                for (const img of imagenesRedes) {
+                    if (img.isExisting && img.storagePath) {
+                        // Imagen existente que se mantiene
+                        imagenesRedesPaths.push(img.storagePath)
+                    } else if (img.file && !img.isExisting) {
+                        // Imagen nueva - tomar el siguiente path de las nuevas subidas
+                        const indexNueva = nuevasImagenes.findIndex(n => n.id === img.id)
+                        if (indexNueva !== -1 && pathsNuevasImagenes[indexNueva]) {
+                            imagenesRedesPaths.push(pathsNuevasImagenes[indexNueva])
+                        }
+                    }
+                }
+            } else {
+                // Si se eliminaron todas las imágenes
+                if (currentData?.imagenes_redes && currentData.imagenes_redes.length > 0) {
                     for (const imagen of currentData.imagenes_redes) {
                         await deleteCategoriaImagenRed(imagen)
                     }
                 }
-                imagenesRedesPaths = await uploadCategoriaImagenesRedes(imagenesRedes, categoriaNombre)
+                imagenesRedesPaths = []
             }
 
             const finalCategoriaData = {

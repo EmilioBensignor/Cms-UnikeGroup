@@ -113,7 +113,6 @@ const imagenSCategorias = ref(null)
 const icono1 = ref(null)
 const icono2 = ref(null)
 const icono3 = ref(null)
-const imagenesRedes = ref([])
 
 const formData = reactive({
     color: '',
@@ -165,7 +164,8 @@ watch(() => props.initialData, async (newData) => {
                 filename: img.name || `imagen-${index + 1}.jpg`,
                 file: null,
                 orden: index + 1,
-                es_principal: index === 0
+                es_principal: index === 0,
+                storagePath: img.storagePath || null // Guardar el path del storage
             })) : []
 
         Object.assign(formData, {
@@ -272,8 +272,7 @@ const handleIconComplete3 = () => {
     errors.icono3 = ''
 }
 
-const handleImagenesRedesStart = (files) => {
-    imagenesRedes.value = files
+const handleImagenesRedesStart = () => {
     errors.imagenesRedes = ''
 }
 
@@ -361,7 +360,7 @@ const validateForm = () => {
         isValid = false
     }
 
-    if (imagenesRedes.value.length === 0 && (!formData.imagenesRedes || formData.imagenesRedes.length === 0)) {
+    if (!formData.imagenesRedes || formData.imagenesRedes.length === 0) {
         errors.imagenesRedes = 'Al menos una imagen para redes sociales es requerida'
         isValid = false
     }
@@ -401,7 +400,6 @@ const handleSubmit = async () => {
             if (!icono1.value) categoriaData.icono1 = formData.icono1
             if (!icono2.value) categoriaData.icono2 = formData.icono2
             if (!icono3.value) categoriaData.icono3 = formData.icono3
-            if (imagenesRedes.value.length === 0) categoriaData.imagenes_redes = formData.imagenesRedes
         }
 
         emit('submit', {
@@ -419,7 +417,7 @@ const handleSubmit = async () => {
                 icono2: icono2.value,
                 icono3: icono3.value
             },
-            imagenesRedes: imagenesRedes.value
+            imagenesRedes: formData.imagenesRedes
         })
 
     } catch (error) {

@@ -155,18 +155,23 @@ const errors = reactive({
 watch(() => props.initialData, async (newData) => {
     if (props.isEditing && newData) {
         const processedImagenes = newData.imagenes_redes && Array.isArray(newData.imagenes_redes)
-            ? newData.imagenes_redes.map((img, index) => ({
-                id: img.id || `existing-${index}`,
-                name: img.name || `imagen-${index + 1}.jpg`,
-                url: img.url,
-                preview: img.url,
-                isExisting: true,
-                filename: img.name || `imagen-${index + 1}.jpg`,
-                file: null,
-                orden: index + 1,
-                es_principal: index === 0,
-                storagePath: img.storagePath || null // Guardar el path del storage
-            })) : []
+            ? newData.imagenes_redes.map((img, index) => {
+                const storagePathValue = img.storagePath || null
+                return {
+                    id: img.id || `existing-${index}`,
+                    name: img.name || `imagen-${index + 1}.jpg`,
+                    url: img.url,
+                    preview: img.url,
+                    isExisting: true,
+                    filename: img.name || `imagen-${index + 1}.jpg`,
+                    file: null,
+                    orden: index + 1,
+                    es_principal: index === 0,
+                    storagePath: storagePathValue,
+                    file_size: 0,
+                    mime_type: 'image/jpeg'
+                }
+            }) : []
 
         Object.assign(formData, {
             color: newData.color || '',

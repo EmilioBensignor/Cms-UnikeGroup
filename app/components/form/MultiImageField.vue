@@ -140,13 +140,14 @@ watch(() => props.modelValue, (newValue) => {
 
     if (newValue && Array.isArray(newValue) && newValue.length > 0) {
         images.value = newValue.map((img, index) => ({
+            ...img,
             id: img.id || `existing-${index}`,
             name: img.filename || img.name || `imagen-${index + 1}.jpg`,
             preview: img.url,
             url: img.url,
-            file: null,
-            isExisting: true,
-            ...img
+            file: img.file || null,
+            isExisting: img.isExisting !== undefined ? img.isExisting : true,
+            storagePath: img.storagePath || null
         }))
     } else if (!newValue || newValue.length === 0) {
         images.value = []
@@ -167,13 +168,13 @@ watch(images, (newImages) => {
         preview: img.preview,
         file: img.file,
         isExisting: img.isExisting || false,
+        storagePath: img.storagePath || null,
         orden: index + 1,
         es_principal: index === 0,
         filename: img.filename || img.name,
         file_size: img.file_size || (img.file ? img.file.size : 0),
         mime_type: img.mime_type || (img.file ? img.file.type : 'image/jpeg')
     }))
-
 
     emit('update:modelValue', formattedImages)
 }, { deep: true })

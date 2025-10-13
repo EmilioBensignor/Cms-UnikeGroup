@@ -274,13 +274,15 @@ export const useStorage = () => {
                 validateImageFile(actualFile)
 
                 const extension = actualFile.name.split('.').pop().toLowerCase()
-                const fileName = `${cleanName}/imagenes-redes/red-${index + 1}.${extension}`
+                const timestamp = Date.now()
+                const randomNum = Math.floor(1000 + Math.random() * 9000)
+                const fileName = `${cleanName}/imagenes-redes/red-${timestamp}-${randomNum}-${index}.${extension}`
 
                 const { data, error: uploadError } = await supabase.storage
                     .from('waterplast-categorias')
                     .upload(fileName, actualFile, {
                         cacheControl: '3600',
-                        upsert: true
+                        upsert: false
                     })
 
                 if (uploadError) throw uploadError

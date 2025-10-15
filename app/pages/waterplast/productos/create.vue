@@ -10,7 +10,6 @@
             </template>
         </TabsLayout>
 
-        <!-- Always mounted forms -->
         <div class="w-full max-w-md lg:max-w-[56.25rem]">
             <ProductoForm
                 ref="productoFormRef"

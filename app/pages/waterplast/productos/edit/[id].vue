@@ -22,7 +22,6 @@
             </template>
         </TabsLayout>
 
-        <!-- Always mounted forms -->
         <div v-if="!loading && !error" class="w-full max-w-md lg:max-w-[56.25rem] flex justify-center">
             <ProductoForm
                 ref="productoFormRef"

@@ -5,7 +5,6 @@
             Crear Nuevo Producto
         </ButtonPrimary>
 
-        <!-- Filtros de búsqueda -->
         <div class="w-full flex flex-col md:flex-row justify-center gap-6">
             <FormTextField v-model="filtros.nombre" id="buscar-nombre" label="Buscar por nombre"
                 placeholder="Buscar productos por nombre..." />

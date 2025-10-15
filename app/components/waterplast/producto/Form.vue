@@ -36,21 +36,21 @@
 
         <FormFieldsContainer>
             <FormTextField v-model="formData.altura_cm" label="Altura (cm)" id="altura_cm" type="number"
-                placeholder="Ingrese la altura en centímetros" :error="errors.altura_cm" />
+                placeholder="Ingrese la altura en centímetros" :error="errors.altura_cm" @keydown="preventInvalidNumber" />
             <FormTextField v-model="formData.ancho_cm" label="Ancho (cm)" id="ancho_cm" type="number"
-                placeholder="Ingrese el ancho en centímetros" :error="errors.ancho_cm" />
+                placeholder="Ingrese el ancho en centímetros" :error="errors.ancho_cm" @keydown="preventInvalidNumber" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
             <FormTextField v-model="formData.largo_cm" label="Largo (cm)" id="largo_cm" type="number"
-                placeholder="Ingrese el largo en centímetros" :error="errors.largo_cm" />
+                placeholder="Ingrese el largo en centímetros" :error="errors.largo_cm" @keydown="preventInvalidNumber" />
             <FormTextField v-model="formData.diametro_cm" label="Diámetro (cm)" id="diametro_cm" type="number"
-                placeholder="Ingrese el diámetro en centímetros" :error="errors.diametro_cm" />
+                placeholder="Ingrese el diámetro en centímetros" :error="errors.diametro_cm" @keydown="preventInvalidNumber" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
             <FormTextField v-model="formData.capacidad_lts" label="Capacidad (lts)" id="capacidad_lts" type="number"
-                placeholder="Ingrese la capacidad en litros" :error="errors.capacidad_lts" />
+                placeholder="Ingrese la capacidad en litros" :error="errors.capacidad_lts" @keydown="preventInvalidNumber" />
             <FormSelect v-model="formData.orientacion" label="Orientación" id="orientacion" :error="errors.orientacion"
                 :options="orientacionOptions" placeholder="Seleccione orientación" />
         </FormFieldsContainer>
@@ -365,6 +365,13 @@ const handleIconStart3 = (file) => {
 
 const handleIconComplete3 = () => {
     errors.icono3 = ''
+}
+
+const preventInvalidNumber = (event) => {
+    // Prevenir la entrada de 'e', 'E', '+', '-' en inputs de tipo number
+    if (['e', 'E', '+', '-'].includes(event.key)) {
+        event.preventDefault()
+    }
 }
 
 const validateForm = () => {

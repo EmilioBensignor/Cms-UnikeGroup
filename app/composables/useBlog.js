@@ -62,6 +62,15 @@ export const useBlog = () => {
         }
     }
 
+    const generateSlug = (titulo) => {
+        return titulo.toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/[^a-z0-9\s]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/^-+|-+$/g, '')
+    }
+
     const createBlog = async (blogData, imagenFile) => {
         loading.value = true
         error.value = null
@@ -73,10 +82,13 @@ export const useBlog = () => {
                 imagenPath = await uploadBlogImage(imagenFile, blogData.titulo)
             }
 
+            const slug = generateSlug(blogData.titulo)
+
             const { data, error: supabaseError } = await supabase
                 .from('blog')
                 .insert([{
                     titulo: blogData.titulo,
+                    slug: slug,
                     imagen_principal: imagenPath,
                     contenido: blogData.contenido,
                     fecha: blogData.fecha || new Date().toISOString().split('T')[0],
@@ -122,10 +134,13 @@ export const useBlog = () => {
                 imagenPath = await uploadBlogImage(imagenFile, blogData.titulo)
             }
 
+            const slug = generateSlug(blogData.titulo)
+
             const { data, error: supabaseError } = await supabase
                 .from('blog')
                 .update({
                     titulo: blogData.titulo,
+                    slug: slug,
                     imagen_principal: imagenPath,
                     contenido: blogData.contenido,
                     fecha: blogData.fecha,

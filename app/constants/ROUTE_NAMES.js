@@ -8,6 +8,11 @@ export const ROUTE_NAMES = {
     RESET_PASSWORD: "/reset-password",
     // Auth
     HOME: '/',
+    UNIKE: {
+        BLOG: "/blog",
+        CREAR_BLOG: "/blog/crear",
+        EDITAR_BLOG: (id) => `/blog/editar/${id}`,
+    },
     WATERPLAST: {
         CATEGORIAS: "/waterplast/categorias",
         EDITAR_CATEGORIA: (id) => `/waterplast/categorias/edit/${id}`,

@@ -368,7 +368,6 @@ const handleIconComplete3 = () => {
 }
 
 const preventInvalidNumber = (event) => {
-    // Prevenir la entrada de 'e', 'E', '+', '-' en inputs de tipo number
     if (['e', 'E', '+', '-'].includes(event.key)) {
         event.preventDefault()
     }

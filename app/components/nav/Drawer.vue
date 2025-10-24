@@ -29,6 +29,17 @@
                         </NuxtLink>
                     </div>
                 </div>
+                <div class="flex flex-col gap-2">
+                    <p class="text-xs text-terciary font-medium px-3">UNIKE GROUP</p>
+                    <div>
+                        <NuxtLink v-for="(item, index) in menuUnike" :key="index" :to="item.route"
+                            class="flex items-center gap-3 text-light hover:bg-white/10 rounded-lg p-3 transition-colors duration-300"
+                            @click="$emit('close')">
+                            <Icon :name="`tabler:${item.icon}`" class="w-5 h-5" />
+                            <span class="font-medium">{{ item.title }}</span>
+                        </NuxtLink>
+                    </div>
+                </div>
             </div>
 
             <button @click="handleSignOut" :disabled="loggingOut"
@@ -81,7 +92,15 @@ const menuWaterplast = [
         title: "Imagen Destacada",
         icon: "photo-star",
     }
-]
+];
+
+const menuUnike = [
+    {
+        route: ROUTE_NAMES.UNIKE.BLOG,
+        title: "Blog",
+        icon: "article",
+    },
+];
 
 const loggingOut = ref(false)
 const router = useRouter()

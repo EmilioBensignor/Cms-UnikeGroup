@@ -15,7 +15,7 @@
         <FormFieldsContainer>
             <FormTextarea v-model="formData.contenido" label="Contenido" id="contenido"
                 placeholder="Ingrese el contenido del blog" required :error="errors.contenido"
-                :show-formatting="true" />
+                :show-formatting="true" rows="10" />
         </FormFieldsContainer>
         <div class="w-full flex flex-col lg:flex-row items-center gap-5 mt-8">
             <ButtonPrimary @click="$emit('cancel')" type="button" class="!bg-gray-mid !text-dark">

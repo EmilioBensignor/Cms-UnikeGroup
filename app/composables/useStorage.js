@@ -387,12 +387,11 @@ export const useStorage = () => {
         return url
     }
 
-    const uploadImagenDestacadaChica = async (dataUrl) => {
+    const uploadImagenDestacadaChica = async (dataUrl, imagenType) => {
         try {
             uploading.value = true
             uploadProgress.value = 0
             error.value = null
-
 
             const response = await fetch(dataUrl)
             const blob = await response.blob()
@@ -401,8 +400,7 @@ export const useStorage = () => {
             validateImageFile(file)
 
             const extension = file.type.split('/')[1] || 'png'
-            const fileName = `imagen-menu-waterplast-chica.${extension}`
-
+            const fileName = `${imagenType}/imagen-chica-waterplast.${extension}`
 
             const { data, error: uploadError } = await supabase.storage
                 .from('waterplast-imagenes-destacadas')
@@ -426,7 +424,7 @@ export const useStorage = () => {
         }
     }
 
-    const uploadImagenDestacadaMediana = async (dataUrl) => {
+    const uploadImagenDestacadaMediana = async (dataUrl, imagenType) => {
         try {
             uploading.value = true
             uploadProgress.value = 0
@@ -439,7 +437,7 @@ export const useStorage = () => {
             validateImageFile(file)
 
             const extension = file.type.split('/')[1] || 'png'
-            const fileName = `imagen-menu-waterplast-mediana.${extension}`
+            const fileName = `${imagenType}/imagen-mediana-waterplast.${extension}`
 
             const { data, error: uploadError } = await supabase.storage
                 .from('waterplast-imagenes-destacadas')
@@ -461,7 +459,7 @@ export const useStorage = () => {
         }
     }
 
-    const uploadImagenDestacadaGrande = async (dataUrl) => {
+    const uploadImagenDestacadaGrande = async (dataUrl, imagenType) => {
         try {
             uploading.value = true
             uploadProgress.value = 0
@@ -474,7 +472,7 @@ export const useStorage = () => {
             validateImageFile(file)
 
             const extension = file.type.split('/')[1] || 'png'
-            const fileName = `imagen-menu-waterplast-grande.${extension}`
+            const fileName = `${imagenType}/imagen-grande-waterplast.${extension}`
 
             const { data, error: uploadError } = await supabase.storage
                 .from('waterplast-imagenes-destacadas')

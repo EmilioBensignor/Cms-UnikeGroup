@@ -89,7 +89,7 @@ const menuWaterplast = [
     },
     {
         route: ROUTE_NAMES.WATERPLAST.IMAGENES_DESTACADAS,
-        title: "Imagen Destacada",
+        title: "Imágenes Destacadas",
         icon: "photo-star",
     }
 ];
@@ -97,7 +97,7 @@ const menuWaterplast = [
 const menuUnike = [
     {
         route: ROUTE_NAMES.UNIKE.BLOG,
-        title: "Blog",
+        title: "Blogs",
         icon: "article",
     },
 ];

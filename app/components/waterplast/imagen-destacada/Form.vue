@@ -1,15 +1,15 @@
 <template>
     <FormLayout @submit.prevent="handleSubmit">
         <FormFieldsContainer>
-            <FormImageField v-model="formData.imagen_chica" label="Imagen Chica (340px x 180px)" id="imagen_chica"
+            <FormImageField v-model="formData.imagen_chica" :label="labels.chica" id="imagen_chica"
                 required :error="errors.imagen_chica" :current-image="initialData?.imagen_chica" />
 
-            <FormImageField v-model="formData.imagen_mediana" label="Imagen Mediana (280px x 290px)" id="imagen_mediana"
+            <FormImageField v-model="formData.imagen_mediana" :label="labels.mediana" id="imagen_mediana"
                 required :error="errors.imagen_mediana" :current-image="initialData?.imagen_mediana" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
-            <FormImageField v-model="formData.imagen_grande" label="Imagen Grande (645px x 290px)" id="imagen_grande"
+            <FormImageField v-model="formData.imagen_grande" :label="labels.grande" id="imagen_grande"
                 required :error="errors.imagen_grande" :current-image="initialData?.imagen_grande" />
         </FormFieldsContainer>
 
@@ -20,7 +20,7 @@
 
             <ButtonPrimary type="submit" :disabled="submitting">
                 <Icon v-if="submitting" name="tabler:loader-2" class="w-4 h-4 animate-spin mr-2" />
-                {{ submitting ? (isEditing ? 'Actualizando...' : 'Creando...') : (isEditing ? 'Actualizar Imagen Destacada' :
+                {{ submitting ? (isEditing ? 'Actualizando...' : 'Creando...') : (isEditing ? `Actualizar ${initialData?.nombre}` :
                     'Crear Imagen Destacada') }}
             </ButtonPrimary>
         </div>
@@ -55,6 +55,31 @@ const errors = reactive({
     imagen_grande: ''
 })
 
+const IMAGEN_DIMENSIONS = {
+    'imagen-menu': {
+        chica: 'Imagen Chica (340px x 180px)',
+        mediana: 'Imagen Mediana (280px x 290px)',
+        grande: 'Imagen Grande (645px x 290px)'
+    },
+    'imagen-hero-home': {
+        chica: 'Imagen Chica (640px x 332px)',
+        mediana: 'Imagen Mediana (768px x 316px)',
+        grande: 'Imagen Grande (1512px x 570px)'
+    }
+}
+
+const labels = computed(() => {
+    const nombre = props.initialData?.nombre || ''
+    const imagenType = nombre.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '-').replace(/[^\w\-]/g, '')
+    const dimensions = IMAGEN_DIMENSIONS[imagenType] || IMAGEN_DIMENSIONS['imagen-menu']
+
+    return {
+        chica: dimensions.chica,
+        mediana: dimensions.mediana,
+        grande: dimensions.grande
+    }
+})
+
 onMounted(() => {
     if (props.isEditing && props.initialData) {
         Object.assign(formData, {
@@ -72,21 +97,19 @@ const validateForm = () => {
 
     let isValid = true
 
-    if (!props.isEditing) {
-        if (!formData.imagen_chica) {
-            errors.imagen_chica = 'La imagen chica es requerida'
-            isValid = false
-        }
+    if (!formData.imagen_chica) {
+        errors.imagen_chica = 'La imagen chica es requerida'
+        isValid = false
+    }
 
-        if (!formData.imagen_mediana) {
-            errors.imagen_mediana = 'La imagen mediana es requerida'
-            isValid = false
-        }
+    if (!formData.imagen_mediana) {
+        errors.imagen_mediana = 'La imagen mediana es requerida'
+        isValid = false
+    }
 
-        if (!formData.imagen_grande) {
-            errors.imagen_grande = 'La imagen grande es requerida'
-            isValid = false
-        }
+    if (!formData.imagen_grande) {
+        errors.imagen_grande = 'La imagen grande es requerida'
+        isValid = false
     }
 
     return isValid

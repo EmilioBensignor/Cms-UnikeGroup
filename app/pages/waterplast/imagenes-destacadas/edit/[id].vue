@@ -1,11 +1,6 @@
 <template>
     <DefaultSection>
-        <NuxtLink :to="ROUTE_NAMES.WATERPLAST.IMAGENES_DESTACADAS"
-            class="flex items-center gap-2 self-start text-dark font-light no-underline">
-            <Icon name="tabler:arrow-left" size="1.25rem" />
-            Volver a imágenes destacadas
-        </NuxtLink>
-        <HeadingH1>Editar Imagen Destacada</HeadingH1>
+        <HeadingH1>Editar {{ currentImagenDestacada?.nombre }}</HeadingH1>
 
         <div v-if="loading" class="flex justify-center items-center py-12">
             <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>

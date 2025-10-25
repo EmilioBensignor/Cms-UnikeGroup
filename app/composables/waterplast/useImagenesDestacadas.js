@@ -106,20 +106,22 @@ export const useWaterplastImagenesDestacadas = () => {
         error.value = null
 
         try {
+            const imagenType = imagenData.nombre?.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '-').replace(/[^\w\-]/g, '') || 'imagen-menu'
+
             let imagenChicaPath = null
             let imagenMedianaPath = null
             let imagenGrandePath = null
 
             if (imagenChica) {
-                imagenChicaPath = await uploadImagenDestacadaChica(imagenChica)
+                imagenChicaPath = await uploadImagenDestacadaChica(imagenChica, imagenType)
             }
 
             if (imagenMediana) {
-                imagenMedianaPath = await uploadImagenDestacadaMediana(imagenMediana)
+                imagenMedianaPath = await uploadImagenDestacadaMediana(imagenMediana, imagenType)
             }
 
             if (imagenGrande) {
-                imagenGrandePath = await uploadImagenDestacadaGrande(imagenGrande)
+                imagenGrandePath = await uploadImagenDestacadaGrande(imagenGrande, imagenType)
             }
 
             const finalImagenData = {
@@ -169,6 +171,8 @@ export const useWaterplastImagenesDestacadas = () => {
 
             if (fetchError) throw fetchError
 
+            const imagenType = currentData.nombre?.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '-').replace(/[^\w\-]/g, '')
+
             let imagenChicaPath = currentData?.imagen_chica
             let imagenMedianaPath = currentData?.imagen_mediana
             let imagenGrandePath = currentData?.imagen_grande
@@ -177,21 +181,21 @@ export const useWaterplastImagenesDestacadas = () => {
                 if (currentData?.imagen_chica) {
                     await deleteImagenDestacada(currentData.imagen_chica)
                 }
-                imagenChicaPath = await uploadImagenDestacadaChica(imagenChica)
+                imagenChicaPath = await uploadImagenDestacadaChica(imagenChica, imagenType)
             }
 
             if (imagenMediana) {
                 if (currentData?.imagen_mediana) {
                     await deleteImagenDestacada(currentData.imagen_mediana)
                 }
-                imagenMedianaPath = await uploadImagenDestacadaMediana(imagenMediana)
+                imagenMedianaPath = await uploadImagenDestacadaMediana(imagenMediana, imagenType)
             }
 
             if (imagenGrande) {
                 if (currentData?.imagen_grande) {
                     await deleteImagenDestacada(currentData.imagen_grande)
                 }
-                imagenGrandePath = await uploadImagenDestacadaGrande(imagenGrande)
+                imagenGrandePath = await uploadImagenDestacadaGrande(imagenGrande, imagenType)
             }
 
             const finalImagenData = {

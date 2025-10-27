@@ -9,8 +9,8 @@
         <FormFieldsContainer>
             <FormTextField v-model="formData.fecha" label="Fecha" id="fecha" type="date" required
                 :error="errors.fecha" />
-            <FormTextField v-model="formData.creado_por" label="Creado por" id="creado_por"
-                placeholder="Ingrese el nombre de quien crea el blog" required :error="errors.creado_por" />
+            <FormSelect v-model="formData.creado_por" label="Creado por" id="creado_por"
+                placeholder="Seleccione quién crea el blog" :options="creadoPorOptions" required :error="errors.creado_por" />
         </FormFieldsContainer>
         <FormFieldsContainer>
             <FormTextarea v-model="formData.contenido" label="Contenido" id="contenido"
@@ -48,6 +48,12 @@ const emit = defineEmits(['submit', 'cancel'])
 const submitting = ref(false)
 const imagen = ref(null)
 const imagePreview = ref(null)
+
+const creadoPorOptions = [
+    { label: 'Unike Group', value: 'Unike Group' },
+    { label: 'Waterplast', value: 'Waterplast' },
+    { label: 'Rohermet', value: 'Rohermet' }
+]
 
 const formData = reactive({
     titulo: '',
@@ -119,11 +125,8 @@ const validateForm = () => {
         isValid = false
     }
 
-    if (!formData.creado_por.trim()) {
-        errors.creado_por = 'El nombre de quién crea es requerido'
-        isValid = false
-    } else if (formData.creado_por.trim().length < 2) {
-        errors.creado_por = 'El nombre debe tener al menos 2 caracteres'
+    if (!formData.creado_por) {
+        errors.creado_por = 'Debe seleccionar quién crea el blog'
         isValid = false
     }
 
@@ -150,7 +153,7 @@ const handleSubmit = async () => {
             titulo: formData.titulo.trim(),
             contenido: formData.contenido.trim(),
             fecha: formData.fecha,
-            creado_por: formData.creado_por.trim(),
+            creado_por: formData.creado_por,
         }
 
         if (props.isEditing && !imagen.value) {

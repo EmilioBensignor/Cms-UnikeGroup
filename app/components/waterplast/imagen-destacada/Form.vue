@@ -1,16 +1,16 @@
 <template>
     <FormLayout @submit.prevent="handleSubmit">
         <FormFieldsContainer>
-            <FormImageField v-model="formData.imagen_chica" :label="labels.chica" id="imagen_chica"
-                required :error="errors.imagen_chica" :current-image="initialData?.imagen_chica" />
+            <FormImageField v-model="formData.imagen_chica" :label="labels.chica" id="imagen_chica" required
+                :error="errors.imagen_chica" :current-image="initialData?.imagen_chica" />
 
-            <FormImageField v-model="formData.imagen_mediana" :label="labels.mediana" id="imagen_mediana"
-                required :error="errors.imagen_mediana" :current-image="initialData?.imagen_mediana" />
+            <FormImageField v-model="formData.imagen_mediana" :label="labels.mediana" id="imagen_mediana" required
+                :error="errors.imagen_mediana" :current-image="initialData?.imagen_mediana" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
-            <FormImageField v-model="formData.imagen_grande" :label="labels.grande" id="imagen_grande"
-                required :error="errors.imagen_grande" :current-image="initialData?.imagen_grande" />
+            <FormImageField v-model="formData.imagen_grande" :label="labels.grande" id="imagen_grande" required
+                :error="errors.imagen_grande" :current-image="initialData?.imagen_grande" />
         </FormFieldsContainer>
 
         <div class="w-full flex flex-col lg:flex-row items-center gap-5 mt-8">
@@ -20,8 +20,9 @@
 
             <ButtonPrimary type="submit" :disabled="submitting">
                 <Icon v-if="submitting" name="tabler:loader-2" class="w-4 h-4 animate-spin mr-2" />
-                {{ submitting ? (isEditing ? 'Actualizando...' : 'Creando...') : (isEditing ? `Actualizar ${initialData?.nombre}` :
-                    'Crear Imagen Destacada') }}
+                {{ submitting ? (isEditing ? 'Actualizando...' : 'Creando...') : (isEditing ? `Actualizar
+                ${initialData?.nombre}` :
+                'Crear Imagen Destacada') }}
             </ButtonPrimary>
         </div>
     </FormLayout>
@@ -97,19 +98,27 @@ const validateForm = () => {
 
     let isValid = true
 
-    if (!formData.imagen_chica) {
-        errors.imagen_chica = 'La imagen chica es requerida'
-        isValid = false
-    }
+    if (props.isEditing) {
+        const hasAnyImage = formData.imagen_chica || formData.imagen_mediana || formData.imagen_grande
+        if (!hasAnyImage) {
+            errors.imagen_chica = 'Debes modificar al menos una imagen'
+            isValid = false
+        }
+    } else {
+        if (!formData.imagen_chica) {
+            errors.imagen_chica = 'La imagen chica es requerida'
+            isValid = false
+        }
 
-    if (!formData.imagen_mediana) {
-        errors.imagen_mediana = 'La imagen mediana es requerida'
-        isValid = false
-    }
+        if (!formData.imagen_mediana) {
+            errors.imagen_mediana = 'La imagen mediana es requerida'
+            isValid = false
+        }
 
-    if (!formData.imagen_grande) {
-        errors.imagen_grande = 'La imagen grande es requerida'
-        isValid = false
+        if (!formData.imagen_grande) {
+            errors.imagen_grande = 'La imagen grande es requerida'
+            isValid = false
+        }
     }
 
     return isValid

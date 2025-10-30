@@ -3,7 +3,7 @@
         <FormFieldsContainer>
             <FormTextField v-model="formData.titulo" label="Título" id="titulo" placeholder="Ingrese el título del blog"
                 required :error="errors.titulo" />
-            <FormImageField v-model="imagePreview" id="imagen" label="Imagen Principal" :error="errors.imagen"
+            <FormImageField v-model="imagePreview" id="imagen" label="Imagen Principal (1200px x 400px)" :error="errors.imagen"
                 required targetFolder="blog" @upload-start="handleImageStart" @upload-complete="handleImageComplete" />
         </FormFieldsContainer>
         <FormFieldsContainer>

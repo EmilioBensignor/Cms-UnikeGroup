@@ -25,6 +25,7 @@ export const useBlog = () => {
             const blogsWithUrls = (data || []).map(blog => ({
                 ...blog,
                 imagen_principal: blog.imagen_principal ? getBlogImageUrl(blog.imagen_principal) : null,
+                imagen_principal_path: blog.imagen_principal,
                 id: blog.Id || blog.id
             }))
 
@@ -53,6 +54,7 @@ export const useBlog = () => {
             currentBlog.value = {
                 ...data,
                 imagen_principal: data.imagen_principal ? getBlogImageUrl(data.imagen_principal) : null,
+                imagen_principal_path: data.imagen_principal,
                 id: data.Id || data.id
             }
         } catch (err) {
@@ -122,6 +124,10 @@ export const useBlog = () => {
 
             let imagenPath = dataBlog.imagen_principal
 
+            if (!imagenFile && !dataBlog.imagen_principal && !blogData.imagen_principal) {
+                throw new Error('No se puede actualizar un blog sin imagen. El blog debe tener una imagen principal.')
+            }
+
             if (imagenFile) {
                 if (dataBlog.imagen_principal) {
                     try {
@@ -130,8 +136,13 @@ export const useBlog = () => {
                         console.warn('Error al borrar imagen anterior:', err)
                     }
                 }
-
                 imagenPath = await uploadBlogImage(imagenFile, blogData.titulo)
+            } else if (blogData.imagenFueEliminada === true) {
+                throw new Error('No se puede actualizar un blog sin imagen. Debe proporcionar una imagen principal.')
+            } else if (blogData.imagen_principal !== undefined && blogData.imagen_principal !== null) {
+                imagenPath = blogData.imagen_principal
+            } else {
+                imagenPath = dataBlog.imagen_principal
             }
 
             const slug = generateSlug(blogData.titulo)

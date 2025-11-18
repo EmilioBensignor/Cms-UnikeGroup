@@ -67,6 +67,11 @@
                 :options="opcionOptions" placeholder="Seleccione opción" />
         </FormFieldsContainer>
 
+        <FormFieldsContainer>
+            <FormTextarea v-model="formData.ficha_tecnica" label="Ficha Técnica" id="ficha_tecnica"
+                placeholder="Ingrese la ficha técnica del producto" :error="errors.ficha_tecnica" />
+        </FormFieldsContainer>
+
         <div v-if="showButtons" class="w-full flex flex-col lg:flex-row items-center gap-5 mt-8">
             <ButtonPrimary @click="$emit('cancel')" type="button" class="!bg-gray-mid !text-dark">
                 Cancelar
@@ -156,7 +161,8 @@ const formData = reactive({
     orientacion: '',
     color: '',
     tecnologia: '',
-    opcion: ''
+    opcion: '',
+    ficha_tecnica: ''
 })
 
 const errors = reactive({
@@ -176,7 +182,8 @@ const errors = reactive({
     orientacion: '',
     color: '',
     tecnologia: '',
-    opcion: ''
+    opcion: '',
+    ficha_tecnica: ''
 })
 
 watch(() => props.initialData, async (newData) => {
@@ -198,7 +205,8 @@ watch(() => props.initialData, async (newData) => {
             orientacion: newData.orientacion || '',
             color: newData.color || '',
             tecnologia: newData.tecnologia || '',
-            opcion: newData.opcion || ''
+            opcion: newData.opcion || '',
+            ficha_tecnica: newData.ficha_tecnica || ''
         })
     }
 }, { immediate: true, deep: true })
@@ -309,7 +317,8 @@ const handleSubmit = async () => {
             orientacion: formData.orientacion || null,
             color: formData.color || null,
             tecnologia: formData.tecnologia || null,
-            opcion: formData.opcion || null
+            opcion: formData.opcion || null,
+            ficha_tecnica: formData.ficha_tecnica.trim() || null
         }
 
         if (props.isEditing) {

@@ -1,12 +1,12 @@
 <template>
     <DefaultSection>
-        <NuxtLink :to="ROUTE_NAMES.WATERPLAST.OPINIONES"
+        <NuxtLink :to="ROUTE_NAMES.UNIKE.OPINIONES"
             class="flex items-center gap-2 self-start text-dark font-light no-underline">
             <Icon name="tabler:arrow-left" size="1.25rem" />
             Volver a opiniones
         </NuxtLink>
         <HeadingH1>Crear Opinión</HeadingH1>
-        <WaterplastOpinionForm :is-editing="false" @submit="handleSubmit" @cancel="handleCancel" />
+        <UnikeOpinionForm :is-editing="false" @submit="handleSubmit" @cancel="handleCancel" />
     </DefaultSection>
 </template>
 
@@ -25,7 +25,7 @@ const handleSubmit = async (formData) => {
             title: 'Opinión agregada'
         })
 
-        navigateTo(ROUTE_NAMES.WATERPLAST.OPINIONES)
+        navigateTo(ROUTE_NAMES.UNIKE.OPINIONES)
     } catch (err) {
         console.error('Error creating opinion:', err)
 
@@ -38,6 +38,6 @@ const handleSubmit = async (formData) => {
 }
 
 const handleCancel = () => {
-    navigateTo(ROUTE_NAMES.WATERPLAST.OPINIONES)
+    navigateTo(ROUTE_NAMES.UNIKE.OPINIONES)
 }
 </script>

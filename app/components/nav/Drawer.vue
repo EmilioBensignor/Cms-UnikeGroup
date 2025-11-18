@@ -19,6 +19,17 @@
                     </button>
                 </div>
                 <div class="flex flex-col gap-2">
+                    <p class="text-xs text-terciary font-medium px-3">UNIKE GROUP</p>
+                    <div>
+                        <NuxtLink v-for="(item, index) in menuUnike" :key="index" :to="item.route"
+                            class="flex items-center gap-3 text-light hover:bg-white/10 rounded-lg p-3 transition-colors duration-300"
+                            @click="$emit('close')">
+                            <Icon :name="`tabler:${item.icon}`" class="w-5 h-5" />
+                            <span class="font-medium">{{ item.title }}</span>
+                        </NuxtLink>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-2">
                     <p class="text-xs text-terciary font-medium px-3">WATERPLAST</p>
                     <div>
                         <NuxtLink v-for="(item, index) in menuWaterplast" :key="index" :to="item.route"
@@ -30,9 +41,9 @@
                     </div>
                 </div>
                 <div class="flex flex-col gap-2">
-                    <p class="text-xs text-terciary font-medium px-3">UNIKE GROUP</p>
+                    <p class="text-xs text-terciary font-medium px-3">ROHERMET</p>
                     <div>
-                        <NuxtLink v-for="(item, index) in menuUnike" :key="index" :to="item.route"
+                        <NuxtLink v-for="(item, index) in menuRohermet" :key="index" :to="item.route"
                             class="flex items-center gap-3 text-light hover:bg-white/10 rounded-lg p-3 transition-colors duration-300"
                             @click="$emit('close')">
                             <Icon :name="`tabler:${item.icon}`" class="w-5 h-5" />
@@ -41,7 +52,6 @@
                     </div>
                 </div>
             </div>
-
             <button @click="handleSignOut" :disabled="loggingOut"
                 class="h-12 flex items-center gap-3 bg-primary rounded-xl text-light font-light py-3 px-6">
                 <Icon v-if="!loggingOut" name="tabler:logout" class="w-5 h-5" />
@@ -64,7 +74,25 @@ const props = defineProps({
     }
 })
 
-const emit = defineEmits(['close'])
+const emit = defineEmits(['close']);
+
+const menuUnike = [
+    {
+        route: ROUTE_NAMES.UNIKE.OPINIONES,
+        title: "Opiniones",
+        icon: "message-chatbot",
+    },
+    {
+        route: ROUTE_NAMES.UNIKE.DISTRIBUIDORES,
+        title: "Distribuidores",
+        icon: "map-pin",
+    },
+    {
+        route: ROUTE_NAMES.UNIKE.BLOG,
+        title: "Blogs",
+        icon: "article",
+    },
+];
 
 const menuWaterplast = [
     {
@@ -78,27 +106,22 @@ const menuWaterplast = [
         icon: "cards",
     },
     {
-        route: ROUTE_NAMES.WATERPLAST.OPINIONES,
-        title: "Opiniones",
-        icon: "message-chatbot",
-    },
-    {
-        route: ROUTE_NAMES.WATERPLAST.DISTRIBUIDORES,
-        title: "Distribuidores",
-        icon: "map-pin",
-    },
-    {
         route: ROUTE_NAMES.WATERPLAST.IMAGENES_DESTACADAS,
         title: "Imágenes Destacadas",
         icon: "photo-star",
     }
 ];
 
-const menuUnike = [
+const menuRohermet = [
     {
-        route: ROUTE_NAMES.UNIKE.BLOG,
-        title: "Blogs",
-        icon: "article",
+        route: ROUTE_NAMES.ROHERMET.CATEGORIAS,
+        title: "Categorías",
+        icon: "bookmark",
+    },
+    {
+        route: ROUTE_NAMES.ROHERMET.PRODUCTOS,
+        title: "Productos",
+        icon: "cards",
     },
 ];
 

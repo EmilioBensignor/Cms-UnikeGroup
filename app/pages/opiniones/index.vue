@@ -1,7 +1,7 @@
 <template>
     <DefaultSection>
         <HeadingH1>Opiniones</HeadingH1>
-        <ButtonPrimary :to="ROUTE_NAMES.WATERPLAST.CREAR_OPINION">
+        <ButtonPrimary :to="ROUTE_NAMES.UNIKE.CREAR_OPINION">
             Crear Nueva Opinión
         </ButtonPrimary>
 
@@ -69,7 +69,7 @@ onMounted(async () => {
 })
 
 const handleEdit = (opinion) => {
-    navigateTo(ROUTE_NAMES.WATERPLAST.EDITAR_OPINION(opinion.id))
+    navigateTo(ROUTE_NAMES.UNIKE.EDITAR_OPINION(opinion.id))
 }
 
 const handleDelete = async (opinion) => {

@@ -1,7 +1,7 @@
 <template>
     <DefaultSection>
         <HeadingH1>Distribuidores</HeadingH1>
-        <ButtonPrimary :to="ROUTE_NAMES.WATERPLAST.CREAR_DISTRIBUIDOR">
+        <ButtonPrimary :to="ROUTE_NAMES.UNIKE.CREAR_DISTRIBUIDOR">
             Crear Nuevo Distribuidor
         </ButtonPrimary>
 
@@ -71,7 +71,7 @@ onMounted(async () => {
 })
 
 const handleEdit = (distribuidor) => {
-    navigateTo(ROUTE_NAMES.WATERPLAST.EDITAR_DISTRIBUIDOR(distribuidor.id))
+    navigateTo(ROUTE_NAMES.UNIKE.EDITAR_DISTRIBUIDOR(distribuidor.id))
 }
 
 const handleDelete = async (distribuidor) => {

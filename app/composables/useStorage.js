@@ -101,7 +101,7 @@ export const useStorage = () => {
         return url
     }
 
-    const uploadCategoriaImage = async (file, categoriaNombre) => {
+    const uploadCategoriaImage = async (file, categoriaNombre, marca = 'waterplast') => {
         try {
             uploading.value = true
             uploadProgress.value = 0
@@ -110,13 +110,14 @@ export const useStorage = () => {
             validateImageFile(file)
 
             const extension = file.name.split('.').pop().toLowerCase()
+            const bucketName = `${marca}-categorias`
 
             if (categoriaNombre.includes('-xl-categorias')) {
                 const baseName = cleanCategoryName(categoriaNombre.replace('-xl-categorias', ''))
                 const fileName = `${baseName}/pagina-categoria/imagen-xl.${extension}`
 
                 const { data, error: uploadError } = await supabase.storage
-                    .from('waterplast-categorias')
+                    .from(bucketName)
                     .upload(fileName, file, {
                         cacheControl: '3600',
                         upsert: true
@@ -131,7 +132,7 @@ export const useStorage = () => {
                 const fileName = `${baseName}/pagina-categoria/imagen-l.${extension}`
 
                 const { data, error: uploadError } = await supabase.storage
-                    .from('waterplast-categorias')
+                    .from(bucketName)
                     .upload(fileName, file, {
                         cacheControl: '3600',
                         upsert: true
@@ -146,7 +147,7 @@ export const useStorage = () => {
                 const fileName = `${baseName}/pagina-categoria/imagen-m.${extension}`
 
                 const { data, error: uploadError } = await supabase.storage
-                    .from('waterplast-categorias')
+                    .from(bucketName)
                     .upload(fileName, file, {
                         cacheControl: '3600',
                         upsert: true
@@ -161,7 +162,7 @@ export const useStorage = () => {
                 const fileName = `${baseName}/pagina-categoria/imagen-s.${extension}`
 
                 const { data, error: uploadError } = await supabase.storage
-                    .from('waterplast-categorias')
+                    .from(bucketName)
                     .upload(fileName, file, {
                         cacheControl: '3600',
                         upsert: true
@@ -176,7 +177,7 @@ export const useStorage = () => {
                 const fileName = `${baseName}/imagen-menu.${extension}`
 
                 const { data, error: uploadError } = await supabase.storage
-                    .from('waterplast-categorias')
+                    .from(bucketName)
                     .upload(fileName, file, {
                         cacheControl: '3600',
                         upsert: true
@@ -191,7 +192,7 @@ export const useStorage = () => {
                 const fileName = `${baseName}/imagen-hero.${extension}`
 
                 const { data, error: uploadError } = await supabase.storage
-                    .from('waterplast-categorias')
+                    .from(bucketName)
                     .upload(fileName, file, {
                         cacheControl: '3600',
                         upsert: true
@@ -206,7 +207,7 @@ export const useStorage = () => {
                 const fileName = `${cleanName}/imagen-principal.${extension}`
 
                 const { data, error: uploadError } = await supabase.storage
-                    .from('waterplast-categorias')
+                    .from(bucketName)
                     .upload(fileName, file, {
                         cacheControl: '3600',
                         upsert: true
@@ -303,12 +304,13 @@ export const useStorage = () => {
         }
     }
 
-    const deleteCategoriaImage = async (storagePath) => {
+    const deleteCategoriaImage = async (storagePath, marca = 'waterplast') => {
         try {
             error.value = null
 
+            const bucketName = `${marca}-categorias`
             const { error: deleteError } = await supabase.storage
-                .from('waterplast-categorias')
+                .from(bucketName)
                 .remove([storagePath])
 
             if (deleteError) throw deleteError
@@ -351,9 +353,9 @@ export const useStorage = () => {
         }
     }
 
-    const getCategoriaImageUrl = (storagePath, cacheBust = false) => {
+    const getCategoriaImageUrl = (storagePath, marca = 'waterplast', cacheBust = false) => {
         if (!storagePath) return null
-        let url = `${config.public.supabase.url}/storage/v1/object/public/waterplast-categorias/${storagePath}`
+        let url = `${config.public.supabase.url}/storage/v1/object/public/${marca}-categorias/${storagePath}`
 
         if (cacheBust) {
             const timestamp = Date.now()
@@ -522,7 +524,7 @@ export const useStorage = () => {
         return url
     }
 
-    const uploadProductoImage = async (file, productoNombre) => {
+    const uploadProductoImage = async (file, productoNombre, marca = 'waterplast') => {
         try {
             uploading.value = true
             uploadProgress.value = 0
@@ -537,9 +539,10 @@ export const useStorage = () => {
 
             const extension = file.name.split('.').pop().toLowerCase()
             const fileName = `${cleanName}/imagen-principal.${extension}`
+            const bucketName = `${marca}-productos`
 
             const { data, error: uploadError } = await supabase.storage
-                .from('waterplast-productos')
+                .from(bucketName)
                 .upload(fileName, file, {
                     cacheControl: '3600',
                     upsert: true
@@ -558,7 +561,7 @@ export const useStorage = () => {
         }
     }
 
-    const uploadProductoFile = async (file, fileName) => {
+    const uploadProductoFile = async (file, fileName, marca = 'waterplast') => {
         try {
             uploading.value = true
             uploadProgress.value = 0
@@ -574,6 +577,7 @@ export const useStorage = () => {
                 .substring(0, 20)
 
             const extension = file.name.split('.').pop().toLowerCase()
+            const bucketName = `${marca}-productos`
 
             let finalFileName
             if (extension === 'zip') {
@@ -583,7 +587,7 @@ export const useStorage = () => {
             }
 
             const { data, error: uploadError } = await supabase.storage
-                .from('waterplast-productos')
+                .from(bucketName)
                 .upload(finalFileName, file, {
                     cacheControl: '3600',
                     upsert: true
@@ -638,12 +642,13 @@ export const useStorage = () => {
         }
     }
 
-    const deleteProductoImage = async (storagePath) => {
+    const deleteProductoImage = async (storagePath, marca = 'waterplast') => {
         try {
             error.value = null
 
+            const bucketName = `${marca}-productos`
             const { error: deleteError } = await supabase.storage
-                .from('waterplast-productos')
+                .from(bucketName)
                 .remove([storagePath])
 
             if (deleteError) throw deleteError
@@ -654,12 +659,13 @@ export const useStorage = () => {
         }
     }
 
-    const deleteProductoFile = async (storagePath) => {
+    const deleteProductoFile = async (storagePath, marca = 'waterplast') => {
         try {
             error.value = null
 
+            const bucketName = `${marca}-productos`
             const { error: deleteError } = await supabase.storage
-                .from('waterplast-productos')
+                .from(bucketName)
                 .remove([storagePath])
 
             if (deleteError) throw deleteError
@@ -686,9 +692,9 @@ export const useStorage = () => {
         }
     }
 
-    const getProductoImageUrl = (storagePath, cacheBust = false) => {
+    const getProductoImageUrl = (storagePath, marca = 'waterplast', cacheBust = false) => {
         if (!storagePath) return null
-        let url = `${config.public.supabase.url}/storage/v1/object/public/waterplast-productos/${storagePath}`
+        let url = `${config.public.supabase.url}/storage/v1/object/public/${marca}-productos/${storagePath}`
 
         if (cacheBust) {
             const timestamp = Date.now()
@@ -698,9 +704,9 @@ export const useStorage = () => {
         return url
     }
 
-    const getProductoFileUrl = (storagePath, cacheBust = false) => {
+    const getProductoFileUrl = (storagePath, marca = 'waterplast', cacheBust = false) => {
         if (!storagePath) return null
-        let url = `${config.public.supabase.url}/storage/v1/object/public/waterplast-productos/${storagePath}`
+        let url = `${config.public.supabase.url}/storage/v1/object/public/${marca}-productos/${storagePath}`
 
         if (cacheBust) {
             const timestamp = Date.now()
@@ -786,7 +792,7 @@ export const useStorage = () => {
         return url
     }
 
-    const deleteProductoFolder = async (productoNombre) => {
+    const deleteProductoFolder = async (productoNombre, marca = 'waterplast') => {
         try {
             error.value = null
 
@@ -795,8 +801,10 @@ export const useStorage = () => {
                 .replace(/\s+/g, '-')
                 .substring(0, 20)
 
+            const bucketName = `${marca}-productos`
+
             const { data: files, error: listError } = await supabase.storage
-                .from('waterplast-productos')
+                .from(bucketName)
                 .list(cleanName, {
                     limit: 1000,
                     sortBy: { column: 'name', order: 'asc' }
@@ -813,7 +821,7 @@ export const useStorage = () => {
                     const fullPath = folderPath ? `${cleanName}/${folderPath}` : cleanName
 
                     const { data: items, error: subListError } = await supabase.storage
-                        .from('waterplast-productos')
+                        .from(bucketName)
                         .list(fullPath, {
                             limit: 1000,
                             sortBy: { column: 'name', order: 'asc' }
@@ -837,7 +845,7 @@ export const useStorage = () => {
 
                 if (allPaths.length > 0) {
                     const { error: deleteError } = await supabase.storage
-                        .from('waterplast-productos')
+                        .from(bucketName)
                         .remove(allPaths)
 
                     if (deleteError) {
@@ -854,7 +862,7 @@ export const useStorage = () => {
                 for (const folderPath of commonFolders) {
                     try {
                         await supabase.storage
-                            .from('waterplast-productos')
+                            .from(bucketName)
                             .remove([folderPath])
                     } catch (error) {
                     }

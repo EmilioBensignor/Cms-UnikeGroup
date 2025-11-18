@@ -1,12 +1,12 @@
 <template>
     <DefaultSection>
-        <NuxtLink :to="ROUTE_NAMES.WATERPLAST.DISTRIBUIDORES"
+        <NuxtLink :to="ROUTE_NAMES.UNIKE.DISTRIBUIDORES"
             class="flex items-center gap-2 self-start text-dark font-light no-underline">
             <Icon name="tabler:arrow-left" size="1.25rem" />
             Volver a distribuidores
         </NuxtLink>
         <HeadingH1>Crear Distribuidor</HeadingH1>
-        <WaterplastDistribuidorForm :is-editing="false" @submit="handleSubmit" @cancel="handleCancel" />
+        <UnikeDistribuidorForm :is-editing="false" @submit="handleSubmit" @cancel="handleCancel" />
     </DefaultSection>
 </template>
 
@@ -25,7 +25,7 @@ const handleSubmit = async (formData) => {
             title: 'Distribuidor agregado'
         })
 
-        navigateTo(ROUTE_NAMES.WATERPLAST.DISTRIBUIDORES)
+        navigateTo(ROUTE_NAMES.UNIKE.DISTRIBUIDORES)
     } catch (err) {
         console.error('Error creating distribuidor:', err)
 
@@ -38,6 +38,6 @@ const handleSubmit = async (formData) => {
 }
 
 const handleCancel = () => {
-    navigateTo(ROUTE_NAMES.WATERPLAST.DISTRIBUIDORES)
+    navigateTo(ROUTE_NAMES.UNIKE.DISTRIBUIDORES)
 }
 </script>

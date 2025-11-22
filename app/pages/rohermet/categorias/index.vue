@@ -34,15 +34,6 @@ const tabla = {
             label: 'Nombre',
         },
         {
-            key: 'imagen',
-            label: 'Imagen',
-            type: 'image'
-        },
-        {
-            key: 'slug',
-            label: 'Slug',
-        },
-        {
             key: 'estado',
             label: 'Estado',
             type: 'boolean'

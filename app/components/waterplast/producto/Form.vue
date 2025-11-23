@@ -13,8 +13,8 @@
         </FormFieldsContainer>
 
         <FormFieldsContainer>
-            <FormImageField v-model="formData.imagen" id="imagen" label="Imagen (450px x 380px)" :error="errors.imagen" required
-                :acceptedTypes="['webp']" targetFolder="waterplast-productos" @upload-start="handleImagenStart"
+            <FormImageField v-model="formData.imagen" id="imagen" label="Imagen (450px x 380px)" :error="errors.imagen"
+                required :acceptedTypes="['webp']" targetFolder="waterplast-productos" @upload-start="handleImagenStart"
                 @upload-complete="handleImagenComplete" />
             <FormFileField v-model="formData.ficha_tecnica" id="ficha_tecnica" label="Ficha Técnica"
                 :error="errors.ficha_tecnica" :acceptedTypes="['pdf']" targetFolder="waterplast-productos"
@@ -32,25 +32,32 @@
 
         <FormFieldsContainer>
             <FormSwitch v-model="formData.estado" id="estado" label="Estado" required :error="errors.estado" />
+            <FormSelect v-model="formData.opcion" label="Opción" id="opcion" :error="errors.opcion"
+                :options="opcionOptions" placeholder="Seleccione opción" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
             <FormTextField v-model="formData.altura_cm" label="Altura (cm)" id="altura_cm" type="number"
-                placeholder="Ingrese la altura en centímetros" :error="errors.altura_cm" @keydown="preventInvalidNumber" />
+                placeholder="Ingrese la altura en centímetros" :error="errors.altura_cm"
+                @keydown="preventInvalidNumber" />
             <FormTextField v-model="formData.ancho_cm" label="Ancho (cm)" id="ancho_cm" type="number"
-                placeholder="Ingrese el ancho en centímetros" :error="errors.ancho_cm" @keydown="preventInvalidNumber" />
+                placeholder="Ingrese el ancho en centímetros" :error="errors.ancho_cm"
+                @keydown="preventInvalidNumber" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
             <FormTextField v-model="formData.largo_cm" label="Largo (cm)" id="largo_cm" type="number"
-                placeholder="Ingrese el largo en centímetros" :error="errors.largo_cm" @keydown="preventInvalidNumber" />
+                placeholder="Ingrese el largo en centímetros" :error="errors.largo_cm"
+                @keydown="preventInvalidNumber" />
             <FormTextField v-model="formData.diametro_cm" label="Diámetro (cm)" id="diametro_cm" type="number"
-                placeholder="Ingrese el diámetro en centímetros" :error="errors.diametro_cm" @keydown="preventInvalidNumber" />
+                placeholder="Ingrese el diámetro en centímetros" :error="errors.diametro_cm"
+                @keydown="preventInvalidNumber" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
             <FormTextField v-model="formData.capacidad_lts" label="Capacidad (lts)" id="capacidad_lts" type="number"
-                placeholder="Ingrese la capacidad en litros" :error="errors.capacidad_lts" @keydown="preventInvalidNumber" />
+                placeholder="Ingrese la capacidad en litros" :error="errors.capacidad_lts"
+                @keydown="preventInvalidNumber" />
             <FormSelect v-model="formData.orientacion" label="Orientación" id="orientacion" :error="errors.orientacion"
                 :options="orientacionOptions" placeholder="Seleccione orientación" />
         </FormFieldsContainer>
@@ -63,15 +70,10 @@
         </FormFieldsContainer>
 
         <FormFieldsContainer>
-            <FormSelect v-model="formData.opcion" label="Opción" id="opcion" :error="errors.opcion"
-                :options="opcionOptions" placeholder="Seleccione opción" />
-        </FormFieldsContainer>
-
-        <FormFieldsContainer>
             <FormTextField v-model="formData.caracteristica1" label="Característica 1" id="caracteristica1"
                 placeholder="Ingrese la primera característica" required :error="errors.caracteristica1" />
-            <FormImageField v-model="formData.icono1" id="icono1" label="Icono 1 (48px x 48px)" :error="errors.icono1" required
-                :acceptedTypes="['webp']" targetFolder="waterplast-productos" @upload-start="handleIconStart1"
+            <FormImageField v-model="formData.icono1" id="icono1" label="Icono 1 (48px x 48px)" :error="errors.icono1"
+                required :acceptedTypes="['webp']" targetFolder="waterplast-productos" @upload-start="handleIconStart1"
                 @upload-complete="handleIconComplete1" />
         </FormFieldsContainer>
 

@@ -13,44 +13,48 @@
         </FormFieldsContainer>
 
         <FormFieldsContainer>
-            <FormImageField v-model="formData.imagen" id="imagen" label="Imagen" :error="errors.imagen" required
-                targetFolder="rohermet-productos" @upload-start="handleImagenStart"
+            <FormImageField v-model="formData.imagen" id="imagen" label="Imagen (450px x 380px)" :error="errors.imagen"
+                required targetFolder="rohermet-productos" @upload-start="handleImagenStart"
                 @upload-complete="handleImagenComplete" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
-            <FormFileField v-model="formData.render_3d" id="render_3d" label="Render 3D (.zip)"
-                :error="errors.render_3d" :acceptedTypes="['zip']" targetFolder="rohermet-productos"
-                @upload-start="handleRender3dStart" @upload-complete="handleRender3dComplete" />
-            <FormFileField v-model="formData.archivo_html" id="archivo_html" label="Archivo HTML"
+            <FormFileField v-model="formData.archivo_html" id="archivo_html" label="Archivo .html para 3D"
                 :error="errors.archivo_html" :acceptedTypes="['html']" targetFolder="rohermet-productos"
                 @upload-start="handleArchivoHtmlStart" @upload-complete="handleArchivoHtmlComplete" />
+            <FormFileField v-model="formData.render_3d" id="render_3d" label="Carpeta .zip con imágenes para 3D"
+                :error="errors.render_3d" :acceptedTypes="['zip']" targetFolder="rohermet-productos"
+                @upload-start="handleRender3dStart" @upload-complete="handleRender3dComplete" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
-            <FormFileField v-model="formData.xr_images_folder" id="xr_images_folder" label="Carpeta XR (.zip)"
-                :error="errors.xr_images_folder" :acceptedTypes="['zip']" targetFolder="rohermet-productos"
-                @upload-start="handleXrImagesFolderStart" @upload-complete="handleXrImagesFolderComplete" />
             <FormSwitch v-model="formData.estado" id="estado" label="Estado" required :error="errors.estado" />
+            <FormSelect v-model="formData.opcion" label="Opción" id="opcion" :error="errors.opcion"
+                :options="opcionOptions" placeholder="Seleccione opción" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
             <FormTextField v-model="formData.altura_cm" label="Altura (cm)" id="altura_cm" type="number"
-                placeholder="Ingrese la altura en centímetros" :error="errors.altura_cm" @keydown="preventInvalidNumber" />
+                placeholder="Ingrese la altura en centímetros" :error="errors.altura_cm"
+                @keydown="preventInvalidNumber" />
             <FormTextField v-model="formData.ancho_cm" label="Ancho (cm)" id="ancho_cm" type="number"
-                placeholder="Ingrese el ancho en centímetros" :error="errors.ancho_cm" @keydown="preventInvalidNumber" />
+                placeholder="Ingrese el ancho en centímetros" :error="errors.ancho_cm"
+                @keydown="preventInvalidNumber" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
             <FormTextField v-model="formData.largo_cm" label="Largo (cm)" id="largo_cm" type="number"
-                placeholder="Ingrese el largo en centímetros" :error="errors.largo_cm" @keydown="preventInvalidNumber" />
+                placeholder="Ingrese el largo en centímetros" :error="errors.largo_cm"
+                @keydown="preventInvalidNumber" />
             <FormTextField v-model="formData.diametro_cm" label="Diámetro (cm)" id="diametro_cm" type="number"
-                placeholder="Ingrese el diámetro en centímetros" :error="errors.diametro_cm" @keydown="preventInvalidNumber" />
+                placeholder="Ingrese el diámetro en centímetros" :error="errors.diametro_cm"
+                @keydown="preventInvalidNumber" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
             <FormTextField v-model="formData.capacidad_lts" label="Capacidad (lts)" id="capacidad_lts" type="number"
-                placeholder="Ingrese la capacidad en litros" :error="errors.capacidad_lts" @keydown="preventInvalidNumber" />
+                placeholder="Ingrese la capacidad en litros" :error="errors.capacidad_lts"
+                @keydown="preventInvalidNumber" />
             <FormSelect v-model="formData.orientacion" label="Orientación" id="orientacion" :error="errors.orientacion"
                 :options="orientacionOptions" placeholder="Seleccione orientación" />
         </FormFieldsContainer>
@@ -60,16 +64,6 @@
                 placeholder="Seleccione color" />
             <FormSelect v-model="formData.tecnologia" label="Tecnología" id="tecnologia" :error="errors.tecnologia"
                 :options="tecnologiaOptions" placeholder="Seleccione tecnología" />
-        </FormFieldsContainer>
-
-        <FormFieldsContainer>
-            <FormSelect v-model="formData.opcion" label="Opción" id="opcion" :error="errors.opcion"
-                :options="opcionOptions" placeholder="Seleccione opción" />
-        </FormFieldsContainer>
-
-        <FormFieldsContainer>
-            <FormTextarea v-model="formData.ficha_tecnica" label="Ficha Técnica" id="ficha_tecnica"
-                placeholder="Ingrese la ficha técnica del producto" :error="errors.ficha_tecnica" />
         </FormFieldsContainer>
 
         <div v-if="showButtons" class="w-full flex flex-col lg:flex-row items-center gap-5 mt-8">
@@ -111,7 +105,6 @@ const submitting = ref(false)
 const imagen = ref(null)
 const render3d = ref(null)
 const archivoHtml = ref(null)
-const xrImagesFolder = ref(null)
 
 const { categorias, fetchCategorias } = useRohermetCategorias()
 
@@ -151,7 +144,6 @@ const formData = reactive({
     imagen: null,
     render_3d: null,
     archivo_html: null,
-    xr_images_folder: null,
     estado: true,
     altura_cm: null,
     ancho_cm: null,
@@ -161,8 +153,7 @@ const formData = reactive({
     orientacion: '',
     color: '',
     tecnologia: '',
-    opcion: '',
-    ficha_tecnica: ''
+    opcion: ''
 })
 
 const errors = reactive({
@@ -172,7 +163,6 @@ const errors = reactive({
     imagen: '',
     render_3d: '',
     archivo_html: '',
-    xr_images_folder: '',
     estado: '',
     altura_cm: '',
     ancho_cm: '',
@@ -182,8 +172,7 @@ const errors = reactive({
     orientacion: '',
     color: '',
     tecnologia: '',
-    opcion: '',
-    ficha_tecnica: ''
+    opcion: ''
 })
 
 watch(() => props.initialData, async (newData) => {
@@ -195,7 +184,6 @@ watch(() => props.initialData, async (newData) => {
             imagen: newData.imagen || null,
             render_3d: newData.render_3d || null,
             archivo_html: newData.archivo_html || null,
-            xr_images_folder: newData.xr_images_folder || null,
             estado: newData.estado !== false,
             altura_cm: newData.altura_cm ?? null,
             ancho_cm: newData.ancho_cm ?? null,
@@ -205,8 +193,7 @@ watch(() => props.initialData, async (newData) => {
             orientacion: newData.orientacion || '',
             color: newData.color || '',
             tecnologia: newData.tecnologia || '',
-            opcion: newData.opcion || '',
-            ficha_tecnica: newData.ficha_tecnica || ''
+            opcion: newData.opcion || ''
         })
     }
 }, { immediate: true, deep: true })
@@ -252,15 +239,6 @@ const handleArchivoHtmlComplete = () => {
     errors.archivo_html = ''
 }
 
-const handleXrImagesFolderStart = (file) => {
-    xrImagesFolder.value = file
-    errors.xr_images_folder = ''
-}
-
-const handleXrImagesFolderComplete = () => {
-    errors.xr_images_folder = ''
-}
-
 const validateForm = () => {
     Object.keys(errors).forEach(key => {
         errors[key] = ''
@@ -298,6 +276,7 @@ const validateForm = () => {
 
 const handleSubmit = async () => {
     if (!validateForm()) {
+        console.log('Validación fallida:', errors)
         return
     }
 
@@ -306,7 +285,7 @@ const handleSubmit = async () => {
     try {
         const productoData = {
             nombre: formData.nombre.trim(),
-            categoria_id: parseInt(formData.categoria_id),
+            categoria_id: formData.categoria_id,
             descripcion: formData.descripcion.trim(),
             estado: formData.estado,
             altura_cm: formData.altura_cm ? parseFloat(formData.altura_cm) : null,
@@ -317,15 +296,13 @@ const handleSubmit = async () => {
             orientacion: formData.orientacion || null,
             color: formData.color || null,
             tecnologia: formData.tecnologia || null,
-            opcion: formData.opcion || null,
-            ficha_tecnica: formData.ficha_tecnica.trim() || null
+            opcion: formData.opcion || null
         }
 
         if (props.isEditing) {
             if (!imagen.value) productoData.imagen = formData.imagen
             if (!render3d.value) productoData.render_3d = formData.render_3d
             if (!archivoHtml.value) productoData.archivo_html = formData.archivo_html
-            if (!xrImagesFolder.value) productoData.xr_images_folder = formData.xr_images_folder
         }
 
         emit('submit', {
@@ -333,8 +310,7 @@ const handleSubmit = async () => {
             archivos: {
                 imagen: imagen.value,
                 render3d: render3d.value,
-                archivoHtml: archivoHtml.value,
-                xrImagesFolder: xrImagesFolder.value
+                archivoHtml: archivoHtml.value
             }
         })
 
@@ -344,4 +320,8 @@ const handleSubmit = async () => {
         submitting.value = false
     }
 }
+
+defineExpose({
+    handleSubmit
+})
 </script>

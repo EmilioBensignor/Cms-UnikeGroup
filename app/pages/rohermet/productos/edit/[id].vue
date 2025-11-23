@@ -14,7 +14,7 @@
             </ButtonPrimary>
         </div>
 
-        <div v-if="!loading && !error" class="w-full max-w-md lg:max-w-[56.25rem] flex justify-center">
+        <div v-if="!loading && !error" class="w-full max-w-md lg:max-w-[56.25rem]">
             <RohermetProductoForm
                 ref="productoFormRef"
                 :is-editing="true"
@@ -74,6 +74,16 @@ const handleFormSubmit = async (formData) => {
     }
 }
 
+const handleSubmit = async () => {
+    if (productoFormRef.value) {
+        await productoFormRef.value.handleSubmit()
+    } else {
+        notificationError('Error interno: Formulario no disponible', {
+            title: 'Error'
+        })
+    }
+}
+
 onMounted(async () => {
     try {
         const id = route.params.id
@@ -88,17 +98,8 @@ onMounted(async () => {
     }
 })
 
-const handleSubmit = async () => {
-    if (productoFormRef.value) {
-        await productoFormRef.value.handleSubmit()
-    } else {
-        notificationError('Error interno: Formulario no disponible', {
-            title: 'Error'
-        })
-    }
-}
-
 const handleCancel = () => {
     navigateTo(ROUTE_NAMES.ROHERMET.PRODUCTOS)
 }
+
 </script>

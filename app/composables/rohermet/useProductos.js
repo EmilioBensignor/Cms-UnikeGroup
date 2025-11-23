@@ -34,6 +34,7 @@ export const useRohermetProductos = () => {
                 imagen: producto.imagen ? getProductoImageUrl(producto.imagen, 'rohermet') : null,
                 render_3d: producto.render_3d ? getProductoFileUrl(producto.render_3d, 'rohermet') : null,
                 archivo_html: producto.archivo_html ? getProductoFileUrl(producto.archivo_html, 'rohermet') : null,
+                ficha_tecnica: producto.ficha_tecnica ? getProductoFileUrl(producto.ficha_tecnica, 'rohermet') : null,
                 categoria_nombre: producto.categoria?.nombre || ''
             }))
 
@@ -66,7 +67,8 @@ export const useRohermetProductos = () => {
                 ...data,
                 imagen: data.imagen ? getProductoImageUrl(data.imagen, 'rohermet') : null,
                 render_3d: data.render_3d ? getProductoFileUrl(data.render_3d, 'rohermet') : null,
-                archivo_html: data.archivo_html ? getProductoFileUrl(data.archivo_html, 'rohermet') : null
+                archivo_html: data.archivo_html ? getProductoFileUrl(data.archivo_html, 'rohermet') : null,
+                ficha_tecnica: data.ficha_tecnica ? getProductoFileUrl(data.ficha_tecnica, 'rohermet') : null
             }
 
             currentProducto.value = productoWithUrls
@@ -119,6 +121,7 @@ export const useRohermetProductos = () => {
             let imagenPath = null
             let render3dPath = null
             let archivoHtmlPath = null
+            let fichaTecnicaPath = null
 
             if (archivos.imagen) {
                 imagenPath = await uploadProductoImage(archivos.imagen, productoNombre, 'rohermet')
@@ -132,11 +135,16 @@ export const useRohermetProductos = () => {
                 archivoHtmlPath = await uploadProductoFile(archivos.archivoHtml, productoNombre + '-html', 'rohermet')
             }
 
+            if (archivos.fichaTecnica) {
+                fichaTecnicaPath = await uploadProductoFile(archivos.fichaTecnica, productoNombre + '-ficha', 'rohermet')
+            }
+
             const finalProductoData = {
                 ...productoData,
                 imagen: imagenPath,
                 render_3d: render3dPath,
-                archivo_html: archivoHtmlPath
+                archivo_html: archivoHtmlPath,
+                ficha_tecnica: fichaTecnicaPath
             }
 
             const { data, error: supabaseError } = await supabase
@@ -151,7 +159,8 @@ export const useRohermetProductos = () => {
                 ...data,
                 imagen: data.imagen ? getProductoImageUrl(data.imagen, 'rohermet') : null,
                 render_3d: data.render_3d ? getProductoFileUrl(data.render_3d, 'rohermet') : null,
-                archivo_html: data.archivo_html ? getProductoFileUrl(data.archivo_html, 'rohermet') : null
+                archivo_html: data.archivo_html ? getProductoFileUrl(data.archivo_html, 'rohermet') : null,
+                ficha_tecnica: data.ficha_tecnica ? getProductoFileUrl(data.ficha_tecnica, 'rohermet') : null
             }
 
             productos.value.push(dataWithUrls)
@@ -172,7 +181,7 @@ export const useRohermetProductos = () => {
         try {
             const { data: currentData, error: fetchError } = await supabase
                 .from('rohermet-productos')
-                .select('nombre, imagen, render_3d, archivo_html')
+                .select('nombre, imagen, render_3d, archivo_html, ficha_tecnica')
                 .eq('id', id)
                 .single()
 
@@ -183,6 +192,7 @@ export const useRohermetProductos = () => {
             let imagenPath = currentData?.imagen
             let render3dPath = currentData?.render_3d
             let archivoHtmlPath = currentData?.archivo_html
+            let fichaTecnicaPath = currentData?.ficha_tecnica
 
             if (archivos.imagen) {
                 if (currentData?.imagen) {
@@ -205,11 +215,19 @@ export const useRohermetProductos = () => {
                 archivoHtmlPath = await uploadProductoFile(archivos.archivoHtml, productoNombre + '-html', 'rohermet')
             }
 
+            if (archivos.fichaTecnica) {
+                if (currentData?.ficha_tecnica) {
+                    await deleteProductoFile(currentData.ficha_tecnica, 'rohermet')
+                }
+                fichaTecnicaPath = await uploadProductoFile(archivos.fichaTecnica, productoNombre + '-ficha', 'rohermet')
+            }
+
             const finalProductoData = {
                 ...productoData,
                 imagen: imagenPath,
                 render_3d: render3dPath,
-                archivo_html: archivoHtmlPath
+                archivo_html: archivoHtmlPath,
+                ficha_tecnica: fichaTecnicaPath
             }
 
             const { data, error: supabaseError } = await supabase
@@ -225,7 +243,8 @@ export const useRohermetProductos = () => {
                 ...data,
                 imagen: data.imagen ? getProductoImageUrl(data.imagen, 'rohermet') : null,
                 render_3d: data.render_3d ? getProductoFileUrl(data.render_3d, 'rohermet') : null,
-                archivo_html: data.archivo_html ? getProductoFileUrl(data.archivo_html, 'rohermet') : null
+                archivo_html: data.archivo_html ? getProductoFileUrl(data.archivo_html, 'rohermet') : null,
+                ficha_tecnica: data.ficha_tecnica ? getProductoFileUrl(data.ficha_tecnica, 'rohermet') : null
             }
 
             const index = productos.value.findIndex(prod => prod.id === id)

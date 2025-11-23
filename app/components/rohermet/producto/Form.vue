@@ -16,6 +16,9 @@
             <FormImageField v-model="formData.imagen" id="imagen" label="Imagen (450px x 380px)" :error="errors.imagen"
                 required targetFolder="rohermet-productos" @upload-start="handleImagenStart"
                 @upload-complete="handleImagenComplete" />
+            <FormFileField v-model="formData.ficha_tecnica" id="ficha_tecnica" label="Ficha Técnica"
+                :error="errors.ficha_tecnica" :acceptedTypes="['pdf']" targetFolder="rohermet-productos"
+                @upload-start="handleFichaTecnicaStart" @upload-complete="handleFichaTecnicaComplete" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
@@ -105,6 +108,7 @@ const submitting = ref(false)
 const imagen = ref(null)
 const render3d = ref(null)
 const archivoHtml = ref(null)
+const fichaTecnica = ref(null)
 
 const { categorias, fetchCategorias } = useRohermetCategorias()
 
@@ -144,6 +148,7 @@ const formData = reactive({
     imagen: null,
     render_3d: null,
     archivo_html: null,
+    ficha_tecnica: null,
     estado: true,
     altura_cm: null,
     ancho_cm: null,
@@ -163,6 +168,7 @@ const errors = reactive({
     imagen: '',
     render_3d: '',
     archivo_html: '',
+    ficha_tecnica: '',
     estado: '',
     altura_cm: '',
     ancho_cm: '',
@@ -184,6 +190,7 @@ watch(() => props.initialData, async (newData) => {
             imagen: newData.imagen || null,
             render_3d: newData.render_3d || null,
             archivo_html: newData.archivo_html || null,
+            ficha_tecnica: newData.ficha_tecnica || null,
             estado: newData.estado !== false,
             altura_cm: newData.altura_cm ?? null,
             ancho_cm: newData.ancho_cm ?? null,
@@ -237,6 +244,15 @@ const handleArchivoHtmlStart = (file) => {
 
 const handleArchivoHtmlComplete = () => {
     errors.archivo_html = ''
+}
+
+const handleFichaTecnicaStart = (file) => {
+    fichaTecnica.value = file
+    errors.ficha_tecnica = ''
+}
+
+const handleFichaTecnicaComplete = () => {
+    errors.ficha_tecnica = ''
 }
 
 const validateForm = () => {
@@ -303,6 +319,7 @@ const handleSubmit = async () => {
             if (!imagen.value) productoData.imagen = formData.imagen
             if (!render3d.value) productoData.render_3d = formData.render_3d
             if (!archivoHtml.value) productoData.archivo_html = formData.archivo_html
+            if (!fichaTecnica.value) productoData.ficha_tecnica = formData.ficha_tecnica
         }
 
         emit('submit', {
@@ -310,7 +327,8 @@ const handleSubmit = async () => {
             archivos: {
                 imagen: imagen.value,
                 render3d: render3d.value,
-                archivoHtml: archivoHtml.value
+                archivoHtml: archivoHtml.value,
+                fichaTecnica: fichaTecnica.value
             }
         })
 

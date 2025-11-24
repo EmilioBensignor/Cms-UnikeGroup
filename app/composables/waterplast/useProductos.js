@@ -39,7 +39,10 @@ export const useWaterplastProductos = () => {
             }
 
             const { data, error } = await supabase.functions.invoke('unzip-images', {
-                body: { id: productoId }
+                body: {
+                    id: productoId,
+                    table: 'waterplast-productos'
+                }
             })
 
             if (error) {

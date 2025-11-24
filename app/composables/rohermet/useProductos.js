@@ -111,6 +111,30 @@ export const useRohermetProductos = () => {
         }
     }
 
+    const callUnzipImages = async (productoId) => {
+        try {
+            if (!supabase || !supabase.functions) {
+                return null
+            }
+
+            const { data, error } = await supabase.functions.invoke('unzip-images', {
+                body: {
+                    id: productoId,
+                    table: 'rohermet-productos'
+                }
+            })
+
+            if (error) {
+                return null
+            }
+
+            return data
+
+        } catch (error) {
+            return null
+        }
+    }
+
     const createProducto = async (productoData, archivos) => {
         loading.value = true
         error.value = null
@@ -164,6 +188,8 @@ export const useRohermetProductos = () => {
             }
 
             productos.value.push(dataWithUrls)
+
+            await callUnzipImages(data.id)
 
             return dataWithUrls
         } catch (err) {
@@ -254,6 +280,12 @@ export const useRohermetProductos = () => {
 
             currentProducto.value = dataWithUrls
 
+            const zipActualizado = Boolean(archivos?.render3d)
+
+            if (zipActualizado) {
+                await callUnzipImages(id)
+            }
+
             return dataWithUrls
         } catch (err) {
             error.value = err.message
@@ -309,6 +341,7 @@ export const useRohermetProductos = () => {
         fetchProductosByCategoria,
         createProducto,
         updateProducto,
-        deleteProducto
+        deleteProducto,
+        callUnzipImages
     }
 }

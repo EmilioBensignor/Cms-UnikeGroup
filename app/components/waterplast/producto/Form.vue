@@ -117,6 +117,8 @@
 import { useWaterplastCategorias } from '~/composables/waterplast/useCategorias.js'
 import { useWaterplastProductos } from '~/composables/waterplast/useProductos.js'
 
+const { error: showValidationError } = useNotification()
+
 const props = defineProps({
     isEditing: {
         type: Boolean,
@@ -446,6 +448,9 @@ const validateForm = () => {
 
 const handleSubmit = async () => {
     if (!validateForm()) {
+        showValidationError('Por favor, completa todos los campos requeridos', {
+            title: 'Validación incompleta'
+        })
         return
     }
 

@@ -64,7 +64,7 @@ const loadOpinion = async () => {
 
 const handleSubmit = async (formData) => {
     try {
-        await updateOpinion(opinionId, formData.opinionData, formData.imagen)
+        await updateOpinion(opinionId, formData.opinionData, formData.imagen, formData.imagenFueEliminada)
 
         success('Opinión actualizada exitosamente', {
             title: 'Opinión actualizada'

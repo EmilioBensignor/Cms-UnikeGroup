@@ -94,7 +94,7 @@ export const useWaterplastOpiniones = () => {
         }
     }
 
-    const updateOpinion = async (id, opinionData, imagen) => {
+    const updateOpinion = async (id, opinionData, imagen, imagenFueEliminada = false) => {
         loading.value = true
         error.value = null
 
@@ -110,10 +110,15 @@ export const useWaterplastOpiniones = () => {
             let imagePath = currentData?.imagen
 
             if (imagen) {
+                // Si hay una imagen nueva, eliminar la anterior y subir la nueva
                 if (currentData?.imagen) {
                     await deleteOpinionImage(currentData.imagen)
                 }
                 imagePath = await uploadOpinionImage(imagen, opinionData)
+            } else if (imagenFueEliminada) {
+                // Si la imagen fue eliminada explícitamente, no se debería llegar aquí
+                // porque la validación lo debería haber impedido
+                imagePath = null
             }
 
             const finalOpinionData = {

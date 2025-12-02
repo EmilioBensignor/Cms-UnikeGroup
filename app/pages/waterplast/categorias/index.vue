@@ -84,11 +84,6 @@ const tabla = {
             key: 'imagenes_redes_count',
             label: 'Redes',
             type: 'text'
-        },
-        {
-            key: 'estado',
-            label: 'Estado',
-            type: 'boolean'
         }
     ]
 }

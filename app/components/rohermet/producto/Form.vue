@@ -87,6 +87,8 @@
 import { useRohermetCategorias } from '~/composables/rohermet/useCategorias.js'
 import { useRohermetProductos } from '~/composables/rohermet/useProductos.js'
 
+const { error: showValidationError } = useNotification()
+
 const props = defineProps({
     isEditing: {
         type: Boolean,
@@ -292,7 +294,9 @@ const validateForm = () => {
 
 const handleSubmit = async () => {
     if (!validateForm()) {
-        console.log('Validación fallida:', errors)
+        showValidationError('Por favor, completa todos los campos requeridos', {
+            title: 'Validación incompleta'
+        })
         return
     }
 

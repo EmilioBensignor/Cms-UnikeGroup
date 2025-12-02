@@ -32,6 +32,8 @@
 </template>
 
 <script setup>
+const { error: showValidationError } = useNotification()
+
 const props = defineProps({
     isEditing: {
         type: Boolean,
@@ -176,6 +178,9 @@ const validateForm = () => {
 
 const handleSubmit = async () => {
     if (!validateForm()) {
+        showValidationError('Por favor, completa todos los campos requeridos', {
+            title: 'Validación incompleta'
+        })
         return
     }
 

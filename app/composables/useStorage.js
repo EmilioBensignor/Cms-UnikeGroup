@@ -798,14 +798,12 @@ export const useStorage = () => {
 
             const bucketName = `${marca}-productos`
 
-            // Delete the ZIP file
             const { error: deleteZipError } = await supabase.storage
                 .from(bucketName)
                 .remove([storagePath])
 
             if (deleteZipError) throw deleteZipError
 
-            // Delete the images folder that was extracted from the ZIP
             const cleanName = productoNombre.toLowerCase()
                 .replace(/[^a-z0-9\s]/g, '')
                 .replace(/\s+/g, '-')

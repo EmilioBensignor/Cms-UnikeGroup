@@ -31,10 +31,10 @@ export const useRohermetProductos = () => {
 
             const productosWithUrls = (data || []).map(producto => ({
                 ...producto,
-                imagen: producto.imagen ? getProductoImageUrl(producto.imagen, 'rohermet') : null,
-                render_3d: producto.render_3d ? getProductoFileUrl(producto.render_3d, 'rohermet') : null,
-                archivo_html: producto.archivo_html ? getProductoFileUrl(producto.archivo_html, 'rohermet') : null,
-                ficha_tecnica: producto.ficha_tecnica ? getProductoFileUrl(producto.ficha_tecnica, 'rohermet') : null,
+                imagen: producto.imagen ? getProductoImageUrl(producto.imagen, 'rohermet', true) : null,
+                render_3d: producto.render_3d ? getProductoFileUrl(producto.render_3d, 'rohermet', true) : null,
+                archivo_html: producto.archivo_html ? getProductoFileUrl(producto.archivo_html, 'rohermet', true) : null,
+                ficha_tecnica: producto.ficha_tecnica ? getProductoFileUrl(producto.ficha_tecnica, 'rohermet', true) : null,
                 categoria_nombre: producto.categoria?.nombre || ''
             }))
 
@@ -65,10 +65,10 @@ export const useRohermetProductos = () => {
 
             const productoWithUrls = {
                 ...data,
-                imagen: data.imagen ? getProductoImageUrl(data.imagen, 'rohermet') : null,
-                render_3d: data.render_3d ? getProductoFileUrl(data.render_3d, 'rohermet') : null,
-                archivo_html: data.archivo_html ? getProductoFileUrl(data.archivo_html, 'rohermet') : null,
-                ficha_tecnica: data.ficha_tecnica ? getProductoFileUrl(data.ficha_tecnica, 'rohermet') : null
+                imagen: data.imagen ? getProductoImageUrl(data.imagen, 'rohermet', true) : null,
+                render_3d: data.render_3d ? getProductoFileUrl(data.render_3d, 'rohermet', true) : null,
+                archivo_html: data.archivo_html ? getProductoFileUrl(data.archivo_html, 'rohermet', true) : null,
+                ficha_tecnica: data.ficha_tecnica ? getProductoFileUrl(data.ficha_tecnica, 'rohermet', true) : null
             }
 
             currentProducto.value = productoWithUrls
@@ -181,10 +181,10 @@ export const useRohermetProductos = () => {
 
             const dataWithUrls = {
                 ...data,
-                imagen: data.imagen ? getProductoImageUrl(data.imagen, 'rohermet') : null,
-                render_3d: data.render_3d ? getProductoFileUrl(data.render_3d, 'rohermet') : null,
-                archivo_html: data.archivo_html ? getProductoFileUrl(data.archivo_html, 'rohermet') : null,
-                ficha_tecnica: data.ficha_tecnica ? getProductoFileUrl(data.ficha_tecnica, 'rohermet') : null
+                imagen: data.imagen ? getProductoImageUrl(data.imagen, 'rohermet', true) : null,
+                render_3d: data.render_3d ? getProductoFileUrl(data.render_3d, 'rohermet', true) : null,
+                archivo_html: data.archivo_html ? getProductoFileUrl(data.archivo_html, 'rohermet', true) : null,
+                ficha_tecnica: data.ficha_tecnica ? getProductoFileUrl(data.ficha_tecnica, 'rohermet', true) : null
             }
 
             productos.value.push(dataWithUrls)
@@ -232,6 +232,10 @@ export const useRohermetProductos = () => {
                     await deleteProductoFile(currentData.render_3d, 'rohermet')
                 }
                 render3dPath = await uploadProductoFile(archivos.render3d, productoNombre + '-render3d', 'rohermet')
+            } else if (productoData.render_3d === null && currentData?.render_3d) {
+                // Usuario eliminó el archivo zip
+                await deleteProductoFile(currentData.render_3d, 'rohermet')
+                render3dPath = null
             }
 
             if (archivos.archivoHtml) {
@@ -239,6 +243,10 @@ export const useRohermetProductos = () => {
                     await deleteProductoFile(currentData.archivo_html, 'rohermet')
                 }
                 archivoHtmlPath = await uploadProductoFile(archivos.archivoHtml, productoNombre + '-html', 'rohermet')
+            } else if (productoData.archivo_html === null && currentData?.archivo_html) {
+                // Usuario eliminó el archivo HTML
+                await deleteProductoFile(currentData.archivo_html, 'rohermet')
+                archivoHtmlPath = null
             }
 
             if (archivos.fichaTecnica) {
@@ -246,6 +254,10 @@ export const useRohermetProductos = () => {
                     await deleteProductoFile(currentData.ficha_tecnica, 'rohermet')
                 }
                 fichaTecnicaPath = await uploadProductoFile(archivos.fichaTecnica, productoNombre + '-ficha', 'rohermet')
+            } else if (productoData.ficha_tecnica === null && currentData?.ficha_tecnica) {
+                // Usuario eliminó la ficha técnica
+                await deleteProductoFile(currentData.ficha_tecnica, 'rohermet')
+                fichaTecnicaPath = null
             }
 
             const finalProductoData = {
@@ -267,10 +279,10 @@ export const useRohermetProductos = () => {
 
             const dataWithUrls = {
                 ...data,
-                imagen: data.imagen ? getProductoImageUrl(data.imagen, 'rohermet') : null,
-                render_3d: data.render_3d ? getProductoFileUrl(data.render_3d, 'rohermet') : null,
-                archivo_html: data.archivo_html ? getProductoFileUrl(data.archivo_html, 'rohermet') : null,
-                ficha_tecnica: data.ficha_tecnica ? getProductoFileUrl(data.ficha_tecnica, 'rohermet') : null
+                imagen: data.imagen ? getProductoImageUrl(data.imagen, 'rohermet', true) : null,
+                render_3d: data.render_3d ? getProductoFileUrl(data.render_3d, 'rohermet', true) : null,
+                archivo_html: data.archivo_html ? getProductoFileUrl(data.archivo_html, 'rohermet', true) : null,
+                ficha_tecnica: data.ficha_tecnica ? getProductoFileUrl(data.ficha_tecnica, 'rohermet', true) : null
             }
 
             const index = productos.value.findIndex(prod => prod.id === id)

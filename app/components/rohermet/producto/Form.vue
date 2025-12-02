@@ -115,7 +115,6 @@ const render3d = ref(null)
 const archivoHtml = ref(null)
 const fichaTecnica = ref(null)
 
-// Track which files were explicitly removed
 const removedFiles = reactive({
     render3d: false,
     archivoHtml: false,
@@ -332,7 +331,6 @@ const handleSubmit = async () => {
         if (props.isEditing) {
             if (!imagen.value) productoData.imagen = formData.imagen
 
-            // Handle removed files - pass null to indicate deletion
             if (removedFiles.render3d) {
                 productoData.render_3d = null
             } else if (!render3d.value) {

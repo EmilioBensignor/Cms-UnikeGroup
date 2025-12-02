@@ -18,16 +18,19 @@
                 @upload-complete="handleImagenComplete" />
             <FormFileField v-model="formData.ficha_tecnica" id="ficha_tecnica" label="Ficha Técnica"
                 :error="errors.ficha_tecnica" :acceptedTypes="['pdf']" targetFolder="waterplast-productos"
-                @upload-start="handleFichaTecnicaStart" @upload-complete="handleFichaTecnicaComplete" />
+                @upload-start="handleFichaTecnicaStart" @upload-complete="handleFichaTecnicaComplete"
+                @file-removed="() => removedFiles.fichaTecnica = true" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
             <FormFileField v-model="formData.archivo_html" id="archivo_html" label="Archivo .html para 3D"
                 :error="errors.archivo_html" :acceptedTypes="['html']" targetFolder="waterplast-productos"
-                @upload-start="handleArchivoHtmlStart" @upload-complete="handleArchivoHtmlComplete" />
+                @upload-start="handleArchivoHtmlStart" @upload-complete="handleArchivoHtmlComplete"
+                @file-removed="() => removedFiles.archivoHtml = true" />
             <FormFileField v-model="formData.render_3d" id="render_3d" label="Carpeta .zip con imágenes para 3D"
                 :error="errors.render_3d" :acceptedTypes="['zip']" targetFolder="waterplast-productos"
-                @upload-start="handleRender3dStart" @upload-complete="handleRender3dComplete" />
+                @upload-start="handleRender3dStart" @upload-complete="handleRender3dComplete"
+                @file-removed="() => removedFiles.render3d = true" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
@@ -144,6 +147,12 @@ const archivoHtml = ref(null)
 const icono1 = ref(null)
 const icono2 = ref(null)
 const icono3 = ref(null)
+
+const removedFiles = reactive({
+    render3d: false,
+    archivoHtml: false,
+    fichaTecnica: false
+})
 
 const { categorias, fetchCategorias } = useWaterplastCategorias()
 const { fetchProductosByCategoria } = useWaterplastProductos()
@@ -472,9 +481,25 @@ const handleSubmit = async () => {
 
         if (props.isEditing) {
             if (!imagen.value) productoData.imagen = formData.imagen
-            if (!render3d.value) productoData.render_3d = formData.render_3d
-            if (!fichaTecnica.value) productoData.ficha_tecnica = formData.ficha_tecnica
-            if (!archivoHtml.value) productoData.archivo_html = formData.archivo_html
+
+            if (removedFiles.render3d) {
+                productoData.render_3d = null
+            } else if (!render3d.value) {
+                productoData.render_3d = formData.render_3d
+            }
+
+            if (removedFiles.fichaTecnica) {
+                productoData.ficha_tecnica = null
+            } else if (!fichaTecnica.value) {
+                productoData.ficha_tecnica = formData.ficha_tecnica
+            }
+
+            if (removedFiles.archivoHtml) {
+                productoData.archivo_html = null
+            } else if (!archivoHtml.value) {
+                productoData.archivo_html = formData.archivo_html
+            }
+
             if (!icono1.value) productoData.icono1 = formData.icono1
             if (!icono2.value) productoData.icono2 = formData.icono2
             if (!icono3.value) productoData.icono3 = formData.icono3

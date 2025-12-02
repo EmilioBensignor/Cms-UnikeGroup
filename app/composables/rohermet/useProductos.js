@@ -5,6 +5,7 @@ export const useRohermetProductos = () => {
         uploadProductoFile,
         deleteProductoImage,
         deleteProductoFile,
+        deleteProductoRender3d,
         getProductoImageUrl,
         getProductoFileUrl,
         deleteProductoFolder
@@ -229,12 +230,11 @@ export const useRohermetProductos = () => {
 
             if (archivos.render3d) {
                 if (currentData?.render_3d) {
-                    await deleteProductoFile(currentData.render_3d, 'rohermet')
+                    await deleteProductoRender3d(currentData.render_3d, productoNombre, 'rohermet')
                 }
                 render3dPath = await uploadProductoFile(archivos.render3d, productoNombre + '-render3d', 'rohermet')
             } else if (productoData.render_3d === null && currentData?.render_3d) {
-                // Usuario eliminó el archivo zip
-                await deleteProductoFile(currentData.render_3d, 'rohermet')
+                await deleteProductoRender3d(currentData.render_3d, productoNombre, 'rohermet')
                 render3dPath = null
             }
 
@@ -244,7 +244,6 @@ export const useRohermetProductos = () => {
                 }
                 archivoHtmlPath = await uploadProductoFile(archivos.archivoHtml, productoNombre + '-html', 'rohermet')
             } else if (productoData.archivo_html === null && currentData?.archivo_html) {
-                // Usuario eliminó el archivo HTML
                 await deleteProductoFile(currentData.archivo_html, 'rohermet')
                 archivoHtmlPath = null
             }
@@ -255,7 +254,6 @@ export const useRohermetProductos = () => {
                 }
                 fichaTecnicaPath = await uploadProductoFile(archivos.fichaTecnica, productoNombre + '-ficha', 'rohermet')
             } else if (productoData.ficha_tecnica === null && currentData?.ficha_tecnica) {
-                // Usuario eliminó la ficha técnica
                 await deleteProductoFile(currentData.ficha_tecnica, 'rohermet')
                 fichaTecnicaPath = null
             }

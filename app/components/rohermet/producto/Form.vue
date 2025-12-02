@@ -18,16 +18,19 @@
                 @upload-complete="handleImagenComplete" />
             <FormFileField v-model="formData.ficha_tecnica" id="ficha_tecnica" label="Ficha Técnica"
                 :error="errors.ficha_tecnica" :acceptedTypes="['pdf']" targetFolder="rohermet-productos"
-                @upload-start="handleFichaTecnicaStart" @upload-complete="handleFichaTecnicaComplete" />
+                @upload-start="handleFichaTecnicaStart" @upload-complete="handleFichaTecnicaComplete"
+                @file-removed="() => removedFiles.fichaTecnica = true" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
             <FormFileField v-model="formData.archivo_html" id="archivo_html" label="Archivo .html para 3D"
                 :error="errors.archivo_html" :acceptedTypes="['html']" targetFolder="rohermet-productos"
-                @upload-start="handleArchivoHtmlStart" @upload-complete="handleArchivoHtmlComplete" />
+                @upload-start="handleArchivoHtmlStart" @upload-complete="handleArchivoHtmlComplete"
+                @file-removed="() => removedFiles.archivoHtml = true" />
             <FormFileField v-model="formData.render_3d" id="render_3d" label="Carpeta .zip con imágenes para 3D"
                 :error="errors.render_3d" :acceptedTypes="['zip']" targetFolder="rohermet-productos"
-                @upload-start="handleRender3dStart" @upload-complete="handleRender3dComplete" />
+                @upload-start="handleRender3dStart" @upload-complete="handleRender3dComplete"
+                @file-removed="() => removedFiles.render3d = true" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
@@ -111,6 +114,13 @@ const imagen = ref(null)
 const render3d = ref(null)
 const archivoHtml = ref(null)
 const fichaTecnica = ref(null)
+
+// Track which files were explicitly removed
+const removedFiles = reactive({
+    render3d: false,
+    archivoHtml: false,
+    fichaTecnica: false
+})
 
 const { categorias, fetchCategorias } = useRohermetCategorias()
 
@@ -321,9 +331,25 @@ const handleSubmit = async () => {
 
         if (props.isEditing) {
             if (!imagen.value) productoData.imagen = formData.imagen
-            if (!render3d.value) productoData.render_3d = formData.render_3d
-            if (!archivoHtml.value) productoData.archivo_html = formData.archivo_html
-            if (!fichaTecnica.value) productoData.ficha_tecnica = formData.ficha_tecnica
+
+            // Handle removed files - pass null to indicate deletion
+            if (removedFiles.render3d) {
+                productoData.render_3d = null
+            } else if (!render3d.value) {
+                productoData.render_3d = formData.render_3d
+            }
+
+            if (removedFiles.archivoHtml) {
+                productoData.archivo_html = null
+            } else if (!archivoHtml.value) {
+                productoData.archivo_html = formData.archivo_html
+            }
+
+            if (removedFiles.fichaTecnica) {
+                productoData.ficha_tecnica = null
+            } else if (!fichaTecnica.value) {
+                productoData.ficha_tecnica = formData.ficha_tecnica
+            }
         }
 
         emit('submit', {

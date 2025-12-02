@@ -94,7 +94,7 @@ export const useWaterplastOpiniones = () => {
         }
     }
 
-    const updateOpinion = async (id, opinionData, imagen) => {
+    const updateOpinion = async (id, opinionData, imagen, imagenFueEliminada = false) => {
         loading.value = true
         error.value = null
 
@@ -114,6 +114,8 @@ export const useWaterplastOpiniones = () => {
                     await deleteOpinionImage(currentData.imagen)
                 }
                 imagePath = await uploadOpinionImage(imagen, opinionData)
+            } else if (imagenFueEliminada) {
+                imagePath = null
             }
 
             const finalOpinionData = {

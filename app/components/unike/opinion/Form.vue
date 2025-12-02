@@ -41,6 +41,8 @@
 </template>
 
 <script setup>
+const { error: showValidationError } = useNotification()
+
 const props = defineProps({
     isEditing: {
         type: Boolean,
@@ -57,6 +59,8 @@ const emit = defineEmits(['submit', 'cancel'])
 const submitting = ref(false)
 const imagen = ref(null)
 const imagePreview = ref(null)
+const imagenFueEliminada = ref(false)
+const imagenOriginal = ref(null)
 
 const formData = reactive({
     titulo: '',
@@ -89,7 +93,18 @@ onMounted(() => {
 
         if (props.initialData.imagen) {
             imagePreview.value = props.initialData.imagen
+            imagenOriginal.value = props.initialData.imagen
         }
+    }
+})
+
+watch(() => imagePreview.value, (newValue) => {
+    if (imagenOriginal.value && !newValue && !imagen.value) {
+        imagenFueEliminada.value = true
+    } else if (newValue && newValue !== imagenOriginal.value) {
+        imagenFueEliminada.value = false
+    } else if (imagen.value && imagenFueEliminada.value) {
+        imagenFueEliminada.value = false
     }
 })
 
@@ -145,13 +160,17 @@ const validateForm = () => {
         isValid = false
     }
 
-
     if (!props.isEditing && !imagen.value) {
         errors.imagen = 'La imagen es requerida'
         isValid = false
-    } else if (props.isEditing && !imagen.value && !imagePreview.value) {
-        errors.imagen = 'La imagen es requerida'
-        isValid = false
+    } else if (props.isEditing) {
+        if (imagenFueEliminada.value && !imagen.value) {
+            errors.imagen = 'Debes colocar una nueva imagen para reemplazar la eliminada'
+            isValid = false
+        } else if (!imagen.value && !imagePreview.value) {
+            errors.imagen = 'La imagen es requerida'
+            isValid = false
+        }
     }
 
     return isValid
@@ -159,6 +178,9 @@ const validateForm = () => {
 
 const handleSubmit = async () => {
     if (!validateForm()) {
+        showValidationError('Por favor, completa todos los campos requeridos', {
+            title: 'Validación incompleta'
+        })
         return
     }
 
@@ -173,13 +195,14 @@ const handleSubmit = async () => {
             texto: formData.texto.trim(),
         }
 
-        if (props.isEditing && !imagen.value) {
+        if (props.isEditing && !imagen.value && !imagenFueEliminada.value) {
             opinionData.imagen = formData.imagen
         }
 
         emit('submit', {
             opinionData,
-            imagen: imagen.value
+            imagen: imagen.value,
+            imagenFueEliminada: imagenFueEliminada.value
         })
 
     } catch (error) {

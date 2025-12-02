@@ -40,7 +40,6 @@
         <FormFieldsContainer>
             <FormTextField v-model="formData.orden" label="Número de Orden" id="orden" type="number"
                 placeholder="Ingrese el número de orden" required :error="errors.orden" />
-            <FormSwitch v-model="formData.estado" id="estado" label="Estado" required :error="errors.estado" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
@@ -90,6 +89,9 @@
 
 <script setup>
 import MultiImageField from '~/components/form/MultiImageField.vue'
+
+const { error: showValidationError } = useNotification()
+
 const props = defineProps({
     isEditing: {
         type: Boolean,
@@ -130,7 +132,6 @@ const formData = reactive({
     caracteristica3: '',
     icono3: null,
     imagenesRedes: [],
-    estado: true,
 })
 
 const errors = reactive({
@@ -148,8 +149,7 @@ const errors = reactive({
     icono2: '',
     caracteristica3: '',
     icono3: '',
-    imagenesRedes: '',
-    estado: ''
+    imagenesRedes: ''
 })
 
 watch(() => props.initialData, async (newData) => {
@@ -188,7 +188,6 @@ watch(() => props.initialData, async (newData) => {
             icono2: newData.icono2 || null,
             caracteristica3: newData.caracteristica3 || '',
             icono3: newData.icono3 || null,
-            estado: newData.estado !== false,
         })
 
         await nextTick()
@@ -370,16 +369,14 @@ const validateForm = () => {
         isValid = false
     }
 
-    if (typeof formData.estado !== 'boolean') {
-        errors.estado = 'El estado debe ser válido'
-        isValid = false
-    }
-
     return isValid
 }
 
 const handleSubmit = async () => {
     if (!validateForm()) {
+        showValidationError('Por favor, completa todos los campos requeridos', {
+            title: 'Validación incompleta'
+        })
         return
     }
 
@@ -392,7 +389,6 @@ const handleSubmit = async () => {
             caracteristica1: formData.caracteristica1.trim(),
             caracteristica2: formData.caracteristica2.trim(),
             caracteristica3: formData.caracteristica3.trim(),
-            estado: formData.estado,
         }
 
         if (props.isEditing) {

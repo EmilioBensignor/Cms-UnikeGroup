@@ -1,6 +1,6 @@
 <template>
     <DefaultSection>
-        <NuxtLink :to="ROUTE_NAMES.WATERPLAST.OPINIONES"
+        <NuxtLink :to="ROUTE_NAMES.UNIKE.OPINIONES"
             class="flex items-center gap-2 self-start text-dark font-light no-underline">
             <Icon name="tabler:arrow-left" size="1.25rem" />
             Volver a opiniones
@@ -13,14 +13,14 @@
         <div v-else-if="!currentOpinion" class="text-center py-12">
             <Icon name="tabler:file-x" class="w-16 h-16 text-gray-400 mx-auto mb-4" />
             <p class="text-gray-600 text-lg">Opinión no encontrada</p>
-            <ButtonPrimary :to="ROUTE_NAMES.WATERPLAST.OPINIONES" class="mt-4">
+            <ButtonPrimary :to="ROUTE_NAMES.UNIKE.OPINIONES" class="mt-4">
                 Volver a opiniones
             </ButtonPrimary>
         </div>
 
         <div v-else class="w-full flex flex-col items-center gap-6 lg:gap-9">
             <HeadingH1>Editar Opinión</HeadingH1>
-            <WaterplastOpinionForm 
+            <UnikeOpinionForm 
                 :is-editing="true" 
                 :initial-data="currentOpinion"
                 @submit="handleSubmit" 
@@ -64,13 +64,13 @@ const loadOpinion = async () => {
 
 const handleSubmit = async (formData) => {
     try {
-        await updateOpinion(opinionId, formData.opinionData, formData.imagen)
+        await updateOpinion(opinionId, formData.opinionData, formData.imagen, formData.imagenFueEliminada)
 
         success('Opinión actualizada exitosamente', {
             title: 'Opinión actualizada'
         })
 
-        navigateTo(ROUTE_NAMES.WATERPLAST.OPINIONES)
+        navigateTo(ROUTE_NAMES.UNIKE.OPINIONES)
     } catch (err) {
         console.error('Error updating opinion:', err)
 
@@ -83,6 +83,6 @@ const handleSubmit = async (formData) => {
 }
 
 const handleCancel = () => {
-    navigateTo(ROUTE_NAMES.WATERPLAST.OPINIONES)
+    navigateTo(ROUTE_NAMES.UNIKE.OPINIONES)
 }
 </script>

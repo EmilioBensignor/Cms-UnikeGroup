@@ -1,6 +1,6 @@
 <template>
     <DefaultSection>
-        <NuxtLink :to="ROUTE_NAMES.WATERPLAST.DISTRIBUIDORES"
+        <NuxtLink :to="ROUTE_NAMES.UNIKE.DISTRIBUIDORES"
             class="flex items-center gap-2 self-start text-dark font-light no-underline">
             <Icon name="tabler:arrow-left" size="1.25rem" />
             Volver a distribuidores
@@ -13,14 +13,14 @@
         <div v-else-if="!currentDistribuidor" class="text-center py-12">
             <Icon name="tabler:file-x" class="w-16 h-16 text-gray-400 mx-auto mb-4" />
             <p class="text-gray-600 text-lg">Distribuidor no encontrado</p>
-            <ButtonPrimary :to="ROUTE_NAMES.WATERPLAST.DISTRIBUIDORES" class="mt-4">
+            <ButtonPrimary :to="ROUTE_NAMES.UNIKE.DISTRIBUIDORES" class="mt-4">
                 Volver a distribuidores
             </ButtonPrimary>
         </div>
 
         <div v-else class="w-full flex flex-col items-center gap-6 lg:gap-9">
             <HeadingH1>Editar Distribuidor</HeadingH1>
-            <WaterplastDistribuidorForm
+            <UnikeDistribuidorForm
                 :is-editing="true"
                 :initial-data="currentDistribuidor"
                 @submit="handleSubmit"
@@ -70,7 +70,7 @@ const handleSubmit = async (formData) => {
             title: 'Distribuidor actualizado'
         })
 
-        navigateTo(ROUTE_NAMES.WATERPLAST.DISTRIBUIDORES)
+        navigateTo(ROUTE_NAMES.UNIKE.DISTRIBUIDORES)
     } catch (err) {
         console.error('Error updating distribuidor:', err)
 
@@ -83,6 +83,6 @@ const handleSubmit = async (formData) => {
 }
 
 const handleCancel = () => {
-    navigateTo(ROUTE_NAMES.WATERPLAST.DISTRIBUIDORES)
+    navigateTo(ROUTE_NAMES.UNIKE.DISTRIBUIDORES)
 }
 </script>

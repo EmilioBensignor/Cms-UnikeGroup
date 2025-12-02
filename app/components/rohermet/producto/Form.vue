@@ -14,21 +14,21 @@
 
         <FormFieldsContainer>
             <FormImageField v-model="formData.imagen" id="imagen" label="Imagen (450px x 380px)" :error="errors.imagen"
-                required :acceptedTypes="['webp']" targetFolder="waterplast-productos" @upload-start="handleImagenStart"
+                required targetFolder="rohermet-productos" @upload-start="handleImagenStart"
                 @upload-complete="handleImagenComplete" />
             <FormFileField v-model="formData.ficha_tecnica" id="ficha_tecnica" label="Ficha Técnica"
-                :error="errors.ficha_tecnica" :acceptedTypes="['pdf']" targetFolder="waterplast-productos"
+                :error="errors.ficha_tecnica" :acceptedTypes="['pdf']" targetFolder="rohermet-productos"
                 @upload-start="handleFichaTecnicaStart" @upload-complete="handleFichaTecnicaComplete"
                 @file-removed="() => removedFiles.fichaTecnica = true" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
             <FormFileField v-model="formData.archivo_html" id="archivo_html" label="Archivo .html para 3D"
-                :error="errors.archivo_html" :acceptedTypes="['html']" targetFolder="waterplast-productos"
+                :error="errors.archivo_html" :acceptedTypes="['html']" targetFolder="rohermet-productos"
                 @upload-start="handleArchivoHtmlStart" @upload-complete="handleArchivoHtmlComplete"
                 @file-removed="() => removedFiles.archivoHtml = true" />
             <FormFileField v-model="formData.render_3d" id="render_3d" label="Carpeta .zip con imágenes para 3D"
-                :error="errors.render_3d" :acceptedTypes="['zip']" targetFolder="waterplast-productos"
+                :error="errors.render_3d" :acceptedTypes="['zip']" targetFolder="rohermet-productos"
                 @upload-start="handleRender3dStart" @upload-complete="handleRender3dComplete"
                 @file-removed="() => removedFiles.render3d = true" />
         </FormFieldsContainer>
@@ -72,36 +72,6 @@
                 :options="tecnologiaOptions" placeholder="Seleccione tecnología" />
         </FormFieldsContainer>
 
-        <FormFieldsContainer>
-            <FormTextField v-model="formData.caracteristica1" label="Característica 1" id="caracteristica1"
-                placeholder="Ingrese la primera característica" required :error="errors.caracteristica1" />
-            <FormImageField v-model="formData.icono1" id="icono1" label="Icono 1 (48px x 48px)" :error="errors.icono1"
-                required :acceptedTypes="['webp']" targetFolder="waterplast-productos" @upload-start="handleIconStart1"
-                @upload-complete="handleIconComplete1" />
-        </FormFieldsContainer>
-
-        <FormFieldsContainer>
-            <FormTextField v-model="formData.caracteristica2" label="Característica 2" id="caracteristica2"
-                placeholder="Ingrese la segunda característica" :error="errors.caracteristica2" />
-            <FormImageField v-model="formData.icono2" id="icono2" label="Icono 2 (48px x 48px)" :error="errors.icono2"
-                :acceptedTypes="['webp']" targetFolder="waterplast-productos" @upload-start="handleIconStart2"
-                @upload-complete="handleIconComplete2" />
-        </FormFieldsContainer>
-
-        <FormFieldsContainer>
-            <FormTextField v-model="formData.caracteristica3" label="Característica 3" id="caracteristica3"
-                placeholder="Ingrese la tercera característica" :error="errors.caracteristica3" />
-            <FormImageField v-model="formData.icono3" id="icono3" label="Icono 3 (48px x 48px)" :error="errors.icono3"
-                :acceptedTypes="['webp']" targetFolder="waterplast-productos" @upload-start="handleIconStart3"
-                @upload-complete="handleIconComplete3" />
-        </FormFieldsContainer>
-
-        <div v-if="formData.categoria_id && productosRelacionados.length > 0" class="w-full flex flex-col gap-2">
-            <FormLabel>Productos Relacionados</FormLabel>
-            <FormCheckboxGroupField v-model="formData.productos_relacionados" id="productos_relacionados"
-                :options="productosRelacionados" :error="errors.productos_relacionados" />
-        </div>
-
         <div v-if="showButtons" class="w-full flex flex-col lg:flex-row items-center gap-5 mt-8">
             <ButtonPrimary @click="$emit('cancel')" type="button" class="!bg-gray-mid !text-dark">
                 Cancelar
@@ -117,8 +87,8 @@
 </template>
 
 <script setup>
-import { useWaterplastCategorias } from '~/composables/waterplast/useCategorias.js'
-import { useWaterplastProductos } from '~/composables/waterplast/useProductos.js'
+import { useRohermetCategorias } from '~/composables/rohermet/useCategorias.js'
+import { useRohermetProductos } from '~/composables/rohermet/useProductos.js'
 
 const { error: showValidationError } = useNotification()
 
@@ -134,10 +104,6 @@ const props = defineProps({
     showButtons: {
         type: Boolean,
         default: true
-    },
-    preserveData: {
-        type: Boolean,
-        default: false
     }
 })
 
@@ -146,11 +112,8 @@ const emit = defineEmits(['submit', 'cancel'])
 const submitting = ref(false)
 const imagen = ref(null)
 const render3d = ref(null)
-const fichaTecnica = ref(null)
 const archivoHtml = ref(null)
-const icono1 = ref(null)
-const icono2 = ref(null)
-const icono3 = ref(null)
+const fichaTecnica = ref(null)
 
 const removedFiles = reactive({
     render3d: false,
@@ -158,10 +121,7 @@ const removedFiles = reactive({
     fichaTecnica: false
 })
 
-const { categorias, fetchCategorias } = useWaterplastCategorias()
-const { fetchProductosByCategoria } = useWaterplastProductos()
-
-const productosRelacionados = ref([])
+const { categorias, fetchCategorias } = useRohermetCategorias()
 
 const categoriasOptions = computed(() => {
     return categorias.value.map(categoria => ({
@@ -171,34 +131,25 @@ const categoriasOptions = computed(() => {
 })
 
 const orientacionOptions = [
-    { value: 'vertical', label: 'Vertical' },
-    { value: 'horizontal', label: 'Horizontal' },
-    { value: 'ninguna', label: 'Ninguna' }
+    { value: 'Vertical', label: 'Vertical' },
+    { value: 'Horizontal', label: 'Horizontal' },
+    { value: 'No aplica', label: 'No aplica' }
 ]
 
 const colorOptions = [
-    { value: 'arena', label: 'Arena' },
-    { value: 'negro', label: 'Negro' },
-    { value: 'celeste', label: 'Celeste' },
-    { value: 'gris', label: 'Gris' },
-    { value: 'blanco', label: 'Blanco' },
-    { value: 'rojo', label: 'Rojo' },
-    { value: 'azul', label: 'Azul' },
-    { value: 'verde', label: 'Verde' },
-    { value: 'naranja', label: 'Naranja' },
+    { value: 'Gris', label: 'Gris' },
+    { value: 'Blanco', label: 'Blanco' },
+    { value: 'Negro', label: 'Negro' },
+    { value: 'Naranja', label: 'Naranja' }
 ]
 
 const tecnologiaOptions = [
-    { value: 'soplado', label: 'Soplado' },
-    { value: 'rotomoldeo', label: 'Rotomoldeo' },
-    { value: 'soldadura', label: 'Soldadura' },
-    { value: 'inyeccion', label: 'Inyección' }
+    { value: 'Soldadura', label: 'Soldadura' }
 ]
 
 const opcionOptions = [
-    { value: 'para_exteriores', label: 'Para Exteriores' },
-    { value: 'es_cisterna', label: 'Es cisterna' },
-    { value: 'ninguna', label: 'Ninguna' },
+    { value: 'Para exteriores', label: 'Para exteriores' },
+    { value: 'Para interiores', label: 'Para interiores' }
 ]
 
 const formData = reactive({
@@ -207,8 +158,8 @@ const formData = reactive({
     descripcion: '',
     imagen: null,
     render_3d: null,
-    ficha_tecnica: null,
     archivo_html: null,
+    ficha_tecnica: null,
     estado: true,
     altura_cm: null,
     ancho_cm: null,
@@ -218,14 +169,7 @@ const formData = reactive({
     orientacion: '',
     color: '',
     tecnologia: '',
-    opcion: '',
-    caracteristica1: '',
-    icono1: null,
-    caracteristica2: '',
-    icono2: null,
-    caracteristica3: '',
-    icono3: null,
-    productos_relacionados: []
+    opcion: ''
 })
 
 const errors = reactive({
@@ -234,8 +178,8 @@ const errors = reactive({
     descripcion: '',
     imagen: '',
     render_3d: '',
-    ficha_tecnica: '',
     archivo_html: '',
+    ficha_tecnica: '',
     estado: '',
     altura_cm: '',
     ancho_cm: '',
@@ -245,37 +189,7 @@ const errors = reactive({
     orientacion: '',
     color: '',
     tecnologia: '',
-    opcion: '',
-    caracteristica1: '',
-    icono1: '',
-    caracteristica2: '',
-    icono2: '',
-    caracteristica3: '',
-    icono3: '',
-    productos_relacionados: ''
-})
-
-watch(() => formData.categoria_id, async (newCategoriaId) => {
-    if (newCategoriaId) {
-        try {
-            const productos = await fetchProductosByCategoria(newCategoriaId)
-
-            const filteredProductos = props.isEditing && props.initialData?.id
-                ? productos.filter(p => p.id !== props.initialData.id)
-                : productos
-
-            productosRelacionados.value = filteredProductos.map(p => ({
-                value: p.id,
-                label: p.nombre
-            }))
-
-        } catch (error) {
-            productosRelacionados.value = []
-        }
-    } else {
-        productosRelacionados.value = []
-        formData.productos_relacionados = []
-    }
+    opcion: ''
 })
 
 watch(() => props.initialData, async (newData) => {
@@ -286,8 +200,8 @@ watch(() => props.initialData, async (newData) => {
             descripcion: newData.descripcion || '',
             imagen: newData.imagen || null,
             render_3d: newData.render_3d || null,
-            ficha_tecnica: newData.ficha_tecnica || null,
             archivo_html: newData.archivo_html || null,
+            ficha_tecnica: newData.ficha_tecnica || null,
             estado: newData.estado !== false,
             altura_cm: newData.altura_cm ?? null,
             ancho_cm: newData.ancho_cm ?? null,
@@ -297,14 +211,7 @@ watch(() => props.initialData, async (newData) => {
             orientacion: newData.orientacion || '',
             color: newData.color || '',
             tecnologia: newData.tecnologia || '',
-            opcion: newData.opcion || '',
-            caracteristica1: newData.caracteristica1 || '',
-            icono1: newData.icono1 || null,
-            caracteristica2: newData.caracteristica2 || '',
-            icono2: newData.icono2 || null,
-            caracteristica3: newData.caracteristica3 || '',
-            icono3: newData.icono3 || null,
-            productos_relacionados: newData.productos_relacionados || []
+            opcion: newData.opcion || ''
         })
     }
 }, { immediate: true, deep: true })
@@ -316,6 +223,12 @@ onMounted(async () => {
         console.error('Error al cargar categorías:', error)
     }
 })
+
+const preventInvalidNumber = (event) => {
+    if (event.key === '-' || event.key === '+' || event.key === 'e' || event.key === 'E') {
+        event.preventDefault()
+    }
+}
 
 const handleImagenStart = (file) => {
     imagen.value = file
@@ -335,15 +248,6 @@ const handleRender3dComplete = () => {
     errors.render_3d = ''
 }
 
-const handleFichaTecnicaStart = (file) => {
-    fichaTecnica.value = file
-    errors.ficha_tecnica = ''
-}
-
-const handleFichaTecnicaComplete = () => {
-    errors.ficha_tecnica = ''
-}
-
 const handleArchivoHtmlStart = (file) => {
     archivoHtml.value = file
     errors.archivo_html = ''
@@ -353,37 +257,13 @@ const handleArchivoHtmlComplete = () => {
     errors.archivo_html = ''
 }
 
-const handleIconStart1 = (file) => {
-    icono1.value = file
-    errors.icono1 = ''
+const handleFichaTecnicaStart = (file) => {
+    fichaTecnica.value = file
+    errors.ficha_tecnica = ''
 }
 
-const handleIconComplete1 = () => {
-    errors.icono1 = ''
-}
-
-const handleIconStart2 = (file) => {
-    icono2.value = file
-    errors.icono2 = ''
-}
-
-const handleIconComplete2 = () => {
-    errors.icono2 = ''
-}
-
-const handleIconStart3 = (file) => {
-    icono3.value = file
-    errors.icono3 = ''
-}
-
-const handleIconComplete3 = () => {
-    errors.icono3 = ''
-}
-
-const preventInvalidNumber = (event) => {
-    if (['e', 'E', '+', '-'].includes(event.key)) {
-        event.preventDefault()
-    }
+const handleFichaTecnicaComplete = () => {
+    errors.ficha_tecnica = ''
 }
 
 const validateForm = () => {
@@ -418,40 +298,6 @@ const validateForm = () => {
         isValid = false
     }
 
-    if (!formData.caracteristica1.trim()) {
-        errors.caracteristica1 = 'La característica 1 es requerida'
-        isValid = false
-    }
-
-    if (!icono1.value && !formData.icono1) {
-        errors.icono1 = 'El icono 1 es requerido'
-        isValid = false
-    }
-
-    if (formData.caracteristica2.trim() && !icono2.value && !formData.icono2) {
-        errors.icono2 = 'El icono 2 es requerido cuando se ingresa la característica 2'
-        isValid = false
-    }
-
-    if (!formData.caracteristica2.trim() && (icono2.value || formData.icono2)) {
-        errors.caracteristica2 = 'La característica 2 es requerida cuando se ingresa el icono 2'
-        isValid = false
-    }
-
-    if (formData.caracteristica3.trim() && !icono3.value && !formData.icono3) {
-        errors.icono3 = 'El icono 3 es requerido cuando se ingresa la característica 3'
-        isValid = false
-    }
-
-    if (!formData.caracteristica3.trim() && (icono3.value || formData.icono3)) {
-        errors.caracteristica3 = 'La característica 3 es requerida cuando se ingresa el icono 3'
-        isValid = false
-    }
-
-    if (!isValid) {
-        return
-    }
-
     return isValid
 }
 
@@ -479,11 +325,7 @@ const handleSubmit = async () => {
             orientacion: formData.orientacion || null,
             color: formData.color || null,
             tecnologia: formData.tecnologia || null,
-            opcion: formData.opcion || null,
-            caracteristica1: formData.caracteristica1.trim() || null,
-            caracteristica2: formData.caracteristica2.trim() || null,
-            caracteristica3: formData.caracteristica3.trim() || null,
-            productos_relacionados: formData.productos_relacionados || []
+            opcion: formData.opcion || null
         }
 
         if (props.isEditing) {
@@ -495,21 +337,17 @@ const handleSubmit = async () => {
                 productoData.render_3d = formData.render_3d
             }
 
-            if (removedFiles.fichaTecnica) {
-                productoData.ficha_tecnica = null
-            } else if (!fichaTecnica.value) {
-                productoData.ficha_tecnica = formData.ficha_tecnica
-            }
-
             if (removedFiles.archivoHtml) {
                 productoData.archivo_html = null
             } else if (!archivoHtml.value) {
                 productoData.archivo_html = formData.archivo_html
             }
 
-            if (!icono1.value) productoData.icono1 = formData.icono1
-            if (!icono2.value) productoData.icono2 = formData.icono2
-            if (!icono3.value) productoData.icono3 = formData.icono3
+            if (removedFiles.fichaTecnica) {
+                productoData.ficha_tecnica = null
+            } else if (!fichaTecnica.value) {
+                productoData.ficha_tecnica = formData.ficha_tecnica
+            }
         }
 
         emit('submit', {
@@ -517,13 +355,8 @@ const handleSubmit = async () => {
             archivos: {
                 imagen: imagen.value,
                 render3d: render3d.value,
-                fichaTecnica: fichaTecnica.value,
-                archivoHtml: archivoHtml.value
-            },
-            iconos: {
-                icono1: icono1.value,
-                icono2: icono2.value,
-                icono3: icono3.value
+                archivoHtml: archivoHtml.value,
+                fichaTecnica: fichaTecnica.value
             }
         })
 

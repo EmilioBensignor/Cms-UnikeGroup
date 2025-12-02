@@ -3,7 +3,6 @@
         <FormFieldsContainer>
             <FormTextField v-model="formData.orden" label="Número de Orden" id="orden" type="number"
                 placeholder="Ingrese el número de orden" required :error="errors.orden" />
-            <FormSwitch v-model="formData.estado" id="estado" label="Estado" required :error="errors.estado" />
         </FormFieldsContainer>
 
         <div class="w-full flex flex-col lg:flex-row items-center gap-5 mt-8">
@@ -37,19 +36,16 @@ const submitting = ref(false)
 
 const formData = reactive({
     orden: 0,
-    estado: true,
 })
 
 const errors = reactive({
-    orden: '',
-    estado: ''
+    orden: ''
 })
 
 watch(() => props.initialData, async (newData) => {
     if (props.isEditing && newData) {
         Object.assign(formData, {
             orden: newData.orden || 0,
-            estado: newData.estado !== false,
         })
     }
 }, { immediate: true, deep: true })
@@ -66,11 +62,6 @@ const validateForm = () => {
         isValid = false
     }
 
-    if (typeof formData.estado !== 'boolean') {
-        errors.estado = 'El estado debe ser válido'
-        isValid = false
-    }
-
     return isValid
 }
 
@@ -84,7 +75,6 @@ const handleSubmit = async () => {
     try {
         const categoriaData = {
             orden: parseInt(formData.orden),
-            estado: formData.estado,
         }
 
         emit('submit', {

@@ -32,11 +32,6 @@ const tabla = {
         {
             key: 'nombre',
             label: 'Nombre',
-        },
-        {
-            key: 'estado',
-            label: 'Estado',
-            type: 'boolean'
         }
     ]
 }

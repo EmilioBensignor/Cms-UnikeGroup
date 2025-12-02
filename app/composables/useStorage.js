@@ -792,6 +792,80 @@ export const useStorage = () => {
         return url
     }
 
+    const deleteProductoRender3d = async (storagePath, productoNombre, marca = 'waterplast') => {
+        try {
+            error.value = null
+
+            const bucketName = `${marca}-productos`
+
+            // Delete the ZIP file
+            const { error: deleteZipError } = await supabase.storage
+                .from(bucketName)
+                .remove([storagePath])
+
+            if (deleteZipError) throw deleteZipError
+
+            // Delete the images folder that was extracted from the ZIP
+            const cleanName = productoNombre.toLowerCase()
+                .replace(/[^a-z0-9\s]/g, '')
+                .replace(/\s+/g, '-')
+                .substring(0, 20)
+
+            const imagesPath = `${cleanName}/images`
+
+            const { data: files, error: listError } = await supabase.storage
+                .from(bucketName)
+                .list(imagesPath, {
+                    limit: 1000,
+                    sortBy: { column: 'name', order: 'asc' }
+                })
+
+            if (!listError && files && files.length > 0) {
+                const allPaths = []
+
+                const getFilesRecursively = async (folderPath = '') => {
+                    const fullPath = folderPath ? `${imagesPath}/${folderPath}` : imagesPath
+
+                    const { data: items, error: subListError } = await supabase.storage
+                        .from(bucketName)
+                        .list(fullPath, {
+                            limit: 1000,
+                            sortBy: { column: 'name', order: 'asc' }
+                        })
+
+                    if (subListError || !items) return
+
+                    for (const item of items) {
+                        const itemPath = folderPath ? `${folderPath}/${item.name}` : item.name
+                        const fullItemPath = `${imagesPath}/${itemPath}`
+
+                        if (item.metadata) {
+                            allPaths.push(fullItemPath)
+                        } else {
+                            await getFilesRecursively(itemPath)
+                        }
+                    }
+                }
+
+                await getFilesRecursively()
+
+                if (allPaths.length > 0) {
+                    const { error: deleteError } = await supabase.storage
+                        .from(bucketName)
+                        .remove(allPaths)
+
+                    if (deleteError) {
+                        console.warn('Error deleting images folder contents:', deleteError)
+                    }
+                }
+            }
+
+        } catch (err) {
+            error.value = err.message
+            throw err
+        }
+    }
+
     const deleteProductoFolder = async (productoNombre, marca = 'waterplast') => {
         try {
             error.value = null
@@ -973,6 +1047,7 @@ export const useStorage = () => {
         deleteProductoImage,
         deleteProductoFile,
         deleteProductoIcon,
+        deleteProductoRender3d,
         getProductoImageUrl,
         getProductoFileUrl,
         getProductoIconUrl,

@@ -76,7 +76,7 @@ const props = defineProps({
     }
 })
 
-const emit = defineEmits(['update:modelValue', 'upload-start', 'upload-complete', 'upload-error'])
+const emit = defineEmits(['update:modelValue', 'upload-start', 'upload-complete', 'upload-error', 'file-removed'])
 
 const fileInput = ref(null)
 const fileName = ref('')
@@ -196,6 +196,7 @@ const removeFile = () => {
     fileSize.value = ''
     fileType.value = ''
     emit('update:modelValue', '')
+    emit('file-removed')
 
     if (fileInput.value) {
         fileInput.value.value = ''

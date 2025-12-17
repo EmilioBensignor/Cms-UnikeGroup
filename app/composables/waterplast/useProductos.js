@@ -7,6 +7,7 @@ export const useWaterplastProductos = () => {
         deleteProductoImage,
         deleteProductoFile,
         deleteProductoIcon,
+        deleteProductoRender3d,
         getProductoImageUrl,
         getProductoFileUrl,
         getProductoIconUrl,
@@ -389,7 +390,7 @@ export const useWaterplastProductos = () => {
 
             if (archivos.render3d) {
                 if (currentData?.render_3d) {
-                    await deleteProductoFile(currentData.render_3d)
+                    await deleteProductoRender3d(currentData.render_3d, productoNombre)
                 }
                 render3dPath = await uploadProductoFile(archivos.render3d, productoNombre + '-render3d')
             } else if (productoData.render_3d === null && currentData?.render_3d) {

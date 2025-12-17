@@ -392,6 +392,9 @@ export const useWaterplastProductos = () => {
                     await deleteProductoFile(currentData.render_3d)
                 }
                 render3dPath = await uploadProductoFile(archivos.render3d, productoNombre + '-render3d')
+            } else if (productoData.render_3d === null && currentData?.render_3d) {
+                await deleteProductoFile(currentData.render_3d)
+                render3dPath = null
             }
 
             if (archivos.fichaTecnica) {
@@ -399,6 +402,9 @@ export const useWaterplastProductos = () => {
                     await deleteProductoFile(currentData.ficha_tecnica)
                 }
                 fichaTecnicaPath = await uploadProductoFile(archivos.fichaTecnica, productoNombre + '-ficha')
+            } else if (productoData.ficha_tecnica === null && currentData?.ficha_tecnica) {
+                await deleteProductoFile(currentData.ficha_tecnica)
+                fichaTecnicaPath = null
             }
 
             if (archivos.manualInstalacion) {
@@ -406,6 +412,9 @@ export const useWaterplastProductos = () => {
                     await deleteProductoFile(currentData.manual_instalacion)
                 }
                 manualInstalacionPath = await uploadProductoFile(archivos.manualInstalacion, productoNombre + '-manual')
+            } else if (productoData.manual_instalacion === null && currentData?.manual_instalacion) {
+                await deleteProductoFile(currentData.manual_instalacion)
+                manualInstalacionPath = null
             }
 
             if (archivos.archivoHtml) {
@@ -413,6 +422,9 @@ export const useWaterplastProductos = () => {
                     await deleteProductoFile(currentData.archivo_html)
                 }
                 archivoHtmlPath = await uploadProductoFile(archivos.archivoHtml, productoNombre + '-html')
+            } else if (productoData.archivo_html === null && currentData?.archivo_html) {
+                await deleteProductoFile(currentData.archivo_html)
+                archivoHtmlPath = null
             }
 
             if (iconos.icono1) {

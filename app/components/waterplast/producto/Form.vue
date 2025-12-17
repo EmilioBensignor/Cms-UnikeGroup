@@ -16,9 +16,15 @@
             <FormImageField v-model="formData.imagen" id="imagen" label="Imagen (450px x 380px)" :error="errors.imagen"
                 required :acceptedTypes="['webp']" targetFolder="waterplast-productos" @upload-start="handleImagenStart"
                 @upload-complete="handleImagenComplete" />
+        </FormFieldsContainer>
+
+        <FormFieldsContainer>
             <FormFileField v-model="formData.ficha_tecnica" id="ficha_tecnica" label="Ficha Técnica"
                 :error="errors.ficha_tecnica" :acceptedTypes="['pdf']" targetFolder="waterplast-productos"
                 @upload-start="handleFichaTecnicaStart" @upload-complete="handleFichaTecnicaComplete" />
+            <FormFileField v-model="formData.manual_instalacion" id="manual_instalacion" label="Manual de Instalación"
+                :error="errors.manual_instalacion" :acceptedTypes="['pdf']" targetFolder="waterplast-productos"
+                @upload-start="handleManualInstalacionStart" @upload-complete="handleManualInstalacionComplete" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
@@ -144,6 +150,7 @@ const submitting = ref(false)
 const imagen = ref(null)
 const render3d = ref(null)
 const fichaTecnica = ref(null)
+const manualInstalacion = ref(null)
 const archivoHtml = ref(null)
 const icono1 = ref(null)
 const icono2 = ref(null)
@@ -199,6 +206,7 @@ const formData = reactive({
     imagen: null,
     render_3d: null,
     ficha_tecnica: null,
+    manual_instalacion: null,
     archivo_html: null,
     estado: true,
     altura_cm: null,
@@ -226,6 +234,7 @@ const errors = reactive({
     imagen: '',
     render_3d: '',
     ficha_tecnica: '',
+    manual_instalacion: '',
     archivo_html: '',
     estado: '',
     altura_cm: '',
@@ -278,6 +287,7 @@ watch(() => props.initialData, async (newData) => {
             imagen: newData.imagen || null,
             render_3d: newData.render_3d || null,
             ficha_tecnica: newData.ficha_tecnica || null,
+            manual_instalacion: newData.manual_instalacion || null,
             archivo_html: newData.archivo_html || null,
             estado: newData.estado !== false,
             altura_cm: newData.altura_cm ?? null,
@@ -333,6 +343,15 @@ const handleFichaTecnicaStart = (file) => {
 
 const handleFichaTecnicaComplete = () => {
     errors.ficha_tecnica = ''
+}
+
+const handleManualInstalacionStart = (file) => {
+    manualInstalacion.value = file
+    errors.manual_instalacion = ''
+}
+
+const handleManualInstalacionComplete = () => {
+    errors.manual_instalacion = ''
 }
 
 const handleArchivoHtmlStart = (file) => {
@@ -481,6 +500,7 @@ const handleSubmit = async () => {
             if (!imagen.value) productoData.imagen = formData.imagen
             if (!render3d.value) productoData.render_3d = formData.render_3d
             if (!fichaTecnica.value) productoData.ficha_tecnica = formData.ficha_tecnica
+            if (!manualInstalacion.value) productoData.manual_instalacion = formData.manual_instalacion
             if (!archivoHtml.value) productoData.archivo_html = formData.archivo_html
             if (!icono1.value) productoData.icono1 = formData.icono1
             if (!icono2.value) productoData.icono2 = formData.icono2
@@ -493,6 +513,7 @@ const handleSubmit = async () => {
                 imagen: imagen.value,
                 render3d: render3d.value,
                 fichaTecnica: fichaTecnica.value,
+                manualInstalacion: manualInstalacion.value,
                 archivoHtml: archivoHtml.value
             },
             iconos: {

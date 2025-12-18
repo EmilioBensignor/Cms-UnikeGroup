@@ -9,7 +9,7 @@
         enter-to-class="translate-x-0" leave-active-class="transition-transform duration-300 ease-in"
         leave-from-class="translate-x-0" leave-to-class="-translate-x-full">
         <nav v-if="isOpen"
-            class="w-[65%] max-w-80 h-full flex flex-col justify-between fixed top-0 left-0 z-50 bg-secondary shadow-xl shadow-black transform py-6 px-3">
+            class="w-[65%] max-w-80 h-full flex flex-col justify-between gap-4 fixed top-0 left-0 z-50 bg-secondary shadow-xl shadow-black transform overflow-y-auto py-6 px-3">
             <div class="flex flex-col gap-4">
                 <div class="flex items-center justify-between text-light px-3">
                     <p class="text-xl font-medium">Unike Group</p>
@@ -99,6 +99,11 @@ const menuWaterplast = [
         route: ROUTE_NAMES.WATERPLAST.CATEGORIAS,
         title: "Categorías",
         icon: "bookmark",
+    },
+    {
+        route: ROUTE_NAMES.WATERPLAST.SUBCATEGORIAS,
+        title: "Subcategorías",
+        icon: "bookmarks",
     },
     {
         route: ROUTE_NAMES.WATERPLAST.PRODUCTOS,

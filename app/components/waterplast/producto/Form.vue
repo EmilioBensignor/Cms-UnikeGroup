@@ -10,7 +10,7 @@
         <FormFieldsContainer>
             <FormSelect v-model="formData.subcategoria_id" label="Subcategoría" id="subcategoria_id"
                 :error="errors.subcategoria_id" :options="subcategoriasOptions"
-                placeholder="Seleccione una subcategoría" />
+                placeholder="Seleccione una subcategoría" clearable />
             <FormImageField v-model="formData.imagen" id="imagen" label="Imagen (450px x 380px)" :error="errors.imagen"
                 required :acceptedTypes="['webp']" targetFolder="waterplast-productos" @upload-start="handleImagenStart"
                 @upload-complete="handleImagenComplete" />
@@ -46,7 +46,7 @@
         <FormFieldsContainer>
             <FormSwitch v-model="formData.estado" id="estado" label="Estado" required :error="errors.estado" />
             <FormSelect v-model="formData.opcion" label="Opción" id="opcion" :error="errors.opcion"
-                :options="opcionOptions" placeholder="Seleccione opción" />
+                :options="opcionOptions" placeholder="Seleccione opción" clearable />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
@@ -72,14 +72,14 @@
                 placeholder="Ingrese la capacidad en litros" :error="errors.capacidad_lts"
                 @keydown="preventInvalidNumber" />
             <FormSelect v-model="formData.orientacion" label="Orientación" id="orientacion" :error="errors.orientacion"
-                :options="orientacionOptions" placeholder="Seleccione orientación" />
+                :options="orientacionOptions" placeholder="Seleccione orientación" clearable />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
             <FormSelect v-model="formData.color" label="Color" id="color" :error="errors.color" :options="colorOptions"
-                placeholder="Seleccione color" />
+                placeholder="Seleccione color" clearable />
             <FormSelect v-model="formData.tecnologia" label="Tecnología" id="tecnologia" :error="errors.tecnologia"
-                :options="tecnologiaOptions" placeholder="Seleccione tecnología" />
+                :options="tecnologiaOptions" placeholder="Seleccione tecnología" clearable />
         </FormFieldsContainer>
 
         <FormFieldsContainer>

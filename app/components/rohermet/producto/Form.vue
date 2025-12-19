@@ -41,7 +41,7 @@
         <FormFieldsContainer>
             <FormSwitch v-model="formData.estado" id="estado" label="Estado" required :error="errors.estado" />
             <FormSelect v-model="formData.opcion" label="Opción" id="opcion" :error="errors.opcion"
-                :options="opcionOptions" placeholder="Seleccione opción" />
+                :options="opcionOptions" placeholder="Seleccione opción" clearable />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
@@ -67,14 +67,14 @@
                 placeholder="Ingrese la capacidad en litros" :error="errors.capacidad_lts"
                 @keydown="preventInvalidNumber" />
             <FormSelect v-model="formData.orientacion" label="Orientación" id="orientacion" :error="errors.orientacion"
-                :options="orientacionOptions" placeholder="Seleccione orientación" />
+                :options="orientacionOptions" placeholder="Seleccione orientación" clearable />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
             <FormSelect v-model="formData.color" label="Color" id="color" :error="errors.color" :options="colorOptions"
-                placeholder="Seleccione color" />
+                placeholder="Seleccione color" clearable />
             <FormSelect v-model="formData.tecnologia" label="Tecnología" id="tecnologia" :error="errors.tecnologia"
-                :options="tecnologiaOptions" placeholder="Seleccione tecnología" />
+                :options="tecnologiaOptions" placeholder="Seleccione tecnología" clearable />
         </FormFieldsContainer>
 
         <div v-if="showButtons" class="w-full flex flex-col lg:flex-row items-center gap-5 mt-8">

@@ -3,11 +3,14 @@ export const useRohermetProductos = () => {
     const {
         uploadProductoImage,
         uploadProductoFile,
+        uploadProductoGaleriaImagenes,
         deleteProductoImage,
         deleteProductoFile,
+        deleteProductoGaleriaImagen,
         deleteProductoRender3d,
         getProductoImageUrl,
         getProductoFileUrl,
+        getProductoGaleriaImageUrl,
         deleteProductoFolder
     } = useStorage()
     const loading = ref(false)
@@ -69,7 +72,14 @@ export const useRohermetProductos = () => {
                 imagen: data.imagen ? getProductoImageUrl(data.imagen, 'rohermet', true) : null,
                 render_3d: data.render_3d ? getProductoFileUrl(data.render_3d, 'rohermet', true) : null,
                 archivo_html: data.archivo_html ? getProductoFileUrl(data.archivo_html, 'rohermet', true) : null,
-                ficha_tecnica: data.ficha_tecnica ? getProductoFileUrl(data.ficha_tecnica, 'rohermet', true) : null
+                ficha_tecnica: data.ficha_tecnica ? getProductoFileUrl(data.ficha_tecnica, 'rohermet', true) : null,
+                galeria: data.galeria ?
+                    data.galeria.map((img, index) => ({
+                        id: `galeria-${index}`,
+                        name: `imagen-${index + 1}.jpg`,
+                        url: getProductoGaleriaImageUrl(img, 'rohermet', true),
+                        storagePath: img
+                    })) : []
             }
 
             currentProducto.value = productoWithUrls
@@ -136,7 +146,7 @@ export const useRohermetProductos = () => {
         }
     }
 
-    const createProducto = async (productoData, archivos) => {
+    const createProducto = async (productoData, archivos, galeria = []) => {
         loading.value = true
         error.value = null
 
@@ -147,6 +157,7 @@ export const useRohermetProductos = () => {
             let render3dPath = null
             let archivoHtmlPath = null
             let fichaTecnicaPath = null
+            let galeriaPaths = []
 
             if (archivos.imagen) {
                 imagenPath = await uploadProductoImage(archivos.imagen, productoNombre, 'rohermet')
@@ -164,12 +175,20 @@ export const useRohermetProductos = () => {
                 fichaTecnicaPath = await uploadProductoFile(archivos.fichaTecnica, productoNombre + '-ficha', 'rohermet')
             }
 
+            if (galeria && Array.isArray(galeria) && galeria.length > 0) {
+                const nuevasImagenes = galeria.filter(img => img.file && !img.isExisting)
+                if (nuevasImagenes.length > 0) {
+                    galeriaPaths = await uploadProductoGaleriaImagenes(nuevasImagenes, productoNombre, 'rohermet')
+                }
+            }
+
             const finalProductoData = {
                 ...productoData,
                 imagen: imagenPath,
                 render_3d: render3dPath,
                 archivo_html: archivoHtmlPath,
-                ficha_tecnica: fichaTecnicaPath
+                ficha_tecnica: fichaTecnicaPath,
+                galeria: galeriaPaths
             }
 
             const { data, error: supabaseError } = await supabase
@@ -201,14 +220,14 @@ export const useRohermetProductos = () => {
         }
     }
 
-    const updateProducto = async (id, productoData, archivos) => {
+    const updateProducto = async (id, productoData, archivos, galeria = []) => {
         loading.value = true
         error.value = null
 
         try {
             const { data: currentData, error: fetchError } = await supabase
                 .from('rohermet-productos')
-                .select('nombre, imagen, render_3d, archivo_html, ficha_tecnica')
+                .select('nombre, imagen, render_3d, archivo_html, ficha_tecnica, galeria')
                 .eq('id', id)
                 .single()
 
@@ -220,6 +239,7 @@ export const useRohermetProductos = () => {
             let render3dPath = currentData?.render_3d
             let archivoHtmlPath = currentData?.archivo_html
             let fichaTecnicaPath = currentData?.ficha_tecnica
+            let galeriaPaths = []
 
             if (archivos.imagen) {
                 if (currentData?.imagen) {
@@ -258,12 +278,56 @@ export const useRohermetProductos = () => {
                 fichaTecnicaPath = null
             }
 
+            if (galeria && Array.isArray(galeria) && galeria.length > 0) {
+                const imagenesExistentesQueSeMantienen = galeria
+                    .filter(img => img.isExisting && img.storagePath)
+                    .map(img => img.storagePath)
+
+                const nuevasImagenes = galeria.filter(img => img.file && !img.isExisting)
+                const imagenesAntiguasEnDB = currentData?.galeria || []
+
+                const imagenesAEliminar = imagenesAntiguasEnDB.filter(
+                    imgDB => !imagenesExistentesQueSeMantienen.includes(imgDB)
+                )
+
+                if (imagenesAEliminar.length > 0) {
+                    for (const imagen of imagenesAEliminar) {
+                        await deleteProductoGaleriaImagen(imagen, 'rohermet')
+                    }
+                }
+
+                let pathsNuevasImagenes = []
+                if (nuevasImagenes.length > 0) {
+                    pathsNuevasImagenes = await uploadProductoGaleriaImagenes(nuevasImagenes, productoNombre, 'rohermet')
+                }
+
+                galeriaPaths = []
+                for (const img of galeria) {
+                    if (img.isExisting && img.storagePath) {
+                        galeriaPaths.push(img.storagePath)
+                    } else if (img.file && !img.isExisting) {
+                        const indexNueva = nuevasImagenes.findIndex(n => n.id === img.id)
+                        if (indexNueva !== -1 && pathsNuevasImagenes[indexNueva]) {
+                            galeriaPaths.push(pathsNuevasImagenes[indexNueva])
+                        }
+                    }
+                }
+            } else {
+                if (currentData?.galeria && currentData.galeria.length > 0) {
+                    for (const imagen of currentData.galeria) {
+                        await deleteProductoGaleriaImagen(imagen, 'rohermet')
+                    }
+                }
+                galeriaPaths = []
+            }
+
             const finalProductoData = {
                 ...productoData,
                 imagen: imagenPath,
                 render_3d: render3dPath,
                 archivo_html: archivoHtmlPath,
-                ficha_tecnica: fichaTecnicaPath
+                ficha_tecnica: fichaTecnicaPath,
+                galeria: galeriaPaths
             }
 
             const { data, error: supabaseError } = await supabase

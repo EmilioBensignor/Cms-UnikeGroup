@@ -100,6 +100,18 @@ const formatValue = (value, column) => {
         case 'boolean':
             return value ? 'Habilitado' : 'Deshabilitado'
 
+        case 'array':
+            if (Array.isArray(value)) {
+                const formattedValues = value.map(item => {
+                    if (typeof item === 'string') {
+                        return item.charAt(0).toUpperCase() + item.slice(1)
+                    }
+                    return item
+                })
+                return formattedValues.length > 0 ? formattedValues.join(', ') : '-'
+            }
+            return value || '-'
+
         case 'image':
             return value
 

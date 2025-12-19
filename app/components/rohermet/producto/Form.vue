@@ -13,7 +13,7 @@
         </FormFieldsContainer>
 
         <FormFieldsContainer>
-            <FormImageField v-model="formData.imagen" id="imagen" label="Imagen (450px x 380px)" :error="errors.imagen"
+            <FormImageField v-model="formData.imagen" id="imagen" label="Imagen principal (450px x 380px)" :error="errors.imagen"
                 required targetFolder="rohermet-productos" @upload-start="handleImagenStart"
                 @upload-complete="handleImagenComplete" />
             <FormFileField v-model="formData.ficha_tecnica" id="ficha_tecnica" label="Ficha Técnica"
@@ -21,6 +21,11 @@
                 @upload-start="handleFichaTecnicaStart" @upload-complete="handleFichaTecnicaComplete"
                 @file-removed="() => removedFiles.fichaTecnica = true" />
         </FormFieldsContainer>
+
+        <MultiImageField v-model="formData.galeria" id="galeria"
+            label="Galería de imágenes del producto" :error="errors.galeria"
+            targetFolder="rohermet-productos" @upload-start="handleGaleriaStart"
+            @upload-complete="handleGaleriaComplete" />
 
         <FormFieldsContainer>
             <FormFileField v-model="formData.archivo_html" id="archivo_html" label="Archivo .html para 3D"
@@ -87,6 +92,7 @@
 </template>
 
 <script setup>
+import MultiImageField from '~/components/form/MultiImageField.vue'
 import { useRohermetCategorias } from '~/composables/rohermet/useCategorias.js'
 import { useRohermetProductos } from '~/composables/rohermet/useProductos.js'
 
@@ -157,6 +163,7 @@ const formData = reactive({
     categoria_id: '',
     descripcion: '',
     imagen: null,
+    galeria: [],
     render_3d: null,
     archivo_html: null,
     ficha_tecnica: null,
@@ -177,6 +184,7 @@ const errors = reactive({
     categoria_id: '',
     descripcion: '',
     imagen: '',
+    galeria: '',
     render_3d: '',
     archivo_html: '',
     ficha_tecnica: '',
@@ -194,6 +202,25 @@ const errors = reactive({
 
 watch(() => props.initialData, async (newData) => {
     if (props.isEditing && newData) {
+        const processedGaleria = newData.galeria && Array.isArray(newData.galeria)
+            ? newData.galeria.map((img, index) => {
+                const storagePathValue = img.storagePath || null
+                return {
+                    id: img.id || `existing-${index}`,
+                    name: img.name || `imagen-${index + 1}.jpg`,
+                    url: img.url,
+                    preview: img.url,
+                    isExisting: true,
+                    filename: img.name || `imagen-${index + 1}.jpg`,
+                    file: null,
+                    orden: index + 1,
+                    es_principal: index === 0,
+                    storagePath: storagePathValue,
+                    file_size: 0,
+                    mime_type: 'image/jpeg'
+                }
+            }) : []
+
         Object.assign(formData, {
             nombre: newData.nombre || '',
             categoria_id: newData.categoria_id || '',
@@ -213,6 +240,9 @@ watch(() => props.initialData, async (newData) => {
             tecnologia: newData.tecnologia || '',
             opcion: newData.opcion || ''
         })
+
+        await nextTick()
+        formData.galeria = processedGaleria
     }
 }, { immediate: true, deep: true })
 
@@ -264,6 +294,14 @@ const handleFichaTecnicaStart = (file) => {
 
 const handleFichaTecnicaComplete = () => {
     errors.ficha_tecnica = ''
+}
+
+const handleGaleriaStart = () => {
+    errors.galeria = ''
+}
+
+const handleGaleriaComplete = () => {
+    errors.galeria = ''
 }
 
 const validateForm = () => {
@@ -357,7 +395,8 @@ const handleSubmit = async () => {
                 render3d: render3d.value,
                 archivoHtml: archivoHtml.value,
                 fichaTecnica: fichaTecnica.value
-            }
+            },
+            galeria: formData.galeria
         })
 
     } catch (error) {

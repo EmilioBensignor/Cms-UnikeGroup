@@ -47,6 +47,11 @@ const tabla = {
             label: 'Localidad',
         },
         {
+            key: 'vende',
+            label: 'Vende',
+            type: 'array'
+        },
+        {
             key: 'latitud',
             label: 'Latitud',
         },

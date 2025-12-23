@@ -22,6 +22,9 @@ export const ROUTE_NAMES = {
     WATERPLAST: {
         CATEGORIAS: "/waterplast/categorias",
         EDITAR_CATEGORIA: (id) => `/waterplast/categorias/edit/${id}`,
+        SUBCATEGORIAS: "/waterplast/subcategorias",
+        CREAR_SUBCATEGORIA: "/waterplast/subcategorias/create",
+        EDITAR_SUBCATEGORIA: (id) => `/waterplast/subcategorias/edit/${id}`,
         PRODUCTOS: "/waterplast/productos",
         CREAR_PRODUCTO: "/waterplast/productos/create",
         EDITAR_PRODUCTO: (id) => `/waterplast/productos/edit/${id}`,

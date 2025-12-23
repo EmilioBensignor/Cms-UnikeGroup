@@ -8,14 +8,17 @@
         </FormFieldsContainer>
 
         <FormFieldsContainer>
-            <FormTextarea v-model="formData.descripcion" label="Descripción" id="descripcion"
-                placeholder="Ingrese la descripción del producto" required :error="errors.descripcion" />
-        </FormFieldsContainer>
-
-        <FormFieldsContainer>
+            <FormSelect v-model="formData.subcategoria_id" label="Subcategoría" id="subcategoria_id"
+                :error="errors.subcategoria_id" :options="subcategoriasOptions"
+                placeholder="Seleccione una subcategoría" clearable />
             <FormImageField v-model="formData.imagen" id="imagen" label="Imagen (450px x 380px)" :error="errors.imagen"
                 required :acceptedTypes="['webp']" targetFolder="waterplast-productos" @upload-start="handleImagenStart"
                 @upload-complete="handleImagenComplete" />
+        </FormFieldsContainer>
+
+        <FormFieldsContainer>
+            <FormTextarea v-model="formData.descripcion" label="Descripción" id="descripcion"
+                placeholder="Ingrese la descripción del producto" required :error="errors.descripcion" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
@@ -43,7 +46,7 @@
         <FormFieldsContainer>
             <FormSwitch v-model="formData.estado" id="estado" label="Estado" required :error="errors.estado" />
             <FormSelect v-model="formData.opcion" label="Opción" id="opcion" :error="errors.opcion"
-                :options="opcionOptions" placeholder="Seleccione opción" />
+                :options="opcionOptions" placeholder="Seleccione opción" clearable />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
@@ -69,14 +72,14 @@
                 placeholder="Ingrese la capacidad en litros" :error="errors.capacidad_lts"
                 @keydown="preventInvalidNumber" />
             <FormSelect v-model="formData.orientacion" label="Orientación" id="orientacion" :error="errors.orientacion"
-                :options="orientacionOptions" placeholder="Seleccione orientación" />
+                :options="orientacionOptions" placeholder="Seleccione orientación" clearable />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
             <FormSelect v-model="formData.color" label="Color" id="color" :error="errors.color" :options="colorOptions"
-                placeholder="Seleccione color" />
+                placeholder="Seleccione color" clearable />
             <FormSelect v-model="formData.tecnologia" label="Tecnología" id="tecnologia" :error="errors.tecnologia"
-                :options="tecnologiaOptions" placeholder="Seleccione tecnología" />
+                :options="tecnologiaOptions" placeholder="Seleccione tecnología" clearable />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
@@ -125,6 +128,7 @@
 
 <script setup>
 import { useWaterplastCategorias } from '~/composables/waterplast/useCategorias.js'
+import { useWaterplastSubcategorias } from '~/composables/waterplast/useSubcategorias.js'
 import { useWaterplastProductos } from '~/composables/waterplast/useProductos.js'
 
 const { error: showValidationError } = useNotification()
@@ -168,14 +172,23 @@ const removedFiles = reactive({
 })
 
 const { categorias, fetchCategorias } = useWaterplastCategorias()
+const { fetchSubcategoriasByCategoria } = useWaterplastSubcategorias()
 const { fetchProductosByCategoria } = useWaterplastProductos()
 
 const productosRelacionados = ref([])
+const subcategorias = ref([])
 
 const categoriasOptions = computed(() => {
     return categorias.value.map(categoria => ({
         value: categoria.id.toString(),
         label: categoria.nombre
+    }))
+})
+
+const subcategoriasOptions = computed(() => {
+    return subcategorias.value.map(subcategoria => ({
+        value: subcategoria.id.toString(),
+        label: subcategoria.nombre
     }))
 })
 
@@ -213,6 +226,7 @@ const opcionOptions = [
 const formData = reactive({
     nombre: '',
     categoria_id: '',
+    subcategoria_id: '',
     descripcion: '',
     imagen: null,
     render_3d: null,
@@ -241,6 +255,7 @@ const formData = reactive({
 const errors = reactive({
     nombre: '',
     categoria_id: '',
+    subcategoria_id: '',
     descripcion: '',
     imagen: '',
     render_3d: '',
@@ -266,9 +281,16 @@ const errors = reactive({
     productos_relacionados: ''
 })
 
-watch(() => formData.categoria_id, async (newCategoriaId) => {
+watch(() => formData.categoria_id, async (newCategoriaId, oldCategoriaId) => {
     if (newCategoriaId) {
         try {
+            const subcategoriasData = await fetchSubcategoriasByCategoria(newCategoriaId)
+            subcategorias.value = subcategoriasData
+
+            if (oldCategoriaId && oldCategoriaId !== newCategoriaId) {
+                formData.subcategoria_id = ''
+            }
+
             const productos = await fetchProductosByCategoria(newCategoriaId)
 
             const filteredProductos = props.isEditing && props.initialData?.id
@@ -281,9 +303,12 @@ watch(() => formData.categoria_id, async (newCategoriaId) => {
             }))
 
         } catch (error) {
+            subcategorias.value = []
             productosRelacionados.value = []
         }
     } else {
+        subcategorias.value = []
+        formData.subcategoria_id = ''
         productosRelacionados.value = []
         formData.productos_relacionados = []
     }
@@ -294,6 +319,7 @@ watch(() => props.initialData, async (newData) => {
         Object.assign(formData, {
             nombre: newData.nombre || '',
             categoria_id: newData.categoria_id || '',
+            subcategoria_id: newData.subcategoria_id || '',
             descripcion: newData.descripcion || '',
             imagen: newData.imagen || null,
             render_3d: newData.render_3d || null,
@@ -490,6 +516,7 @@ const handleSubmit = async () => {
         const productoData = {
             nombre: formData.nombre.trim(),
             categoria_id: formData.categoria_id,
+            subcategoria_id: formData.subcategoria_id || null,
             descripcion: formData.descripcion.trim(),
             estado: formData.estado,
             altura_cm: formData.altura_cm ? parseFloat(formData.altura_cm) : null,

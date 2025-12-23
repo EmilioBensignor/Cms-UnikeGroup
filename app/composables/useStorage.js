@@ -642,6 +642,82 @@ export const useStorage = () => {
         }
     }
 
+    const uploadProductoGaleriaImagenes = async (files, productoNombre, marca = 'rohermet') => {
+        try {
+            uploading.value = true
+            error.value = null
+
+            const cleanName = productoNombre.toLowerCase()
+                .replace(/[^a-z0-9\s]/g, '')
+                .replace(/\s+/g, '-')
+                .substring(0, 20)
+
+            const uploadPromises = files.map(async (imageObj, index) => {
+                uploadProgress.value = Math.round((index / files.length) * 100)
+
+                const actualFile = imageObj.file || imageObj
+
+                validateImageFile(actualFile)
+
+                const extension = actualFile.name.split('.').pop().toLowerCase()
+                const timestamp = Date.now()
+                const randomNum = Math.floor(1000 + Math.random() * 9000)
+                const fileName = `${cleanName}/galeria/galeria-${timestamp}-${randomNum}-${index}.${extension}`
+
+                const { data, error: uploadError } = await supabase.storage
+                    .from(`${marca}-productos`)
+                    .upload(fileName, actualFile, {
+                        cacheControl: '3600',
+                        upsert: false
+                    })
+
+                if (uploadError) throw uploadError
+
+                return data.path
+            })
+
+            const paths = await Promise.all(uploadPromises)
+
+            uploadProgress.value = 100
+            return paths
+
+        } catch (err) {
+            error.value = err.message
+            throw err
+        } finally {
+            uploading.value = false
+        }
+    }
+
+    const deleteProductoGaleriaImagen = async (storagePath, marca = 'rohermet') => {
+        try {
+            error.value = null
+
+            const bucketName = `${marca}-productos`
+            const { error: deleteError } = await supabase.storage
+                .from(bucketName)
+                .remove([storagePath])
+
+            if (deleteError) throw deleteError
+
+        } catch (err) {
+            error.value = err.message
+            throw err
+        }
+    }
+
+    const getProductoGaleriaImageUrl = (storagePath, marca = 'rohermet', cacheBust = false) => {
+        if (!storagePath) return null
+        let url = `${config.public.supabase.url}/storage/v1/object/public/${marca}-productos/${storagePath}`
+
+        if (cacheBust) {
+            const timestamp = Date.now()
+            url += `?v=${timestamp}`
+        }
+
+        return url
+    }
+
     const deleteProductoImage = async (storagePath, marca = 'waterplast') => {
         try {
             error.value = null
@@ -1042,13 +1118,16 @@ export const useStorage = () => {
         uploadProductoImage,
         uploadProductoFile,
         uploadProductoIcon,
+        uploadProductoGaleriaImagenes,
         deleteProductoImage,
         deleteProductoFile,
         deleteProductoIcon,
+        deleteProductoGaleriaImagen,
         deleteProductoRender3d,
         getProductoImageUrl,
         getProductoFileUrl,
         getProductoIconUrl,
+        getProductoGaleriaImageUrl,
 
         uploadCaracteristicaImage,
         deleteCaracteristicaImage,

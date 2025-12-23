@@ -57,11 +57,6 @@
                         </button>
                     </div>
 
-                    <div v-if="index === 0"
-                        class="absolute top-2 left-2 bg-primary text-white px-2 py-1 rounded text-xs font-medium">
-                        Principal
-                    </div>
-
                     <div
                         class="absolute top-2 right-2 bg-white text-gray-700 w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium">
                         {{ index + 1 }}
@@ -170,7 +165,6 @@ watch(images, (newImages) => {
         isExisting: img.isExisting || false,
         storagePath: img.storagePath || null,
         orden: index + 1,
-        es_principal: index === 0,
         filename: img.filename || img.name,
         file_size: img.file_size || (img.file ? img.file.size : 0),
         mime_type: img.mime_type || (img.file ? img.file.type : 'image/jpeg')

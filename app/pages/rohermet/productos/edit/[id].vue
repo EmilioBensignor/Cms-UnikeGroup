@@ -57,7 +57,8 @@ const handleFormSubmit = async (formData) => {
         await updateProducto(
             id,
             formData.productoData,
-            formData.archivos
+            formData.archivos,
+            formData.galeria
         )
 
         success('Producto actualizado exitosamente', {

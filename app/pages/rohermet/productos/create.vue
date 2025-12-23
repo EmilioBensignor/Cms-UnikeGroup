@@ -41,7 +41,8 @@ const handleFormSubmit = async (formData) => {
     try {
         await createProducto(
             formData.productoData,
-            formData.archivos
+            formData.archivos,
+            formData.galeria
         )
 
         success('Producto creado exitosamente', {

@@ -28,6 +28,11 @@
             <FormSwitch v-model="formData.estado" id="estado" label="Estado" required :error="errors.estado" />
         </FormFieldsContainer>
 
+        <FormFieldsContainer>
+            <FormCheckboxGroupField v-model="formData.vende" id="vende" label="Vende" :options="vendeOptions"
+                :error="errors.vende" required />
+        </FormFieldsContainer>
+
         <div class="w-full flex flex-col lg:flex-row items-center gap-5 mt-8">
             <ButtonPrimary @click="$emit('cancel')" type="button" class="!bg-gray-mid !text-dark">
                 Cancelar
@@ -60,6 +65,12 @@ const emit = defineEmits(['submit', 'cancel'])
 
 const submitting = ref(false)
 
+const vendeOptions = [
+    { value: 'waterplast', label: 'Waterplast' },
+    { value: 'rohermet', label: 'Rohermet' },
+    { value: 'murallon', label: 'Murallón' }
+]
+
 const formData = reactive({
     nombreComercio: '',
     calle: '',
@@ -68,6 +79,7 @@ const formData = reactive({
     latitud: '',
     longitud: '',
     estado: true,
+    vende: []
 })
 
 const errors = reactive({
@@ -77,7 +89,8 @@ const errors = reactive({
     localidad: '',
     latitud: '',
     longitud: '',
-    estado: ''
+    estado: '',
+    vende: ''
 })
 
 onMounted(() => {
@@ -90,6 +103,7 @@ onMounted(() => {
             latitud: props.initialData.latitud != null ? String(props.initialData.latitud) : '',
             longitud: props.initialData.longitud != null ? String(props.initialData.longitud) : '',
             estado: props.initialData.estado !== false,
+            vende: props.initialData.vende || []
         })
     }
 })
@@ -154,6 +168,11 @@ const validateForm = () => {
         isValid = false
     }
 
+    if (!formData.vende || formData.vende.length === 0) {
+        errors.vende = 'Debe seleccionar al menos una empresa'
+        isValid = false
+    }
+
     return isValid
 }
 
@@ -176,6 +195,7 @@ const handleSubmit = async () => {
             latitud: String(formData.latitud).trim() ? parseFloat(formData.latitud) : null,
             longitud: String(formData.longitud).trim() ? parseFloat(formData.longitud) : null,
             estado: formData.estado,
+            vende: formData.vende
         }
 
         emit('submit', distribuidorData)

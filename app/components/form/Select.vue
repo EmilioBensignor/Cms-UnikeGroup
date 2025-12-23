@@ -10,8 +10,12 @@
                 class="flex items-center justify-between bg-light border border-dark rounded-[5px] lg:text-xl font-light text-dark cursor-pointer outline-none py-3 px-[0.875rem]">
                 <span v-if="selectedOption" class="truncate">{{ selectedOption.label }}</span>
                 <span v-else class="text-gray-dark">{{ placeholder }}</span>
-                <Icon name="tabler:chevron-down" class="w-5 h-5"
-                    :class="['transition-transform', isOpen ? 'rotate-180' : '']" />
+                <div class="flex items-center gap-2">
+                    <Icon v-if="clearable && selectedOption" @click.stop="clearSelection" name="tabler:x"
+                        class="w-5 h-5 hover:text-primary transition-colors" />
+                    <Icon name="tabler:chevron-down" class="w-5 h-5"
+                        :class="['transition-transform', isOpen ? 'rotate-180' : '']" />
+                </div>
             </div>
 
             <div v-if="isOpen"
@@ -70,6 +74,10 @@ const props = defineProps({
     loading: {
         type: Boolean,
         default: false
+    },
+    clearable: {
+        type: Boolean,
+        default: false
     }
 })
 
@@ -104,6 +112,13 @@ const selectOption = (option) => {
     isOpen.value = false
     searchQuery.value = ''
 
+    if (showError.value) {
+        showError.value = false
+    }
+}
+
+const clearSelection = () => {
+    emit('update:modelValue', '')
     if (showError.value) {
         showError.value = false
     }

@@ -67,7 +67,8 @@ export const useWaterplastProductos = () => {
                 .from('waterplast-productos')
                 .select(`
                     *,
-                    categoria:categoria_id(id, nombre)
+                    categoria:categoria_id(id, nombre),
+                    subcategoria:subcategoria_id(id, nombre)
                 `)
                 .order('nombre', { ascending: true })
 
@@ -83,7 +84,8 @@ export const useWaterplastProductos = () => {
                 icono1: producto.icono1 ? getProductoIconUrl(producto.icono1) : null,
                 icono2: producto.icono2 ? getProductoIconUrl(producto.icono2) : null,
                 icono3: producto.icono3 ? getProductoIconUrl(producto.icono3) : null,
-                categoria_nombre: producto.categoria?.nombre || ''
+                categoria_nombre: producto.categoria?.nombre || '',
+                subcategoria_nombre: producto.subcategoria?.nombre || ''
             }))
 
             productos.value = productosWithUrls
@@ -104,7 +106,8 @@ export const useWaterplastProductos = () => {
                 .from('waterplast-productos')
                 .select(`
                     *,
-                    categoria:categoria_id(id, nombre)
+                    categoria:categoria_id(id, nombre),
+                    subcategoria:subcategoria_id(id, nombre)
                 `)
                 .eq('id', id)
                 .single()

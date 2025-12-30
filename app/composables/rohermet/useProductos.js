@@ -11,7 +11,8 @@ export const useRohermetProductos = () => {
         getProductoImageUrl,
         getProductoFileUrl,
         getProductoGaleriaImageUrl,
-        deleteProductoFolder
+        deleteProductoFolder,
+        generateUniqueProductFolderName
     } = useStorage()
     const loading = ref(false)
     const productos = ref([])
@@ -152,6 +153,10 @@ export const useRohermetProductos = () => {
 
         try {
             const productoNombre = productoData.nombre
+            const capacidadLts = productoData.capacidad_lts
+            const marca = 'rohermet'
+
+            const folderName = await generateUniqueProductFolderName(productoNombre, capacidadLts, marca)
 
             let imagenPath = null
             let render3dPath = null
@@ -160,25 +165,25 @@ export const useRohermetProductos = () => {
             let galeriaPaths = []
 
             if (archivos.imagen) {
-                imagenPath = await uploadProductoImage(archivos.imagen, productoNombre, 'rohermet')
+                imagenPath = await uploadProductoImage(archivos.imagen, productoNombre, capacidadLts, marca)
             }
 
             if (archivos.render3d) {
-                render3dPath = await uploadProductoFile(archivos.render3d, productoNombre + '-render3d', 'rohermet')
+                render3dPath = await uploadProductoFile(archivos.render3d, productoNombre + '-render3d', capacidadLts, marca, folderName)
             }
 
             if (archivos.archivoHtml) {
-                archivoHtmlPath = await uploadProductoFile(archivos.archivoHtml, productoNombre + '-html', 'rohermet')
+                archivoHtmlPath = await uploadProductoFile(archivos.archivoHtml, productoNombre + '-html', capacidadLts, marca, folderName)
             }
 
             if (archivos.fichaTecnica) {
-                fichaTecnicaPath = await uploadProductoFile(archivos.fichaTecnica, productoNombre + '-ficha', 'rohermet')
+                fichaTecnicaPath = await uploadProductoFile(archivos.fichaTecnica, productoNombre + '-ficha', capacidadLts, marca, folderName)
             }
 
             if (galeria && Array.isArray(galeria) && galeria.length > 0) {
                 const nuevasImagenes = galeria.filter(img => img.file && !img.isExisting)
                 if (nuevasImagenes.length > 0) {
-                    galeriaPaths = await uploadProductoGaleriaImagenes(nuevasImagenes, productoNombre, 'rohermet')
+                    galeriaPaths = await uploadProductoGaleriaImagenes(nuevasImagenes, productoNombre, marca)
                 }
             }
 
@@ -234,6 +239,25 @@ export const useRohermetProductos = () => {
             if (fetchError) throw fetchError
 
             const productoNombre = productoData?.nombre || currentData?.nombre || 'producto'
+            const capacidadLts = productoData?.capacidad_lts
+            const marca = 'rohermet'
+
+            let folderName = null
+            if (currentData?.imagen) {
+                folderName = currentData.imagen.split('/')[0]
+            } else if (currentData?.render_3d) {
+                folderName = currentData.render_3d.split('/')[0]
+            } else if (currentData?.archivo_html) {
+                folderName = currentData.archivo_html.split('/')[0]
+            } else if (currentData?.ficha_tecnica) {
+                folderName = currentData.ficha_tecnica.split('/')[0]
+            } else if (currentData?.galeria && currentData.galeria.length > 0) {
+                folderName = currentData.galeria[0].split('/')[0]
+            }
+
+            if (!folderName) {
+                folderName = await generateUniqueProductFolderName(productoNombre, capacidadLts, marca)
+            }
 
             let imagenPath = currentData?.imagen
             let render3dPath = currentData?.render_3d
@@ -243,38 +267,38 @@ export const useRohermetProductos = () => {
 
             if (archivos.imagen) {
                 if (currentData?.imagen) {
-                    await deleteProductoImage(currentData.imagen, 'rohermet')
+                    await deleteProductoImage(currentData.imagen, marca)
                 }
-                imagenPath = await uploadProductoImage(archivos.imagen, productoNombre, 'rohermet')
+                imagenPath = await uploadProductoImage(archivos.imagen, productoNombre, capacidadLts, marca, folderName)
             }
 
             if (archivos.render3d) {
                 if (currentData?.render_3d) {
-                    await deleteProductoRender3d(currentData.render_3d, productoNombre, 'rohermet')
+                    await deleteProductoRender3d(currentData.render_3d, productoNombre, marca)
                 }
-                render3dPath = await uploadProductoFile(archivos.render3d, productoNombre + '-render3d', 'rohermet')
+                render3dPath = await uploadProductoFile(archivos.render3d, productoNombre + '-render3d', capacidadLts, marca, folderName)
             } else if (productoData.render_3d === null && currentData?.render_3d) {
-                await deleteProductoRender3d(currentData.render_3d, productoNombre, 'rohermet')
+                await deleteProductoRender3d(currentData.render_3d, productoNombre, marca)
                 render3dPath = null
             }
 
             if (archivos.archivoHtml) {
                 if (currentData?.archivo_html) {
-                    await deleteProductoFile(currentData.archivo_html, 'rohermet')
+                    await deleteProductoFile(currentData.archivo_html, marca)
                 }
-                archivoHtmlPath = await uploadProductoFile(archivos.archivoHtml, productoNombre + '-html', 'rohermet')
+                archivoHtmlPath = await uploadProductoFile(archivos.archivoHtml, productoNombre + '-html', capacidadLts, marca, folderName)
             } else if (productoData.archivo_html === null && currentData?.archivo_html) {
-                await deleteProductoFile(currentData.archivo_html, 'rohermet')
+                await deleteProductoFile(currentData.archivo_html, marca)
                 archivoHtmlPath = null
             }
 
             if (archivos.fichaTecnica) {
                 if (currentData?.ficha_tecnica) {
-                    await deleteProductoFile(currentData.ficha_tecnica, 'rohermet')
+                    await deleteProductoFile(currentData.ficha_tecnica, marca)
                 }
-                fichaTecnicaPath = await uploadProductoFile(archivos.fichaTecnica, productoNombre + '-ficha', 'rohermet')
+                fichaTecnicaPath = await uploadProductoFile(archivos.fichaTecnica, productoNombre + '-ficha', capacidadLts, marca, folderName)
             } else if (productoData.ficha_tecnica === null && currentData?.ficha_tecnica) {
-                await deleteProductoFile(currentData.ficha_tecnica, 'rohermet')
+                await deleteProductoFile(currentData.ficha_tecnica, marca)
                 fichaTecnicaPath = null
             }
 

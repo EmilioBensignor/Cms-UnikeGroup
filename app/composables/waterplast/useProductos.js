@@ -14,7 +14,8 @@ export const useWaterplastProductos = () => {
         uploadCaracteristicaImage,
         deleteCaracteristicaImage,
         getCaracteristicaImageUrl,
-        deleteProductoFolder
+        deleteProductoFolder,
+        generateUniqueProductFolderName
     } = useStorage()
     const loading = ref(false)
     const productos = ref([])
@@ -224,6 +225,10 @@ export const useWaterplastProductos = () => {
 
         try {
             const productoNombre = productoData.nombre
+            const capacidadLts = productoData.capacidad_lts
+            const marca = 'waterplast'
+
+            const folderName = await generateUniqueProductFolderName(productoNombre, capacidadLts, marca)
 
             let imagenPath = null
             let render3dPath = null
@@ -237,33 +242,33 @@ export const useWaterplastProductos = () => {
             }
 
             if (archivos.imagen) {
-                imagenPath = await uploadProductoImage(archivos.imagen, productoNombre)
+                imagenPath = await uploadProductoImage(archivos.imagen, productoNombre, capacidadLts, marca)
             }
 
             if (archivos.render3d) {
-                render3dPath = await uploadProductoFile(archivos.render3d, productoNombre + '-render3d')
+                render3dPath = await uploadProductoFile(archivos.render3d, productoNombre + '-render3d', capacidadLts, marca, folderName)
             }
 
             if (archivos.fichaTecnica) {
-                fichaTecnicaPath = await uploadProductoFile(archivos.fichaTecnica, productoNombre + '-ficha')
+                fichaTecnicaPath = await uploadProductoFile(archivos.fichaTecnica, productoNombre + '-ficha', capacidadLts, marca, folderName)
             }
 
             if (archivos.manualInstalacion) {
-                manualInstalacionPath = await uploadProductoFile(archivos.manualInstalacion, productoNombre + '-manual')
+                manualInstalacionPath = await uploadProductoFile(archivos.manualInstalacion, productoNombre + '-manual', capacidadLts, marca, folderName)
             }
 
             if (archivos.archivoHtml) {
-                archivoHtmlPath = await uploadProductoFile(archivos.archivoHtml, productoNombre + '-html')
+                archivoHtmlPath = await uploadProductoFile(archivos.archivoHtml, productoNombre + '-html', capacidadLts, marca, folderName)
             }
 
             if (iconos.icono1) {
-                iconPaths.icono1 = await uploadProductoIcon(iconos.icono1, productoNombre, 1)
+                iconPaths.icono1 = await uploadProductoIcon(iconos.icono1, productoNombre, 1, capacidadLts, marca, folderName)
             }
             if (iconos.icono2) {
-                iconPaths.icono2 = await uploadProductoIcon(iconos.icono2, productoNombre, 2)
+                iconPaths.icono2 = await uploadProductoIcon(iconos.icono2, productoNombre, 2, capacidadLts, marca, folderName)
             }
             if (iconos.icono3) {
-                iconPaths.icono3 = await uploadProductoIcon(iconos.icono3, productoNombre, 3)
+                iconPaths.icono3 = await uploadProductoIcon(iconos.icono3, productoNombre, 3, capacidadLts, marca, folderName)
             }
 
             const finalProductoData = {
@@ -371,7 +376,32 @@ export const useWaterplastProductos = () => {
             if (fetchError) throw fetchError
 
             const productoNombre = productoData?.nombre || currentData?.nombre || 'producto'
+            const capacidadLts = productoData?.capacidad_lts
+            const marca = 'waterplast'
             const nombreCambio = productoData?.nombre && productoData.nombre !== currentData?.nombre
+
+            let folderName = null
+            if (currentData?.imagen) {
+                folderName = currentData.imagen.split('/')[0]
+            } else if (currentData?.render_3d) {
+                folderName = currentData.render_3d.split('/')[0]
+            } else if (currentData?.ficha_tecnica) {
+                folderName = currentData.ficha_tecnica.split('/')[0]
+            } else if (currentData?.manual_instalacion) {
+                folderName = currentData.manual_instalacion.split('/')[0]
+            } else if (currentData?.archivo_html) {
+                folderName = currentData.archivo_html.split('/')[0]
+            } else if (currentData?.icono1) {
+                folderName = currentData.icono1.split('/')[0]
+            } else if (currentData?.icono2) {
+                folderName = currentData.icono2.split('/')[0]
+            } else if (currentData?.icono3) {
+                folderName = currentData.icono3.split('/')[0]
+            }
+
+            if (!folderName) {
+                folderName = await generateUniqueProductFolderName(productoNombre, capacidadLts, marca)
+            }
 
             let imagenPath = currentData?.imagen
             let render3dPath = currentData?.render_3d
@@ -388,14 +418,14 @@ export const useWaterplastProductos = () => {
                 if (currentData?.imagen) {
                     await deleteProductoImage(currentData.imagen)
                 }
-                imagenPath = await uploadProductoImage(archivos.imagen, productoNombre)
+                imagenPath = await uploadProductoImage(archivos.imagen, productoNombre, capacidadLts, marca, folderName)
             }
 
             if (archivos.render3d) {
                 if (currentData?.render_3d) {
                     await deleteProductoRender3d(currentData.render_3d, productoNombre)
                 }
-                render3dPath = await uploadProductoFile(archivos.render3d, productoNombre + '-render3d')
+                render3dPath = await uploadProductoFile(archivos.render3d, productoNombre + '-render3d', capacidadLts, marca, folderName)
             } else if (productoData.render_3d === null && currentData?.render_3d) {
                 await deleteProductoFile(currentData.render_3d)
                 render3dPath = null
@@ -405,7 +435,7 @@ export const useWaterplastProductos = () => {
                 if (currentData?.ficha_tecnica) {
                     await deleteProductoFile(currentData.ficha_tecnica)
                 }
-                fichaTecnicaPath = await uploadProductoFile(archivos.fichaTecnica, productoNombre + '-ficha')
+                fichaTecnicaPath = await uploadProductoFile(archivos.fichaTecnica, productoNombre + '-ficha', capacidadLts, marca, folderName)
             } else if (productoData.ficha_tecnica === null && currentData?.ficha_tecnica) {
                 await deleteProductoFile(currentData.ficha_tecnica)
                 fichaTecnicaPath = null
@@ -415,7 +445,7 @@ export const useWaterplastProductos = () => {
                 if (currentData?.manual_instalacion) {
                     await deleteProductoFile(currentData.manual_instalacion)
                 }
-                manualInstalacionPath = await uploadProductoFile(archivos.manualInstalacion, productoNombre + '-manual')
+                manualInstalacionPath = await uploadProductoFile(archivos.manualInstalacion, productoNombre + '-manual', capacidadLts, marca, folderName)
             } else if (productoData.manual_instalacion === null && currentData?.manual_instalacion) {
                 await deleteProductoFile(currentData.manual_instalacion)
                 manualInstalacionPath = null
@@ -425,7 +455,7 @@ export const useWaterplastProductos = () => {
                 if (currentData?.archivo_html) {
                     await deleteProductoFile(currentData.archivo_html)
                 }
-                archivoHtmlPath = await uploadProductoFile(archivos.archivoHtml, productoNombre + '-html')
+                archivoHtmlPath = await uploadProductoFile(archivos.archivoHtml, productoNombre + '-html', capacidadLts, marca, folderName)
             } else if (productoData.archivo_html === null && currentData?.archivo_html) {
                 await deleteProductoFile(currentData.archivo_html)
                 archivoHtmlPath = null
@@ -435,19 +465,19 @@ export const useWaterplastProductos = () => {
                 if (currentData?.icono1) {
                     await deleteProductoIcon(currentData.icono1)
                 }
-                iconPaths.icono1 = await uploadProductoIcon(iconos.icono1, productoNombre, 1)
+                iconPaths.icono1 = await uploadProductoIcon(iconos.icono1, productoNombre, 1, capacidadLts, marca, folderName)
             }
             if (iconos.icono2) {
                 if (currentData?.icono2) {
                     await deleteProductoIcon(currentData.icono2)
                 }
-                iconPaths.icono2 = await uploadProductoIcon(iconos.icono2, productoNombre, 2)
+                iconPaths.icono2 = await uploadProductoIcon(iconos.icono2, productoNombre, 2, capacidadLts, marca, folderName)
             }
             if (iconos.icono3) {
                 if (currentData?.icono3) {
                     await deleteProductoIcon(currentData.icono3)
                 }
-                iconPaths.icono3 = await uploadProductoIcon(iconos.icono3, productoNombre, 3)
+                iconPaths.icono3 = await uploadProductoIcon(iconos.icono3, productoNombre, 3, capacidadLts, marca, folderName)
             }
 
             const finalProductoData = {

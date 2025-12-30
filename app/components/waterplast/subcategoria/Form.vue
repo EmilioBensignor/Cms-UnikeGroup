@@ -102,7 +102,6 @@ watch([() => formData.orden, () => formData.categoria_id], async ([newOrden, new
             errors.orden = 'Ya existe una subcategoría con este número de orden en esta categoría'
         }
     } catch (error) {
-        // Silenciosamente fallar si hay error al validar
         console.error('Error validando orden:', error)
     }
 })

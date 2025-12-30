@@ -35,6 +35,57 @@ export const useStorage = () => {
             .substring(0, 20)
     }
 
+    const generateUniqueProductFolderName = async (productoNombre, capacidadLts = null, marca = 'waterplast') => {
+        const bucketName = `${marca}-productos`
+        const tableName = `${marca}-productos`
+
+        let baseName = productoNombre.toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/[^a-z0-9\s]/g, '')
+            .replace(/\s+/g, '-')
+            .substring(0, 20)
+
+        if (capacidadLts && capacidadLts > 0) {
+            baseName = `${baseName}-${Math.floor(capacidadLts)}`
+        }
+
+        let folderName = baseName
+        let counter = 2
+        let folderExists = true
+
+        while (folderExists) {
+            try {
+                const { data: storageData, error: storageError } = await supabase.storage
+                    .from(bucketName)
+                    .list(folderName, {
+                        limit: 1
+                    })
+
+                const existsInStorage = !storageError && storageData && storageData.length > 0
+
+                const { data: dbData, error: dbError } = await supabase
+                    .from(tableName)
+                    .select('id')
+                    .or(`imagen.like.${folderName}/%,render_3d.like.${folderName}/%,ficha_tecnica.like.${folderName}/%,manual_instalacion.like.${folderName}/%,archivo_html.like.${folderName}/%,icono1.like.${folderName}/%,icono2.like.${folderName}/%,icono3.like.${folderName}/%`)
+                    .limit(1)
+
+                const existsInDatabase = !dbError && dbData && dbData.length > 0
+
+                if (!existsInStorage && !existsInDatabase) {
+                    folderExists = false
+                } else {
+                    folderName = `${baseName}-${counter}`
+                    counter++
+                }
+            } catch (err) {
+                folderExists = false
+            }
+        }
+
+        return folderName
+    }
+
     const uploadOpinionImage = async (file, opinionData) => {
         try {
             uploading.value = true
@@ -524,7 +575,7 @@ export const useStorage = () => {
         return url
     }
 
-    const uploadProductoImage = async (file, productoNombre, marca = 'waterplast') => {
+    const uploadProductoImage = async (file, productoNombre, capacidadLts = null, marca = 'waterplast', folderName = null) => {
         try {
             uploading.value = true
             uploadProgress.value = 0
@@ -532,16 +583,13 @@ export const useStorage = () => {
 
             validateImageFile(file)
 
-            const cleanName = productoNombre.toLowerCase()
-                .replace(/[^a-z0-9\s]/g, '')
-                .replace(/\s+/g, '-')
-                .substring(0, 20)
+            const folder = folderName || await generateUniqueProductFolderName(productoNombre, capacidadLts, marca)
 
             const extension = file.name.split('.').pop().toLowerCase()
-            const fileName = `${cleanName}/imagen-principal.${extension}`
+            const fileName = `${folder}/imagen-principal.${extension}`
             const bucketName = `${marca}-productos`
 
-            const { data, error: uploadError } = await supabase.storage
+            const { data, error: uploadError} = await supabase.storage
                 .from(bucketName)
                 .upload(fileName, file, {
                     cacheControl: '3600',
@@ -561,7 +609,7 @@ export const useStorage = () => {
         }
     }
 
-    const uploadProductoFile = async (file, fileName, marca = 'waterplast') => {
+    const uploadProductoFile = async (file, fileName, capacidadLts = null, marca = 'waterplast', folderName = null) => {
         try {
             uploading.value = true
             uploadProgress.value = 0
@@ -571,19 +619,16 @@ export const useStorage = () => {
             const productoNombre = parts[0]
             const sufijo = parts.slice(1).join('-') || 'archivo'
 
-            const cleanName = productoNombre.toLowerCase()
-                .replace(/[^a-z0-9\s]/g, '')
-                .replace(/\s+/g, '-')
-                .substring(0, 20)
+            const folder = folderName || await generateUniqueProductFolderName(productoNombre, capacidadLts, marca)
 
             const extension = file.name.split('.').pop().toLowerCase()
             const bucketName = `${marca}-productos`
 
             let finalFileName
             if (extension === 'zip') {
-                finalFileName = `${cleanName}/images/${sufijo}.${extension}`
+                finalFileName = `${folder}/images/${sufijo}.${extension}`
             } else {
-                finalFileName = `${cleanName}/${sufijo}.${extension}`
+                finalFileName = `${folder}/${sufijo}.${extension}`
             }
 
             const { data, error: uploadError } = await supabase.storage
@@ -606,7 +651,7 @@ export const useStorage = () => {
         }
     }
 
-    const uploadProductoIcon = async (file, productoNombre, iconoNumero) => {
+    const uploadProductoIcon = async (file, productoNombre, iconoNumero, capacidadLts = null, marca = 'waterplast', folderName = null) => {
         try {
             uploading.value = true
             uploadProgress.value = 0
@@ -614,16 +659,14 @@ export const useStorage = () => {
 
             validateImageFile(file)
 
-            const cleanName = productoNombre.toLowerCase()
-                .replace(/[^a-z0-9\s]/g, '')
-                .replace(/\s+/g, '-')
-                .substring(0, 20)
+            const folder = folderName || await generateUniqueProductFolderName(productoNombre, capacidadLts, marca)
 
             const extension = file.name.split('.').pop().toLowerCase()
-            const fileName = `${cleanName}/iconos/icono-${iconoNumero}.${extension}`
+            const fileName = `${folder}/iconos/icono-${iconoNumero}.${extension}`
+            const bucketName = `${marca}-productos`
 
             const { data, error: uploadError } = await supabase.storage
-                .from('waterplast-productos')
+                .from(bucketName)
                 .upload(fileName, file, {
                     cacheControl: '3600',
                     upsert: true
@@ -1115,6 +1158,7 @@ export const useStorage = () => {
         deleteImagenDestacada,
         getImagenDestacadaUrl,
 
+        generateUniqueProductFolderName,
         uploadProductoImage,
         uploadProductoFile,
         uploadProductoIcon,

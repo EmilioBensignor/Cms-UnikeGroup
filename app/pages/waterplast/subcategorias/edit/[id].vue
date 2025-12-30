@@ -40,7 +40,6 @@ const handleSubmit = async (subcategoriaData) => {
     } catch (err) {
         console.error('Error updating subcategoria:', err)
 
-        // Detectar error de constraint único
         if (err.message && err.message.includes('duplicate key') || err.message.includes('unique constraint')) {
             showError('Ya existe una subcategoría con ese número de orden en esta categoría', {
                 title: 'Orden duplicado',

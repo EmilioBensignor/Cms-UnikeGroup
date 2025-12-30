@@ -242,11 +242,21 @@ export const useRohermetProductos = () => {
             const capacidadLts = productoData?.capacidad_lts
             const marca = 'rohermet'
 
+            // Intentar obtener folderName de cualquier archivo existente
             let folderName = null
             if (currentData?.imagen) {
                 folderName = currentData.imagen.split('/')[0]
+            } else if (currentData?.render_3d) {
+                folderName = currentData.render_3d.split('/')[0]
+            } else if (currentData?.archivo_html) {
+                folderName = currentData.archivo_html.split('/')[0]
+            } else if (currentData?.ficha_tecnica) {
+                folderName = currentData.ficha_tecnica.split('/')[0]
+            } else if (currentData?.galeria && currentData.galeria.length > 0) {
+                folderName = currentData.galeria[0].split('/')[0]
             }
 
+            // Si aún no hay folderName, generar uno nuevo
             if (!folderName) {
                 folderName = await generateUniqueProductFolderName(productoNombre, capacidadLts, marca)
             }
@@ -261,7 +271,7 @@ export const useRohermetProductos = () => {
                 if (currentData?.imagen) {
                     await deleteProductoImage(currentData.imagen, marca)
                 }
-                imagenPath = await uploadProductoImage(archivos.imagen, productoNombre, capacidadLts, marca)
+                imagenPath = await uploadProductoImage(archivos.imagen, productoNombre, capacidadLts, marca, folderName)
             }
 
             if (archivos.render3d) {

@@ -564,7 +564,7 @@ export const useStorage = () => {
         return url
     }
 
-    const uploadProductoImage = async (file, productoNombre, capacidadLts = null, marca = 'waterplast') => {
+    const uploadProductoImage = async (file, productoNombre, capacidadLts = null, marca = 'waterplast', folderName = null) => {
         try {
             uploading.value = true
             uploadProgress.value = 0
@@ -572,14 +572,14 @@ export const useStorage = () => {
 
             validateImageFile(file)
 
-            // Generar nombre único de carpeta
-            const folderName = await generateUniqueProductFolderName(productoNombre, capacidadLts, marca)
+            // Usar el folderName proporcionado o generar uno nuevo
+            const folder = folderName || await generateUniqueProductFolderName(productoNombre, capacidadLts, marca)
 
             const extension = file.name.split('.').pop().toLowerCase()
-            const fileName = `${folderName}/imagen-principal.${extension}`
+            const fileName = `${folder}/imagen-principal.${extension}`
             const bucketName = `${marca}-productos`
 
-            const { data, error: uploadError } = await supabase.storage
+            const { data, error: uploadError} = await supabase.storage
                 .from(bucketName)
                 .upload(fileName, file, {
                     cacheControl: '3600',

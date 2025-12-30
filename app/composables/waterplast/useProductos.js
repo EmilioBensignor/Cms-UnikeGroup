@@ -380,11 +380,27 @@ export const useWaterplastProductos = () => {
             const marca = 'waterplast'
             const nombreCambio = productoData?.nombre && productoData.nombre !== currentData?.nombre
 
+            // Intentar obtener folderName de cualquier archivo existente
             let folderName = null
             if (currentData?.imagen) {
                 folderName = currentData.imagen.split('/')[0]
+            } else if (currentData?.render_3d) {
+                folderName = currentData.render_3d.split('/')[0]
+            } else if (currentData?.ficha_tecnica) {
+                folderName = currentData.ficha_tecnica.split('/')[0]
+            } else if (currentData?.manual_instalacion) {
+                folderName = currentData.manual_instalacion.split('/')[0]
+            } else if (currentData?.archivo_html) {
+                folderName = currentData.archivo_html.split('/')[0]
+            } else if (currentData?.icono1) {
+                folderName = currentData.icono1.split('/')[0]
+            } else if (currentData?.icono2) {
+                folderName = currentData.icono2.split('/')[0]
+            } else if (currentData?.icono3) {
+                folderName = currentData.icono3.split('/')[0]
             }
 
+            // Si aún no hay folderName, generar uno nuevo
             if (!folderName) {
                 folderName = await generateUniqueProductFolderName(productoNombre, capacidadLts, marca)
             }
@@ -404,7 +420,7 @@ export const useWaterplastProductos = () => {
                 if (currentData?.imagen) {
                     await deleteProductoImage(currentData.imagen)
                 }
-                imagenPath = await uploadProductoImage(archivos.imagen, productoNombre, capacidadLts, marca)
+                imagenPath = await uploadProductoImage(archivos.imagen, productoNombre, capacidadLts, marca, folderName)
             }
 
             if (archivos.render3d) {

@@ -37,6 +37,7 @@ export const useStorage = () => {
 
     const generateUniqueProductFolderName = async (productoNombre, capacidadLts = null, marca = 'waterplast') => {
         const bucketName = `${marca}-productos`
+        const tableName = `${marca}-productos`
 
         let baseName = productoNombre.toLowerCase()
             .normalize('NFD')
@@ -55,13 +56,23 @@ export const useStorage = () => {
 
         while (folderExists) {
             try {
-                const { data, error } = await supabase.storage
+                const { data: storageData, error: storageError } = await supabase.storage
                     .from(bucketName)
                     .list(folderName, {
                         limit: 1
                     })
 
-                if (error || !data || data.length === 0) {
+                const existsInStorage = !storageError && storageData && storageData.length > 0
+
+                const { data: dbData, error: dbError } = await supabase
+                    .from(tableName)
+                    .select('id')
+                    .or(`imagen.like.${folderName}/%,render_3d.like.${folderName}/%,ficha_tecnica.like.${folderName}/%,manual_instalacion.like.${folderName}/%,archivo_html.like.${folderName}/%,icono1.like.${folderName}/%,icono2.like.${folderName}/%,icono3.like.${folderName}/%`)
+                    .limit(1)
+
+                const existsInDatabase = !dbError && dbData && dbData.length > 0
+
+                if (!existsInStorage && !existsInDatabase) {
                     folderExists = false
                 } else {
                     folderName = `${baseName}-${counter}`
@@ -572,7 +583,6 @@ export const useStorage = () => {
 
             validateImageFile(file)
 
-            // Usar el folderName proporcionado o generar uno nuevo
             const folder = folderName || await generateUniqueProductFolderName(productoNombre, capacidadLts, marca)
 
             const extension = file.name.split('.').pop().toLowerCase()
@@ -649,7 +659,6 @@ export const useStorage = () => {
 
             validateImageFile(file)
 
-            // Si no se proporciona el nombre de carpeta, generarlo
             const folder = folderName || await generateUniqueProductFolderName(productoNombre, capacidadLts, marca)
 
             const extension = file.name.split('.').pop().toLowerCase()

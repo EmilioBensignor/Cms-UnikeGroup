@@ -242,7 +242,6 @@ export const useRohermetProductos = () => {
             const capacidadLts = productoData?.capacidad_lts
             const marca = 'rohermet'
 
-            // Intentar obtener folderName de cualquier archivo existente
             let folderName = null
             if (currentData?.imagen) {
                 folderName = currentData.imagen.split('/')[0]
@@ -256,7 +255,6 @@ export const useRohermetProductos = () => {
                 folderName = currentData.galeria[0].split('/')[0]
             }
 
-            // Si aún no hay folderName, generar uno nuevo
             if (!folderName) {
                 folderName = await generateUniqueProductFolderName(productoNombre, capacidadLts, marca)
             }

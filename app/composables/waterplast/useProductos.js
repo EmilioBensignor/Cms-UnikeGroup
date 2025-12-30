@@ -380,7 +380,6 @@ export const useWaterplastProductos = () => {
             const marca = 'waterplast'
             const nombreCambio = productoData?.nombre && productoData.nombre !== currentData?.nombre
 
-            // Intentar obtener folderName de cualquier archivo existente
             let folderName = null
             if (currentData?.imagen) {
                 folderName = currentData.imagen.split('/')[0]
@@ -400,7 +399,6 @@ export const useWaterplastProductos = () => {
                 folderName = currentData.icono3.split('/')[0]
             }
 
-            // Si aún no hay folderName, generar uno nuevo
             if (!folderName) {
                 folderName = await generateUniqueProductFolderName(productoNombre, capacidadLts, marca)
             }

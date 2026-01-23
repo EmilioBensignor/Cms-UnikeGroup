@@ -66,7 +66,8 @@ const handleSubmit = async (formData) => {
     try {
         await updateCategoria(
             categoriaId,
-            formData.categoriaData
+            formData.categoriaData,
+            formData.imagenes?.imagen
         )
 
         success('Categoría actualizada exitosamente', {

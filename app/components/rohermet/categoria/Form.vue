@@ -5,6 +5,11 @@
                 placeholder="Ingrese el número de orden" required :error="errors.orden" />
         </FormFieldsContainer>
 
+        <FormFieldsContainer>
+            <FormImageField v-model="formData.imagen" label="Imagen de Categoría" id="imagen"
+                :error="errors.imagen" :current-image="initialData?.imagen" />
+        </FormFieldsContainer>
+
         <div class="w-full flex flex-col lg:flex-row items-center gap-5 mt-8">
             <ButtonPrimary @click="$emit('cancel')" type="button" class="!bg-gray-mid !text-dark">
                 Cancelar
@@ -38,16 +43,19 @@ const submitting = ref(false)
 
 const formData = reactive({
     orden: 0,
+    imagen: null,
 })
 
 const errors = reactive({
-    orden: ''
+    orden: '',
+    imagen: ''
 })
 
 watch(() => props.initialData, async (newData) => {
     if (props.isEditing && newData) {
         Object.assign(formData, {
             orden: newData.orden || 0,
+            imagen: null,
         })
     }
 }, { immediate: true, deep: true })
@@ -84,7 +92,9 @@ const handleSubmit = async () => {
 
         emit('submit', {
             categoriaData,
-            imagenes: {}
+            imagenes: {
+                imagen: formData.imagen
+            }
         })
 
     } catch (error) {

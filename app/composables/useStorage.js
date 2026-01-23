@@ -575,6 +575,211 @@ export const useStorage = () => {
         return url
     }
 
+    const uploadRohermetImagenDestacadaChica = async (dataUrl, imagenType) => {
+        try {
+            uploading.value = true
+            uploadProgress.value = 0
+            error.value = null
+
+            const response = await fetch(dataUrl)
+            const blob = await response.blob()
+            const file = new File([blob], 'image.png', { type: blob.type })
+
+            validateImageFile(file)
+
+            const extension = file.type.split('/')[1] || 'png'
+            const fileName = `${imagenType}/imagen-chica-rohermet.${extension}`
+
+            const { data, error: uploadError } = await supabase.storage
+                .from('rohermet-imagenes-destacadas')
+                .upload(fileName, file, {
+                    cacheControl: '3600',
+                    upsert: true
+                })
+
+            if (uploadError) {
+                throw uploadError
+            }
+
+            uploadProgress.value = 100
+            return data.path
+
+        } catch (err) {
+            error.value = err.message
+            throw err
+        } finally {
+            uploading.value = false
+        }
+    }
+
+    const uploadRohermetImagenDestacadaMediana = async (dataUrl, imagenType) => {
+        try {
+            uploading.value = true
+            uploadProgress.value = 0
+            error.value = null
+
+            const response = await fetch(dataUrl)
+            const blob = await response.blob()
+            const file = new File([blob], 'image.png', { type: blob.type })
+
+            validateImageFile(file)
+
+            const extension = file.type.split('/')[1] || 'png'
+            const fileName = `${imagenType}/imagen-mediana-rohermet.${extension}`
+
+            const { data, error: uploadError } = await supabase.storage
+                .from('rohermet-imagenes-destacadas')
+                .upload(fileName, file, {
+                    cacheControl: '3600',
+                    upsert: true
+                })
+
+            if (uploadError) throw uploadError
+
+            uploadProgress.value = 100
+            return data.path
+
+        } catch (err) {
+            error.value = err.message
+            throw err
+        } finally {
+            uploading.value = false
+        }
+    }
+
+    const uploadRohermetImagenDestacadaGrande = async (dataUrl, imagenType) => {
+        try {
+            uploading.value = true
+            uploadProgress.value = 0
+            error.value = null
+
+            const response = await fetch(dataUrl)
+            const blob = await response.blob()
+            const file = new File([blob], 'image.png', { type: blob.type })
+
+            validateImageFile(file)
+
+            const extension = file.type.split('/')[1] || 'png'
+            const fileName = `${imagenType}/imagen-grande-rohermet.${extension}`
+
+            const { data, error: uploadError } = await supabase.storage
+                .from('rohermet-imagenes-destacadas')
+                .upload(fileName, file, {
+                    cacheControl: '3600',
+                    upsert: true
+                })
+
+            if (uploadError) throw uploadError
+
+            uploadProgress.value = 100
+            return data.path
+
+        } catch (err) {
+            error.value = err.message
+            throw err
+        } finally {
+            uploading.value = false
+        }
+    }
+
+    const deleteRohermetImagenDestacada = async (storagePath) => {
+        try {
+            error.value = null
+
+            const { error: deleteError } = await supabase.storage
+                .from('rohermet-imagenes-destacadas')
+                .remove([storagePath])
+
+            if (deleteError) throw deleteError
+
+        } catch (err) {
+            error.value = err.message
+            throw err
+        }
+    }
+
+    const getRohermetImagenDestacadaUrl = (storagePath, cacheBust = false) => {
+        if (!storagePath) return null
+        let url = `${config.public.supabase.url}/storage/v1/object/public/rohermet-imagenes-destacadas/${storagePath}`
+
+        if (cacheBust) {
+            const timestamp = Date.now()
+            url += `?v=${timestamp}`
+        }
+
+        return url
+    }
+
+    const uploadRohermetCategoriaImage = async (dataUrl, categoriaNombre) => {
+        try {
+            uploading.value = true
+            uploadProgress.value = 0
+            error.value = null
+
+            const response = await fetch(dataUrl)
+            const blob = await response.blob()
+            const file = new File([blob], 'image.png', { type: blob.type })
+
+            validateImageFile(file)
+
+            const cleanName = categoriaNombre.toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-z0-9\s]/g, '')
+                .replace(/\s+/g, '-')
+                .substring(0, 20)
+
+            const extension = file.type.split('/')[1] || 'png'
+            const fileName = `${cleanName}/imagen-categoria.${extension}`
+
+            const { data, error: uploadError } = await supabase.storage
+                .from('rohermet-categorias')
+                .upload(fileName, file, {
+                    cacheControl: '3600',
+                    upsert: true
+                })
+
+            if (uploadError) throw uploadError
+
+            uploadProgress.value = 100
+            return data.path
+
+        } catch (err) {
+            error.value = err.message
+            throw err
+        } finally {
+            uploading.value = false
+        }
+    }
+
+    const deleteRohermetCategoriaImage = async (storagePath) => {
+        try {
+            error.value = null
+
+            const { error: deleteError } = await supabase.storage
+                .from('rohermet-categorias')
+                .remove([storagePath])
+
+            if (deleteError) throw deleteError
+
+        } catch (err) {
+            error.value = err.message
+            throw err
+        }
+    }
+
+    const getRohermetCategoriaImageUrl = (storagePath, cacheBust = false) => {
+        if (!storagePath) return null
+        let url = `${config.public.supabase.url}/storage/v1/object/public/rohermet-categorias/${storagePath}`
+
+        if (cacheBust) {
+            const timestamp = Date.now()
+            url += `?v=${timestamp}`
+        }
+
+        return url
+    }
+
     const uploadProductoImage = async (file, productoNombre, capacidadLts = null, marca = 'waterplast', folderName = null) => {
         try {
             uploading.value = true
@@ -1179,6 +1384,16 @@ export const useStorage = () => {
         uploadImagenDestacadaGrande,
         deleteImagenDestacada,
         getImagenDestacadaUrl,
+
+        uploadRohermetImagenDestacadaChica,
+        uploadRohermetImagenDestacadaMediana,
+        uploadRohermetImagenDestacadaGrande,
+        deleteRohermetImagenDestacada,
+        getRohermetImagenDestacadaUrl,
+
+        uploadRohermetCategoriaImage,
+        deleteRohermetCategoriaImage,
+        getRohermetCategoriaImageUrl,
 
         generateUniqueProductFolderName,
         uploadProductoImage,

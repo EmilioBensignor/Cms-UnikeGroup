@@ -32,6 +32,11 @@ const tabla = {
         {
             key: 'nombre',
             label: 'Nombre',
+        },
+        {
+            key: 'imagen',
+            label: 'Imagen',
+            type: 'image'
         }
     ]
 }

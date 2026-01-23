@@ -1,5 +1,10 @@
 export const useRohermetCategorias = () => {
     const supabase = useSupabaseClient()
+    const {
+        uploadRohermetCategoriaImage,
+        deleteRohermetCategoriaImage,
+        getRohermetCategoriaImageUrl
+    } = useStorage()
     const loading = ref(false)
     const categorias = ref([])
     const currentCategoria = ref(null)
@@ -17,7 +22,12 @@ export const useRohermetCategorias = () => {
 
             if (supabaseError) throw supabaseError
 
-            categorias.value = data || []
+            const categoriasWithUrls = (data || []).map(categoria => ({
+                ...categoria,
+                imagen: categoria.imagen ? getRohermetCategoriaImageUrl(categoria.imagen) : null
+            }))
+
+            categorias.value = categoriasWithUrls
         } catch (err) {
             error.value = err.message
         } finally {
@@ -39,8 +49,13 @@ export const useRohermetCategorias = () => {
 
             if (supabaseError) throw supabaseError
 
-            currentCategoria.value = data
-            return data
+            const categoriaWithUrl = {
+                ...data,
+                imagen: data.imagen ? getRohermetCategoriaImageUrl(data.imagen) : null
+            }
+
+            currentCategoria.value = categoriaWithUrl
+            return categoriaWithUrl
         } catch (err) {
             error.value = err.message
             throw err
@@ -49,13 +64,31 @@ export const useRohermetCategorias = () => {
         }
     }
 
-    const updateCategoria = async (id, categoriaData) => {
+    const updateCategoria = async (id, categoriaData, imagen = null) => {
         loading.value = true
         error.value = null
 
         try {
+            const { data: currentData, error: fetchError } = await supabase
+                .from('rohermet-categorias')
+                .select('nombre, imagen')
+                .eq('id', id)
+                .single()
+
+            if (fetchError) throw fetchError
+
+            let imagenPath = currentData?.imagen
+
+            if (imagen) {
+                if (currentData?.imagen) {
+                    await deleteRohermetCategoriaImage(currentData.imagen)
+                }
+                imagenPath = await uploadRohermetCategoriaImage(imagen, currentData.nombre)
+            }
+
             const finalCategoriaData = {
-                ...categoriaData
+                ...categoriaData,
+                imagen: imagenPath
             }
 
             const { data, error: supabaseError } = await supabase
@@ -67,13 +100,18 @@ export const useRohermetCategorias = () => {
 
             if (supabaseError) throw supabaseError
 
-            const index = categorias.value.findIndex(cat => cat.id === id)
-            if (index !== -1) {
-                categorias.value[index] = data
+            const dataWithUrl = {
+                ...data,
+                imagen: data.imagen ? getRohermetCategoriaImageUrl(data.imagen) : null
             }
 
-            currentCategoria.value = data
-            return data
+            const index = categorias.value.findIndex(cat => cat.id === id)
+            if (index !== -1) {
+                categorias.value[index] = dataWithUrl
+            }
+
+            currentCategoria.value = dataWithUrl
+            return dataWithUrl
         } catch (err) {
             error.value = err.message
             throw err

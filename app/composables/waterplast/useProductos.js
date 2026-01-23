@@ -36,10 +36,6 @@ export const useWaterplastProductos = () => {
 
     const callUnzipImages = async (productoId) => {
         try {
-            if (!supabase || !supabase.functions) {
-                return null
-            }
-
             const { data, error } = await supabase.functions.invoke('unzip-images', {
                 body: {
                     id: productoId,
@@ -48,12 +44,14 @@ export const useWaterplastProductos = () => {
             })
 
             if (error) {
+                console.error('Error calling unzip-images function:', error)
                 return null
             }
 
             return data
 
         } catch (error) {
+            console.error('Exception calling unzip-images function:', error)
             return null
         }
     }
@@ -427,7 +425,7 @@ export const useWaterplastProductos = () => {
                 }
                 render3dPath = await uploadProductoFile(archivos.render3d, productoNombre + '-render3d', capacidadLts, marca, folderName)
             } else if (productoData.render_3d === null && currentData?.render_3d) {
-                await deleteProductoFile(currentData.render_3d)
+                await deleteProductoRender3d(currentData.render_3d, productoNombre)
                 render3dPath = null
             }
 
@@ -455,9 +453,11 @@ export const useWaterplastProductos = () => {
                 if (currentData?.archivo_html) {
                     await deleteProductoFile(currentData.archivo_html)
                 }
+                await deleteProductoRender3d(null, folderName)
                 archivoHtmlPath = await uploadProductoFile(archivos.archivoHtml, productoNombre + '-html', capacidadLts, marca, folderName)
             } else if (productoData.archivo_html === null && currentData?.archivo_html) {
                 await deleteProductoFile(currentData.archivo_html)
+                await deleteProductoRender3d(null, folderName)
                 archivoHtmlPath = null
             }
 
@@ -492,6 +492,10 @@ export const useWaterplastProductos = () => {
                 icono3: iconPaths.icono3
             }
 
+            // Limpiar xr_images_folder solo cuando se borren AMBOS campos
+            if (!render3dPath && !archivoHtmlPath) {
+                finalProductoData.xr_images_folder = null
+            }
 
             const { data, error: supabaseError } = await supabase
                 .from('waterplast-productos')

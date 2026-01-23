@@ -47,6 +47,10 @@ const tabla = {
             label: 'Localidad',
         },
         {
+            key: 'telefono',
+            label: 'Teléfono',
+        },
+        {
             key: 'vende',
             label: 'Vende',
             type: 'array'

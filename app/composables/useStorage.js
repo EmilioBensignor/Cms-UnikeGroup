@@ -911,24 +911,46 @@ export const useStorage = () => {
         return url
     }
 
-    const deleteProductoRender3d = async (storagePath, productoNombre, marca = 'waterplast') => {
+    const deleteProductoRender3d = async (storagePath, folderNameOrProductoNombre, marca = 'waterplast') => {
         try {
             error.value = null
 
             const bucketName = `${marca}-productos`
 
-            const { error: deleteZipError } = await supabase.storage
-                .from(bucketName)
-                .remove([storagePath])
+            // Primero intentar borrar el archivo ZIP si existe (puede que ya haya sido borrado por la Edge Function)
+            if (storagePath) {
+                await supabase.storage
+                    .from(bucketName)
+                    .remove([storagePath])
+                    .catch(() => {
+                        // Ignorar error si el archivo no existe
+                    })
+            }
 
-            if (deleteZipError) throw deleteZipError
+            // Construir la ruta de la carpeta images
+            let imagesPath
 
-            const cleanName = productoNombre.toLowerCase()
-                .replace(/[^a-z0-9\s]/g, '')
-                .replace(/\s+/g, '-')
-                .substring(0, 20)
-
-            const imagesPath = `${cleanName}/images`
+            // Si folderNameOrProductoNombre está definido, usarlo directamente
+            if (folderNameOrProductoNombre) {
+                const isAlreadyFolderName = /^[a-z0-9-]+$/.test(folderNameOrProductoNombre)
+                const cleanName = isAlreadyFolderName
+                    ? folderNameOrProductoNombre
+                    : folderNameOrProductoNombre.toLowerCase()
+                        .replace(/[^a-z0-9\s]/g, '')
+                        .replace(/\s+/g, '-')
+                        .substring(0, 20)
+                imagesPath = `${cleanName}/images`
+            }
+            // Si solo tenemos storagePath y contiene '/images/', extraer la carpeta base
+            else if (storagePath && storagePath.includes('/images/')) {
+                const parts = storagePath.split('/images/')
+                imagesPath = `${parts[0]}/images`
+            }
+            // Si no tenemos suficiente información, no borrar nada
+            else {
+                console.warn('No se puede determinar la ruta de la carpeta images')
+                return
+            }
 
             const { data: files, error: listError } = await supabase.storage
                 .from(bucketName)

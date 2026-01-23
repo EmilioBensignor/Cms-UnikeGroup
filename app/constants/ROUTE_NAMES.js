@@ -37,5 +37,7 @@ export const ROUTE_NAMES = {
         PRODUCTOS: "/rohermet/productos",
         CREAR_PRODUCTO: "/rohermet/productos/create",
         EDITAR_PRODUCTO: (id) => `/rohermet/productos/edit/${id}`,
+        IMAGENES_DESTACADAS: "/rohermet/imagenes-destacadas",
+        EDITAR_IMAGEN_DESTACADA: (id) => `/rohermet/imagenes-destacadas/edit/${id}`,
     },
 };

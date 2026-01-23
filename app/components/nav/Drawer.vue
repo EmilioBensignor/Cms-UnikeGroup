@@ -128,6 +128,11 @@ const menuRohermet = [
         title: "Productos",
         icon: "cards",
     },
+    {
+        route: ROUTE_NAMES.ROHERMET.IMAGENES_DESTACADAS,
+        title: "Imágenes Destacadas",
+        icon: "photo-star",
+    },
 ];
 
 const loggingOut = ref(false)

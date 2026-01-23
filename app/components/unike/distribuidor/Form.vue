@@ -25,6 +25,9 @@
         </FormFieldsContainer>
 
         <FormFieldsContainer>
+            <FormTextField v-model="formData.telefono" label="Teléfono" id="telefono"
+                placeholder="Ingrese el teléfono" :error="errors.telefono" />
+
             <FormSwitch v-model="formData.estado" id="estado" label="Estado" required :error="errors.estado" />
         </FormFieldsContainer>
 
@@ -78,6 +81,7 @@ const formData = reactive({
     localidad: '',
     latitud: '',
     longitud: '',
+    telefono: '',
     estado: true,
     vende: []
 })
@@ -89,6 +93,7 @@ const errors = reactive({
     localidad: '',
     latitud: '',
     longitud: '',
+    telefono: '',
     estado: '',
     vende: ''
 })
@@ -102,6 +107,7 @@ onMounted(() => {
             localidad: props.initialData.localidad || '',
             latitud: props.initialData.latitud != null ? String(props.initialData.latitud) : '',
             longitud: props.initialData.longitud != null ? String(props.initialData.longitud) : '',
+            telefono: props.initialData.telefono || '',
             estado: props.initialData.estado !== false,
             vende: props.initialData.vende || []
         })
@@ -194,6 +200,7 @@ const handleSubmit = async () => {
             localidad: formData.localidad.trim(),
             latitud: String(formData.latitud).trim() ? parseFloat(formData.latitud) : null,
             longitud: String(formData.longitud).trim() ? parseFloat(formData.longitud) : null,
+            telefono: formData.telefono.trim() || null,
             estado: formData.estado,
             vende: formData.vende
         }

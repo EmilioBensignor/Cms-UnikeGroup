@@ -4,13 +4,15 @@ export const useRohermetCategorias = () => {
         uploadRohermetCategoriaImage,
         deleteRohermetCategoriaImage,
         getRohermetCategoriaImageUrl,
+        uploadCategoriaImage,
+        deleteCategoriaImage,
+        getCategoriaImageUrl,
         uploadCategoriaIcon,
         deleteCategoriaIcon,
         getCategoriaIconUrl,
         uploadCategoriaImagenesRedes,
         deleteCategoriaImagenRed,
-        getCategoriaImagenRedUrl,
-        deleteCategoriaImage
+        getCategoriaImagenRedUrl
     } = useStorage()
     const loading = ref(false)
     const categorias = ref([])
@@ -34,10 +36,10 @@ export const useRohermetCategorias = () => {
             const categoriasWithUrls = (data || []).map(categoria => ({
                 ...categoria,
                 imagen: categoria.imagen ? getRohermetCategoriaImageUrl(categoria.imagen) : null,
-                imagen_xl_categorias: categoria.imagen_xl_categorias ? getRohermetCategoriaImageUrl(categoria.imagen_xl_categorias) : null,
-                imagen_l_categorias: categoria.imagen_l_categorias ? getRohermetCategoriaImageUrl(categoria.imagen_l_categorias) : null,
-                imagen_m_categorias: categoria.imagen_m_categorias ? getRohermetCategoriaImageUrl(categoria.imagen_m_categorias) : null,
-                imagen_s_categorias: categoria.imagen_s_categorias ? getRohermetCategoriaImageUrl(categoria.imagen_s_categorias) : null,
+                imagen_xl_categorias: categoria.imagen_xl_categorias ? getCategoriaImageUrl(categoria.imagen_xl_categorias, marca) : null,
+                imagen_l_categorias: categoria.imagen_l_categorias ? getCategoriaImageUrl(categoria.imagen_l_categorias, marca) : null,
+                imagen_m_categorias: categoria.imagen_m_categorias ? getCategoriaImageUrl(categoria.imagen_m_categorias, marca) : null,
+                imagen_s_categorias: categoria.imagen_s_categorias ? getCategoriaImageUrl(categoria.imagen_s_categorias, marca) : null,
                 icono1: categoria.icono1 ? getCategoriaIconUrl(categoria.icono1, marca) : null,
                 icono2: categoria.icono2 ? getCategoriaIconUrl(categoria.icono2, marca) : null,
                 icono3: categoria.icono3 ? getCategoriaIconUrl(categoria.icono3, marca) : null,
@@ -75,10 +77,10 @@ export const useRohermetCategorias = () => {
             const categoriaWithUrls = {
                 ...data,
                 imagen: data.imagen ? getRohermetCategoriaImageUrl(data.imagen) : null,
-                imagen_xl_categorias: data.imagen_xl_categorias ? getRohermetCategoriaImageUrl(data.imagen_xl_categorias) : null,
-                imagen_l_categorias: data.imagen_l_categorias ? getRohermetCategoriaImageUrl(data.imagen_l_categorias) : null,
-                imagen_m_categorias: data.imagen_m_categorias ? getRohermetCategoriaImageUrl(data.imagen_m_categorias) : null,
-                imagen_s_categorias: data.imagen_s_categorias ? getRohermetCategoriaImageUrl(data.imagen_s_categorias) : null,
+                imagen_xl_categorias: data.imagen_xl_categorias ? getCategoriaImageUrl(data.imagen_xl_categorias, marca) : null,
+                imagen_l_categorias: data.imagen_l_categorias ? getCategoriaImageUrl(data.imagen_l_categorias, marca) : null,
+                imagen_m_categorias: data.imagen_m_categorias ? getCategoriaImageUrl(data.imagen_m_categorias, marca) : null,
+                imagen_s_categorias: data.imagen_s_categorias ? getCategoriaImageUrl(data.imagen_s_categorias, marca) : null,
                 icono1: data.icono1 ? getCategoriaIconUrl(data.icono1, marca) : null,
                 icono2: data.icono2 ? getCategoriaIconUrl(data.icono2, marca) : null,
                 icono3: data.icono3 ? getCategoriaIconUrl(data.icono3, marca) : null,
@@ -101,7 +103,7 @@ export const useRohermetCategorias = () => {
         }
     }
 
-    const updateCategoria = async (id, categoriaData, imagenes, iconos, imagenesRedes) => {
+    const updateCategoria = async (id, categoriaData, imagenes, iconos, imagenesRedes, removedImages = {}) => {
         loading.value = true
         error.value = null
 
@@ -128,57 +130,68 @@ export const useRohermetCategorias = () => {
             }
             let imagenesRedesPaths = currentData?.imagenes_redes || []
 
-            if (imagenes.imagen) {
-                if (currentData?.imagen) {
-                    await deleteRohermetCategoriaImage(currentData.imagen)
-                }
+            if (removedImages.imagen) {
+                if (currentData?.imagen) await deleteRohermetCategoriaImage(currentData.imagen)
+                imagenPath = null
+            } else if (imagenes.imagen) {
+                if (currentData?.imagen) await deleteRohermetCategoriaImage(currentData.imagen)
                 imagenPath = await uploadRohermetCategoriaImage(imagenes.imagen, categoriaNombre)
             }
 
-            if (imagenes.imagenXLCategorias) {
-                if (currentData?.imagen_xl_categorias) {
-                    await deleteCategoriaImage(currentData.imagen_xl_categorias, marca)
-                }
-                imagenXLCategoriasPath = await uploadRohermetCategoriaImage(imagenes.imagenXLCategorias, categoriaNombre + '-xl-categorias')
+            if (removedImages.imagenXLCategorias) {
+                if (currentData?.imagen_xl_categorias) await deleteCategoriaImage(currentData.imagen_xl_categorias, marca)
+                imagenXLCategoriasPath = null
+            } else if (imagenes.imagenXLCategorias) {
+                if (currentData?.imagen_xl_categorias) await deleteCategoriaImage(currentData.imagen_xl_categorias, marca)
+                imagenXLCategoriasPath = await uploadCategoriaImage(imagenes.imagenXLCategorias, categoriaNombre + '-xl-categorias', marca)
             }
 
-            if (imagenes.imagenLCategorias) {
-                if (currentData?.imagen_l_categorias) {
-                    await deleteCategoriaImage(currentData.imagen_l_categorias, marca)
-                }
-                imagenLCategoriasPath = await uploadRohermetCategoriaImage(imagenes.imagenLCategorias, categoriaNombre + '-l-categorias')
+            if (removedImages.imagenLCategorias) {
+                if (currentData?.imagen_l_categorias) await deleteCategoriaImage(currentData.imagen_l_categorias, marca)
+                imagenLCategoriasPath = null
+            } else if (imagenes.imagenLCategorias) {
+                if (currentData?.imagen_l_categorias) await deleteCategoriaImage(currentData.imagen_l_categorias, marca)
+                imagenLCategoriasPath = await uploadCategoriaImage(imagenes.imagenLCategorias, categoriaNombre + '-l-categorias', marca)
             }
 
-            if (imagenes.imagenMCategorias) {
-                if (currentData?.imagen_m_categorias) {
-                    await deleteCategoriaImage(currentData.imagen_m_categorias, marca)
-                }
-                imagenMCategoriasPath = await uploadRohermetCategoriaImage(imagenes.imagenMCategorias, categoriaNombre + '-m-categorias')
+            if (removedImages.imagenMCategorias) {
+                if (currentData?.imagen_m_categorias) await deleteCategoriaImage(currentData.imagen_m_categorias, marca)
+                imagenMCategoriasPath = null
+            } else if (imagenes.imagenMCategorias) {
+                if (currentData?.imagen_m_categorias) await deleteCategoriaImage(currentData.imagen_m_categorias, marca)
+                imagenMCategoriasPath = await uploadCategoriaImage(imagenes.imagenMCategorias, categoriaNombre + '-m-categorias', marca)
             }
 
-            if (imagenes.imagenSCategorias) {
-                if (currentData?.imagen_s_categorias) {
-                    await deleteCategoriaImage(currentData.imagen_s_categorias, marca)
-                }
-                imagenSCategoriasPath = await uploadRohermetCategoriaImage(imagenes.imagenSCategorias, categoriaNombre + '-s-categorias')
+            if (removedImages.imagenSCategorias) {
+                if (currentData?.imagen_s_categorias) await deleteCategoriaImage(currentData.imagen_s_categorias, marca)
+                imagenSCategoriasPath = null
+            } else if (imagenes.imagenSCategorias) {
+                if (currentData?.imagen_s_categorias) await deleteCategoriaImage(currentData.imagen_s_categorias, marca)
+                imagenSCategoriasPath = await uploadCategoriaImage(imagenes.imagenSCategorias, categoriaNombre + '-s-categorias', marca)
             }
 
-            if (iconos.icono1) {
-                if (currentData?.icono1) {
-                    await deleteCategoriaIcon(currentData.icono1, marca)
-                }
+            if (removedImages.icono1) {
+                if (currentData?.icono1) await deleteCategoriaIcon(currentData.icono1, marca)
+                iconPaths.icono1 = null
+            } else if (iconos.icono1) {
+                if (currentData?.icono1) await deleteCategoriaIcon(currentData.icono1, marca)
                 iconPaths.icono1 = await uploadCategoriaIcon(iconos.icono1, categoriaNombre, 1, marca)
             }
-            if (iconos.icono2) {
+
+            if (removedImages.icono2) {
+                if (currentData?.icono2) await deleteCategoriaIcon(currentData.icono2, marca)
+                iconPaths.icono2 = null
+            } else if (iconos.icono2) {
                 if (currentData?.icono2) {
                     await deleteCategoriaIcon(currentData.icono2, marca)
                 }
                 iconPaths.icono2 = await uploadCategoriaIcon(iconos.icono2, categoriaNombre, 2, marca)
             }
-            if (iconos.icono3) {
-                if (currentData?.icono3) {
-                    await deleteCategoriaIcon(currentData.icono3, marca)
-                }
+            if (removedImages.icono3) {
+                if (currentData?.icono3) await deleteCategoriaIcon(currentData.icono3, marca)
+                iconPaths.icono3 = null
+            } else if (iconos.icono3) {
+                if (currentData?.icono3) await deleteCategoriaIcon(currentData.icono3, marca)
                 iconPaths.icono3 = await uploadCategoriaIcon(iconos.icono3, categoriaNombre, 3, marca)
             }
 
@@ -252,10 +265,10 @@ export const useRohermetCategorias = () => {
             const dataWithUrls = {
                 ...data,
                 imagen: data.imagen ? getRohermetCategoriaImageUrl(data.imagen) : null,
-                imagen_xl_categorias: data.imagen_xl_categorias ? getRohermetCategoriaImageUrl(data.imagen_xl_categorias) : null,
-                imagen_l_categorias: data.imagen_l_categorias ? getRohermetCategoriaImageUrl(data.imagen_l_categorias) : null,
-                imagen_m_categorias: data.imagen_m_categorias ? getRohermetCategoriaImageUrl(data.imagen_m_categorias) : null,
-                imagen_s_categorias: data.imagen_s_categorias ? getRohermetCategoriaImageUrl(data.imagen_s_categorias) : null,
+                imagen_xl_categorias: data.imagen_xl_categorias ? getCategoriaImageUrl(data.imagen_xl_categorias, marca) : null,
+                imagen_l_categorias: data.imagen_l_categorias ? getCategoriaImageUrl(data.imagen_l_categorias, marca) : null,
+                imagen_m_categorias: data.imagen_m_categorias ? getCategoriaImageUrl(data.imagen_m_categorias, marca) : null,
+                imagen_s_categorias: data.imagen_s_categorias ? getCategoriaImageUrl(data.imagen_s_categorias, marca) : null,
                 icono1: data.icono1 ? getCategoriaIconUrl(data.icono1, marca) : null,
                 icono2: data.icono2 ? getCategoriaIconUrl(data.icono2, marca) : null,
                 icono3: data.icono3 ? getCategoriaIconUrl(data.icono3, marca) : null,

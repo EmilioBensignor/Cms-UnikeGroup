@@ -710,15 +710,20 @@ export const useStorage = () => {
         return url
     }
 
-    const uploadRohermetCategoriaImage = async (dataUrl, categoriaNombre) => {
+    const uploadRohermetCategoriaImage = async (dataUrlOrFile, categoriaNombre) => {
         try {
             uploading.value = true
             uploadProgress.value = 0
             error.value = null
 
-            const response = await fetch(dataUrl)
-            const blob = await response.blob()
-            const file = new File([blob], 'image.png', { type: blob.type })
+            let file
+            if (dataUrlOrFile instanceof File || dataUrlOrFile instanceof Blob) {
+                file = dataUrlOrFile
+            } else {
+                const response = await fetch(dataUrlOrFile)
+                const blob = await response.blob()
+                file = new File([blob], 'image.png', { type: blob.type })
+            }
 
             validateImageFile(file)
 
@@ -1122,20 +1127,16 @@ export const useStorage = () => {
 
             const bucketName = `${marca}-productos`
 
-            // Primero intentar borrar el archivo ZIP si existe (puede que ya haya sido borrado por la Edge Function)
             if (storagePath) {
                 await supabase.storage
                     .from(bucketName)
                     .remove([storagePath])
                     .catch(() => {
-                        // Ignorar error si el archivo no existe
                     })
             }
 
-            // Construir la ruta de la carpeta images
             let imagesPath
 
-            // Si folderNameOrProductoNombre está definido, usarlo directamente
             if (folderNameOrProductoNombre) {
                 const isAlreadyFolderName = /^[a-z0-9-]+$/.test(folderNameOrProductoNombre)
                 const cleanName = isAlreadyFolderName
@@ -1146,12 +1147,10 @@ export const useStorage = () => {
                         .substring(0, 20)
                 imagesPath = `${cleanName}/images`
             }
-            // Si solo tenemos storagePath y contiene '/images/', extraer la carpeta base
             else if (storagePath && storagePath.includes('/images/')) {
                 const parts = storagePath.split('/images/')
                 imagesPath = `${parts[0]}/images`
             }
-            // Si no tenemos suficiente información, no borrar nada
             else {
                 console.warn('No se puede determinar la ruta de la carpeta images')
                 return

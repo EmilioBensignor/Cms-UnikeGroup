@@ -86,9 +86,9 @@
 
         <FormFieldsContainer>
             <FormTextField v-model="formData.caracteristica1" label="Caracteristica 1" id="caracteristica1"
-                placeholder="Ingrese la primera caracteristica" :error="errors.caracteristica1" />
+                placeholder="Ingrese la primera caracteristica" required :error="errors.caracteristica1" />
             <FormImageField v-model="formData.icono1" id="icono1" label="Icono 1 (48px x 48px)" :error="errors.icono1"
-                targetFolder="rohermet-productos" @upload-start="handleIconStart1"
+                required targetFolder="rohermet-productos" @upload-start="handleIconStart1"
                 @upload-complete="handleIconComplete1" />
         </FormFieldsContainer>
 
@@ -167,6 +167,13 @@ const removedFiles = reactive({
     archivoHtml: false,
     fichaTecnica: false,
     manualInstalacion: false
+})
+
+const removedImages = reactive({
+    imagen: false,
+    icono1: false,
+    icono2: false,
+    icono3: false,
 })
 
 const { categorias, fetchCategorias } = useRohermetCategorias()
@@ -338,6 +345,19 @@ watch(() => props.initialData, async (newData) => {
     }
 }, { immediate: true, deep: true })
 
+watch(() => formData.imagen, (newVal, oldVal) => {
+    if (newVal === '' && oldVal) removedImages.imagen = true
+})
+watch(() => formData.icono1, (newVal, oldVal) => {
+    if (newVal === '' && oldVal) removedImages.icono1 = true
+})
+watch(() => formData.icono2, (newVal, oldVal) => {
+    if (newVal === '' && oldVal) removedImages.icono2 = true
+})
+watch(() => formData.icono3, (newVal, oldVal) => {
+    if (newVal === '' && oldVal) removedImages.icono3 = true
+})
+
 onMounted(async () => {
     try {
         await fetchCategorias()
@@ -355,6 +375,7 @@ const preventInvalidNumber = (event) => {
 const handleImagenStart = (file) => {
     imagen.value = file
     errors.imagen = ''
+    removedImages.imagen = false
 }
 
 const handleImagenComplete = () => {
@@ -408,6 +429,7 @@ const handleGaleriaComplete = () => {
 const handleIconStart1 = (file) => {
     icono1.value = file
     errors.icono1 = ''
+    removedImages.icono1 = false
 }
 
 const handleIconComplete1 = () => {
@@ -417,6 +439,7 @@ const handleIconComplete1 = () => {
 const handleIconStart2 = (file) => {
     icono2.value = file
     errors.icono2 = ''
+    removedImages.icono2 = false
 }
 
 const handleIconComplete2 = () => {
@@ -426,6 +449,7 @@ const handleIconComplete2 = () => {
 const handleIconStart3 = (file) => {
     icono3.value = file
     errors.icono3 = ''
+    removedImages.icono3 = false
 }
 
 const handleIconComplete3 = () => {
@@ -464,6 +488,36 @@ const validateForm = () => {
         isValid = false
     }
 
+    if (!formData.caracteristica1.trim()) {
+        errors.caracteristica1 = 'La caracteristica 1 es requerida'
+        isValid = false
+    }
+
+    if (!icono1.value && !formData.icono1) {
+        errors.icono1 = 'El icono 1 es requerido'
+        isValid = false
+    }
+
+    if (formData.caracteristica2.trim() && !icono2.value && !formData.icono2) {
+        errors.icono2 = 'El icono 2 es requerido cuando se ingresa la caracteristica 2'
+        isValid = false
+    }
+
+    if (!formData.caracteristica2.trim() && (icono2.value || formData.icono2)) {
+        errors.caracteristica2 = 'La caracteristica 2 es requerida cuando se ingresa el icono 2'
+        isValid = false
+    }
+
+    if (formData.caracteristica3.trim() && !icono3.value && !formData.icono3) {
+        errors.icono3 = 'El icono 3 es requerido cuando se ingresa la caracteristica 3'
+        isValid = false
+    }
+
+    if (!formData.caracteristica3.trim() && (icono3.value || formData.icono3)) {
+        errors.caracteristica3 = 'La caracteristica 3 es requerida cuando se ingresa el icono 3'
+        isValid = false
+    }
+
     return isValid
 }
 
@@ -499,7 +553,11 @@ const handleSubmit = async () => {
         }
 
         if (props.isEditing) {
-            if (!imagen.value) productoData.imagen = formData.imagen
+            if (removedImages.imagen) {
+                productoData.imagen = null
+            } else if (!imagen.value) {
+                productoData.imagen = formData.imagen
+            }
 
             if (removedFiles.render3d) {
                 productoData.render_3d = null
@@ -525,15 +583,27 @@ const handleSubmit = async () => {
                 productoData.manual_instalacion = formData.manual_instalacion
             }
 
-            if (!icono1.value) productoData.icono1 = formData.icono1
-            if (!icono2.value) productoData.icono2 = formData.icono2
-            if (!icono3.value) productoData.icono3 = formData.icono3
+            if (removedImages.icono1) {
+                productoData.icono1 = null
+            } else if (!icono1.value) {
+                productoData.icono1 = formData.icono1
+            }
+            if (removedImages.icono2) {
+                productoData.icono2 = null
+            } else if (!icono2.value) {
+                productoData.icono2 = formData.icono2
+            }
+            if (removedImages.icono3) {
+                productoData.icono3 = null
+            } else if (!icono3.value) {
+                productoData.icono3 = formData.icono3
+            }
         }
 
         emit('submit', {
             productoData,
             archivos: {
-                imagen: imagen.value,
+                imagen: removedImages.imagen ? null : imagen.value,
                 render3d: render3d.value,
                 archivoHtml: archivoHtml.value,
                 fichaTecnica: fichaTecnica.value,
@@ -544,6 +614,7 @@ const handleSubmit = async () => {
                 icono2: icono2.value,
                 icono3: icono3.value
             },
+            removedImages: { ...removedImages },
             galeria: formData.galeria
         })
 

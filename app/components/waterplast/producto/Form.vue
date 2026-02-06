@@ -171,6 +171,13 @@ const removedFiles = reactive({
     archivoHtml: false
 })
 
+const removedImages = reactive({
+    imagen: false,
+    icono1: false,
+    icono2: false,
+    icono3: false,
+})
+
 const { categorias, fetchCategorias } = useWaterplastCategorias()
 const { fetchSubcategoriasByCategoria } = useWaterplastSubcategorias()
 const { fetchProductosByCategoria } = useWaterplastProductos()
@@ -347,6 +354,19 @@ watch(() => props.initialData, async (newData) => {
     }
 }, { immediate: true, deep: true })
 
+watch(() => formData.imagen, (newVal, oldVal) => {
+    if (newVal === '' && oldVal) removedImages.imagen = true
+})
+watch(() => formData.icono1, (newVal, oldVal) => {
+    if (newVal === '' && oldVal) removedImages.icono1 = true
+})
+watch(() => formData.icono2, (newVal, oldVal) => {
+    if (newVal === '' && oldVal) removedImages.icono2 = true
+})
+watch(() => formData.icono3, (newVal, oldVal) => {
+    if (newVal === '' && oldVal) removedImages.icono3 = true
+})
+
 onMounted(async () => {
     try {
         await fetchCategorias()
@@ -358,6 +378,7 @@ onMounted(async () => {
 const handleImagenStart = (file) => {
     imagen.value = file
     errors.imagen = ''
+    removedImages.imagen = false
 }
 
 const handleImagenComplete = () => {
@@ -403,6 +424,7 @@ const handleArchivoHtmlComplete = () => {
 const handleIconStart1 = (file) => {
     icono1.value = file
     errors.icono1 = ''
+    removedImages.icono1 = false
 }
 
 const handleIconComplete1 = () => {
@@ -412,6 +434,7 @@ const handleIconComplete1 = () => {
 const handleIconStart2 = (file) => {
     icono2.value = file
     errors.icono2 = ''
+    removedImages.icono2 = false
 }
 
 const handleIconComplete2 = () => {
@@ -421,6 +444,7 @@ const handleIconComplete2 = () => {
 const handleIconStart3 = (file) => {
     icono3.value = file
     errors.icono3 = ''
+    removedImages.icono3 = false
 }
 
 const handleIconComplete3 = () => {
@@ -535,7 +559,11 @@ const handleSubmit = async () => {
         }
 
         if (props.isEditing) {
-            if (!imagen.value) productoData.imagen = formData.imagen
+            if (removedImages.imagen) {
+                productoData.imagen = null
+            } else if (!imagen.value) {
+                productoData.imagen = formData.imagen
+            }
 
             if (removedFiles.render3d) {
                 productoData.render_3d = null
@@ -561,15 +589,27 @@ const handleSubmit = async () => {
                 productoData.archivo_html = formData.archivo_html
             }
 
-            if (!icono1.value) productoData.icono1 = formData.icono1
-            if (!icono2.value) productoData.icono2 = formData.icono2
-            if (!icono3.value) productoData.icono3 = formData.icono3
+            if (removedImages.icono1) {
+                productoData.icono1 = null
+            } else if (!icono1.value) {
+                productoData.icono1 = formData.icono1
+            }
+            if (removedImages.icono2) {
+                productoData.icono2 = null
+            } else if (!icono2.value) {
+                productoData.icono2 = formData.icono2
+            }
+            if (removedImages.icono3) {
+                productoData.icono3 = null
+            } else if (!icono3.value) {
+                productoData.icono3 = formData.icono3
+            }
         }
 
         emit('submit', {
             productoData,
             archivos: {
-                imagen: imagen.value,
+                imagen: removedImages.imagen ? null : imagen.value,
                 render3d: render3d.value,
                 fichaTecnica: fichaTecnica.value,
                 manualInstalacion: manualInstalacion.value,
@@ -579,7 +619,8 @@ const handleSubmit = async () => {
                 icono1: icono1.value,
                 icono2: icono2.value,
                 icono3: icono3.value
-            }
+            },
+            removedImages: { ...removedImages }
         })
 
     } catch (error) {

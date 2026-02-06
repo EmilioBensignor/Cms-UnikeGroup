@@ -264,7 +264,7 @@ export const useRohermetProductos = () => {
         }
     }
 
-    const updateProducto = async (id, productoData, archivos, iconos, galeria = []) => {
+    const updateProducto = async (id, productoData, archivos, iconos, galeria = [], removedImages = {}) => {
         loading.value = true
         error.value = null
 
@@ -318,7 +318,12 @@ export const useRohermetProductos = () => {
             }
             let galeriaPaths = []
 
-            if (archivos.imagen) {
+            if (removedImages.imagen) {
+                if (currentData?.imagen) {
+                    await deleteProductoImage(currentData.imagen, marca)
+                }
+                imagenPath = null
+            } else if (archivos.imagen) {
                 if (currentData?.imagen) {
                     await deleteProductoImage(currentData.imagen, marca)
                 }
@@ -365,22 +370,25 @@ export const useRohermetProductos = () => {
                 manualInstalacionPath = null
             }
 
-            if (iconos.icono1) {
-                if (currentData?.icono1) {
-                    await deleteProductoIcon(currentData.icono1, marca)
-                }
+            if (removedImages.icono1) {
+                if (currentData?.icono1) await deleteProductoIcon(currentData.icono1, marca)
+                iconPaths.icono1 = null
+            } else if (iconos.icono1) {
+                if (currentData?.icono1) await deleteProductoIcon(currentData.icono1, marca)
                 iconPaths.icono1 = await uploadProductoIcon(iconos.icono1, productoNombre, 1, capacidadLts, marca, folderName)
             }
-            if (iconos.icono2) {
-                if (currentData?.icono2) {
-                    await deleteProductoIcon(currentData.icono2, marca)
-                }
+            if (removedImages.icono2) {
+                if (currentData?.icono2) await deleteProductoIcon(currentData.icono2, marca)
+                iconPaths.icono2 = null
+            } else if (iconos.icono2) {
+                if (currentData?.icono2) await deleteProductoIcon(currentData.icono2, marca)
                 iconPaths.icono2 = await uploadProductoIcon(iconos.icono2, productoNombre, 2, capacidadLts, marca, folderName)
             }
-            if (iconos.icono3) {
-                if (currentData?.icono3) {
-                    await deleteProductoIcon(currentData.icono3, marca)
-                }
+            if (removedImages.icono3) {
+                if (currentData?.icono3) await deleteProductoIcon(currentData.icono3, marca)
+                iconPaths.icono3 = null
+            } else if (iconos.icono3) {
+                if (currentData?.icono3) await deleteProductoIcon(currentData.icono3, marca)
                 iconPaths.icono3 = await uploadProductoIcon(iconos.icono3, productoNombre, 3, capacidadLts, marca, folderName)
             }
 

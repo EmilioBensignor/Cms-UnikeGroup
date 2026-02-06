@@ -101,7 +101,7 @@ export const useWaterplastCategorias = () => {
     }
 
 
-    const updateCategoria = async (id, categoriaData, imagenes, iconos, imagenesRedes) => {
+    const updateCategoria = async (id, categoriaData, imagenes, iconos, imagenesRedes, removedImages = {}) => {
         loading.value = true
         error.value = null
 
@@ -129,64 +129,73 @@ export const useWaterplastCategorias = () => {
             }
             let imagenesRedesPaths = currentData?.imagenes_redes || []
 
-            if (imagenes.imagenMenu) {
-                if (currentData?.imagen_menu) {
-                    await deleteCategoriaImage(currentData.imagen_menu)
-                }
+            if (removedImages.imagenMenu) {
+                if (currentData?.imagen_menu) await deleteCategoriaImage(currentData.imagen_menu)
+                imagenMenuPath = null
+            } else if (imagenes.imagenMenu) {
+                if (currentData?.imagen_menu) await deleteCategoriaImage(currentData.imagen_menu)
                 imagenMenuPath = await uploadCategoriaImage(imagenes.imagenMenu, categoriaNombre + '-menu')
             }
 
-            if (imagenes.imagenHeroHome) {
-                if (currentData?.imagen_hero_home) {
-                    await deleteCategoriaImage(currentData.imagen_hero_home)
-                }
+            if (removedImages.imagenHeroHome) {
+                if (currentData?.imagen_hero_home) await deleteCategoriaImage(currentData.imagen_hero_home)
+                imagenHeroHomePath = null
+            } else if (imagenes.imagenHeroHome) {
+                if (currentData?.imagen_hero_home) await deleteCategoriaImage(currentData.imagen_hero_home)
                 imagenHeroHomePath = await uploadCategoriaImage(imagenes.imagenHeroHome, categoriaNombre + '-hero')
             }
 
-            if (imagenes.imagenXLCategorias) {
-                if (currentData?.imagen_xl_categorias) {
-                    await deleteCategoriaImage(currentData.imagen_xl_categorias)
-                }
+            if (removedImages.imagenXLCategorias) {
+                if (currentData?.imagen_xl_categorias) await deleteCategoriaImage(currentData.imagen_xl_categorias)
+                imagenXLCategoriasPath = null
+            } else if (imagenes.imagenXLCategorias) {
+                if (currentData?.imagen_xl_categorias) await deleteCategoriaImage(currentData.imagen_xl_categorias)
                 imagenXLCategoriasPath = await uploadCategoriaImage(imagenes.imagenXLCategorias, categoriaNombre + '-xl-categorias')
             }
 
-            if (imagenes.imagenLCategorias) {
-                if (currentData?.imagen_l_categorias) {
-                    await deleteCategoriaImage(currentData.imagen_l_categorias)
-                }
+            if (removedImages.imagenLCategorias) {
+                if (currentData?.imagen_l_categorias) await deleteCategoriaImage(currentData.imagen_l_categorias)
+                imagenLCategoriasPath = null
+            } else if (imagenes.imagenLCategorias) {
+                if (currentData?.imagen_l_categorias) await deleteCategoriaImage(currentData.imagen_l_categorias)
                 imagenLCategoriasPath = await uploadCategoriaImage(imagenes.imagenLCategorias, categoriaNombre + '-l-categorias')
             }
 
-            if (imagenes.imagenMCategorias) {
-                if (currentData?.imagen_m_categorias) {
-                    await deleteCategoriaImage(currentData.imagen_m_categorias)
-                }
+            if (removedImages.imagenMCategorias) {
+                if (currentData?.imagen_m_categorias) await deleteCategoriaImage(currentData.imagen_m_categorias)
+                imagenMCategoriasPath = null
+            } else if (imagenes.imagenMCategorias) {
+                if (currentData?.imagen_m_categorias) await deleteCategoriaImage(currentData.imagen_m_categorias)
                 imagenMCategoriasPath = await uploadCategoriaImage(imagenes.imagenMCategorias, categoriaNombre + '-m-categorias')
             }
 
-            if (imagenes.imagenSCategorias) {
-                if (currentData?.imagen_s_categorias) {
-                    await deleteCategoriaImage(currentData.imagen_s_categorias)
-                }
+            if (removedImages.imagenSCategorias) {
+                if (currentData?.imagen_s_categorias) await deleteCategoriaImage(currentData.imagen_s_categorias)
+                imagenSCategoriasPath = null
+            } else if (imagenes.imagenSCategorias) {
+                if (currentData?.imagen_s_categorias) await deleteCategoriaImage(currentData.imagen_s_categorias)
                 imagenSCategoriasPath = await uploadCategoriaImage(imagenes.imagenSCategorias, categoriaNombre + '-s-categorias')
             }
 
-            if (iconos.icono1) {
-                if (currentData?.icono1) {
-                    await deleteCategoriaIcon(currentData.icono1)
-                }
+            if (removedImages.icono1) {
+                if (currentData?.icono1) await deleteCategoriaIcon(currentData.icono1)
+                iconPaths.icono1 = null
+            } else if (iconos.icono1) {
+                if (currentData?.icono1) await deleteCategoriaIcon(currentData.icono1)
                 iconPaths.icono1 = await uploadCategoriaIcon(iconos.icono1, categoriaNombre, 1)
             }
-            if (iconos.icono2) {
-                if (currentData?.icono2) {
-                    await deleteCategoriaIcon(currentData.icono2)
-                }
+            if (removedImages.icono2) {
+                if (currentData?.icono2) await deleteCategoriaIcon(currentData.icono2)
+                iconPaths.icono2 = null
+            } else if (iconos.icono2) {
+                if (currentData?.icono2) await deleteCategoriaIcon(currentData.icono2)
                 iconPaths.icono2 = await uploadCategoriaIcon(iconos.icono2, categoriaNombre, 2)
             }
-            if (iconos.icono3) {
-                if (currentData?.icono3) {
-                    await deleteCategoriaIcon(currentData.icono3)
-                }
+            if (removedImages.icono3) {
+                if (currentData?.icono3) await deleteCategoriaIcon(currentData.icono3)
+                iconPaths.icono3 = null
+            } else if (iconos.icono3) {
+                if (currentData?.icono3) await deleteCategoriaIcon(currentData.icono3)
                 iconPaths.icono3 = await uploadCategoriaIcon(iconos.icono3, categoriaNombre, 3)
             }
 

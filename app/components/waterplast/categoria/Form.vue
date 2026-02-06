@@ -116,6 +116,18 @@ const icono1 = ref(null)
 const icono2 = ref(null)
 const icono3 = ref(null)
 
+const removedImages = reactive({
+    imagenMenu: false,
+    imagenHeroHome: false,
+    imagenXLCategorias: false,
+    imagenLCategorias: false,
+    imagenMCategorias: false,
+    imagenSCategorias: false,
+    icono1: false,
+    icono2: false,
+    icono3: false,
+})
+
 const formData = reactive({
     color: '',
     orden: 0,
@@ -195,9 +207,38 @@ watch(() => props.initialData, async (newData) => {
     }
 }, { immediate: true, deep: true })
 
+watch(() => formData.imagenMenu, (newVal, oldVal) => {
+    if (newVal === '' && oldVal) removedImages.imagenMenu = true
+})
+watch(() => formData.imagenHeroHome, (newVal, oldVal) => {
+    if (newVal === '' && oldVal) removedImages.imagenHeroHome = true
+})
+watch(() => formData.imagenXLCategorias, (newVal, oldVal) => {
+    if (newVal === '' && oldVal) removedImages.imagenXLCategorias = true
+})
+watch(() => formData.imagenLCategorias, (newVal, oldVal) => {
+    if (newVal === '' && oldVal) removedImages.imagenLCategorias = true
+})
+watch(() => formData.imagenMCategorias, (newVal, oldVal) => {
+    if (newVal === '' && oldVal) removedImages.imagenMCategorias = true
+})
+watch(() => formData.imagenSCategorias, (newVal, oldVal) => {
+    if (newVal === '' && oldVal) removedImages.imagenSCategorias = true
+})
+watch(() => formData.icono1, (newVal, oldVal) => {
+    if (newVal === '' && oldVal) removedImages.icono1 = true
+})
+watch(() => formData.icono2, (newVal, oldVal) => {
+    if (newVal === '' && oldVal) removedImages.icono2 = true
+})
+watch(() => formData.icono3, (newVal, oldVal) => {
+    if (newVal === '' && oldVal) removedImages.icono3 = true
+})
+
 const handleImageMenuStart = (file) => {
     imagenMenu.value = file
     errors.imagenMenu = ''
+    removedImages.imagenMenu = false
 }
 
 const handleImageMenuComplete = () => {
@@ -207,6 +248,7 @@ const handleImageMenuComplete = () => {
 const handleImageHeroHomeStart = (file) => {
     imagenHeroHome.value = file
     errors.imagenHeroHome = ''
+    removedImages.imagenHeroHome = false
 }
 
 const handleImageHeroHomeComplete = () => {
@@ -216,6 +258,7 @@ const handleImageHeroHomeComplete = () => {
 const handleImageXLCategoriasStart = (file) => {
     imagenXLCategorias.value = file
     errors.imagenXLCategorias = ''
+    removedImages.imagenXLCategorias = false
 }
 
 const handleImageXLCategoriasComplete = () => {
@@ -225,6 +268,7 @@ const handleImageXLCategoriasComplete = () => {
 const handleImageLCategoriasStart = (file) => {
     imagenLCategorias.value = file
     errors.imagenLCategorias = ''
+    removedImages.imagenLCategorias = false
 }
 
 const handleImageLCategoriasComplete = () => {
@@ -234,6 +278,7 @@ const handleImageLCategoriasComplete = () => {
 const handleImageMCategoriasStart = (file) => {
     imagenMCategorias.value = file
     errors.imagenMCategorias = ''
+    removedImages.imagenMCategorias = false
 }
 
 const handleImageMCategoriasComplete = () => {
@@ -243,6 +288,7 @@ const handleImageMCategoriasComplete = () => {
 const handleImageSCategoriasStart = (file) => {
     imagenSCategorias.value = file
     errors.imagenSCategorias = ''
+    removedImages.imagenSCategorias = false
 }
 
 const handleImageSCategoriasComplete = () => {
@@ -252,6 +298,7 @@ const handleImageSCategoriasComplete = () => {
 const handleIconStart1 = (file) => {
     icono1.value = file
     errors.icono1 = ''
+    removedImages.icono1 = false
 }
 
 const handleIconComplete1 = () => {
@@ -261,6 +308,7 @@ const handleIconComplete1 = () => {
 const handleIconStart2 = (file) => {
     icono2.value = file
     errors.icono2 = ''
+    removedImages.icono2 = false
 }
 
 const handleIconComplete2 = () => {
@@ -270,6 +318,7 @@ const handleIconComplete2 = () => {
 const handleIconStart3 = (file) => {
     icono3.value = file
     errors.icono3 = ''
+    removedImages.icono3 = false
 }
 
 const handleIconComplete3 = () => {
@@ -392,15 +441,59 @@ const handleSubmit = async () => {
         }
 
         if (props.isEditing) {
-            if (!imagenMenu.value) categoriaData.imagen_menu = formData.imagenMenu
-            if (!imagenHeroHome.value) categoriaData.imagen_hero_home = formData.imagenHeroHome
-            if (!imagenXLCategorias.value) categoriaData.imagen_xl_categorias = formData.imagenXLCategorias
-            if (!imagenLCategorias.value) categoriaData.imagen_l_categorias = formData.imagenLCategorias
-            if (!imagenMCategorias.value) categoriaData.imagen_m_categorias = formData.imagenMCategorias
-            if (!imagenSCategorias.value) categoriaData.imagen_s_categorias = formData.imagenSCategorias
-            if (!icono1.value) categoriaData.icono1 = formData.icono1
-            if (!icono2.value) categoriaData.icono2 = formData.icono2
-            if (!icono3.value) categoriaData.icono3 = formData.icono3
+            if (removedImages.imagenMenu) {
+                categoriaData.imagen_menu = null
+            } else if (!imagenMenu.value) {
+                categoriaData.imagen_menu = formData.imagenMenu
+            }
+
+            if (removedImages.imagenHeroHome) {
+                categoriaData.imagen_hero_home = null
+            } else if (!imagenHeroHome.value) {
+                categoriaData.imagen_hero_home = formData.imagenHeroHome
+            }
+
+            if (removedImages.imagenXLCategorias) {
+                categoriaData.imagen_xl_categorias = null
+            } else if (!imagenXLCategorias.value) {
+                categoriaData.imagen_xl_categorias = formData.imagenXLCategorias
+            }
+
+            if (removedImages.imagenLCategorias) {
+                categoriaData.imagen_l_categorias = null
+            } else if (!imagenLCategorias.value) {
+                categoriaData.imagen_l_categorias = formData.imagenLCategorias
+            }
+
+            if (removedImages.imagenMCategorias) {
+                categoriaData.imagen_m_categorias = null
+            } else if (!imagenMCategorias.value) {
+                categoriaData.imagen_m_categorias = formData.imagenMCategorias
+            }
+
+            if (removedImages.imagenSCategorias) {
+                categoriaData.imagen_s_categorias = null
+            } else if (!imagenSCategorias.value) {
+                categoriaData.imagen_s_categorias = formData.imagenSCategorias
+            }
+
+            if (removedImages.icono1) {
+                categoriaData.icono1 = null
+            } else if (!icono1.value) {
+                categoriaData.icono1 = formData.icono1
+            }
+
+            if (removedImages.icono2) {
+                categoriaData.icono2 = null
+            } else if (!icono2.value) {
+                categoriaData.icono2 = formData.icono2
+            }
+
+            if (removedImages.icono3) {
+                categoriaData.icono3 = null
+            } else if (!icono3.value) {
+                categoriaData.icono3 = formData.icono3
+            }
         }
 
         emit('submit', {
@@ -418,6 +511,7 @@ const handleSubmit = async () => {
                 icono2: icono2.value,
                 icono3: icono3.value
             },
+            removedImages: { ...removedImages },
             imagenesRedes: formData.imagenesRedes
         })
 

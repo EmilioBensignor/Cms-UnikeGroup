@@ -58,6 +58,7 @@ const handleFormSubmit = async (formData) => {
             id,
             formData.productoData,
             formData.archivos,
+            formData.iconos,
             formData.galeria
         )
 

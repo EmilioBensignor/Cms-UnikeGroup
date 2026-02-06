@@ -3,27 +3,34 @@
         <FormFieldsContainer>
             <FormTextField v-model="formData.nombre" label="Nombre" id="nombre"
                 placeholder="Ingrese el nombre del producto" required :error="errors.nombre" />
-            <FormSelect v-model="formData.categoria_id" label="Categoría" id="categoria_id" required
-                :error="errors.categoria_id" :options="categoriasOptions" placeholder="Seleccione una categoría" />
+            <FormSelect v-model="formData.categoria_id" label="Categoria" id="categoria_id" required
+                :error="errors.categoria_id" :options="categoriasOptions" placeholder="Seleccione una categoria" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
-            <FormTextarea v-model="formData.descripcion" label="Descripción" id="descripcion"
-                placeholder="Ingrese la descripción del producto" required :error="errors.descripcion" />
+            <FormTextarea v-model="formData.descripcion" label="Descripcion" id="descripcion"
+                placeholder="Ingrese la descripcion del producto" required :error="errors.descripcion" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
             <FormImageField v-model="formData.imagen" id="imagen" label="Imagen principal (450px x 380px)" :error="errors.imagen"
                 required targetFolder="rohermet-productos" @upload-start="handleImagenStart"
                 @upload-complete="handleImagenComplete" />
-            <FormFileField v-model="formData.ficha_tecnica" id="ficha_tecnica" label="Ficha Técnica"
+        </FormFieldsContainer>
+
+        <FormFieldsContainer>
+            <FormFileField v-model="formData.ficha_tecnica" id="ficha_tecnica" label="Ficha Tecnica"
                 :error="errors.ficha_tecnica" :acceptedTypes="['pdf']" targetFolder="rohermet-productos"
                 @upload-start="handleFichaTecnicaStart" @upload-complete="handleFichaTecnicaComplete"
                 @file-removed="() => removedFiles.fichaTecnica = true" />
+            <FormFileField v-model="formData.manual_instalacion" id="manual_instalacion" label="Manual de Instalacion"
+                :error="errors.manual_instalacion" :acceptedTypes="['pdf']" targetFolder="rohermet-productos"
+                @upload-start="handleManualInstalacionStart" @upload-complete="handleManualInstalacionComplete"
+                @file-removed="() => removedFiles.manualInstalacion = true" />
         </FormFieldsContainer>
 
         <MultiImageField v-model="formData.galeria" id="galeria"
-            label="Galería de imágenes del producto" :error="errors.galeria"
+            label="Galeria de imagenes del producto" :error="errors.galeria"
             targetFolder="rohermet-productos" @upload-start="handleGaleriaStart"
             @upload-complete="handleGaleriaComplete" />
 
@@ -32,7 +39,7 @@
                 :error="errors.archivo_html" :acceptedTypes="['html']" targetFolder="rohermet-productos"
                 @upload-start="handleArchivoHtmlStart" @upload-complete="handleArchivoHtmlComplete"
                 @file-removed="() => removedFiles.archivoHtml = true" />
-            <FormFileField v-model="formData.render_3d" id="render_3d" label="Carpeta .zip con imágenes para 3D"
+            <FormFileField v-model="formData.render_3d" id="render_3d" label="Carpeta .zip con imagenes para 3D"
                 :error="errors.render_3d" :acceptedTypes="['zip']" targetFolder="rohermet-productos"
                 @upload-start="handleRender3dStart" @upload-complete="handleRender3dComplete"
                 @file-removed="() => removedFiles.render3d = true" />
@@ -40,25 +47,25 @@
 
         <FormFieldsContainer>
             <FormSwitch v-model="formData.estado" id="estado" label="Estado" required :error="errors.estado" />
-            <FormSelect v-model="formData.opcion" label="Opción" id="opcion" :error="errors.opcion"
-                :options="opcionOptions" placeholder="Seleccione opción" clearable />
+            <FormSelect v-model="formData.opcion" label="Opcion" id="opcion" :error="errors.opcion"
+                :options="opcionOptions" placeholder="Seleccione opcion" clearable />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
             <FormTextField v-model="formData.altura_cm" label="Altura (cm)" id="altura_cm" type="number"
-                placeholder="Ingrese la altura en centímetros" :error="errors.altura_cm"
+                placeholder="Ingrese la altura en centimetros" :error="errors.altura_cm"
                 @keydown="preventInvalidNumber" />
             <FormTextField v-model="formData.ancho_cm" label="Ancho (cm)" id="ancho_cm" type="number"
-                placeholder="Ingrese el ancho en centímetros" :error="errors.ancho_cm"
+                placeholder="Ingrese el ancho en centimetros" :error="errors.ancho_cm"
                 @keydown="preventInvalidNumber" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
             <FormTextField v-model="formData.largo_cm" label="Largo (cm)" id="largo_cm" type="number"
-                placeholder="Ingrese el largo en centímetros" :error="errors.largo_cm"
+                placeholder="Ingrese el largo en centimetros" :error="errors.largo_cm"
                 @keydown="preventInvalidNumber" />
-            <FormTextField v-model="formData.diametro_cm" label="Diámetro (cm)" id="diametro_cm" type="number"
-                placeholder="Ingrese el diámetro en centímetros" :error="errors.diametro_cm"
+            <FormTextField v-model="formData.diametro_cm" label="Diametro (cm)" id="diametro_cm" type="number"
+                placeholder="Ingrese el diametro en centimetros" :error="errors.diametro_cm"
                 @keydown="preventInvalidNumber" />
         </FormFieldsContainer>
 
@@ -66,16 +73,46 @@
             <FormTextField v-model="formData.capacidad_lts" label="Capacidad (lts)" id="capacidad_lts" type="number"
                 placeholder="Ingrese la capacidad en litros" :error="errors.capacidad_lts"
                 @keydown="preventInvalidNumber" />
-            <FormSelect v-model="formData.orientacion" label="Orientación" id="orientacion" :error="errors.orientacion"
-                :options="orientacionOptions" placeholder="Seleccione orientación" clearable />
+            <FormSelect v-model="formData.orientacion" label="Orientacion" id="orientacion" :error="errors.orientacion"
+                :options="orientacionOptions" placeholder="Seleccione orientacion" clearable />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
             <FormSelect v-model="formData.color" label="Color" id="color" :error="errors.color" :options="colorOptions"
                 placeholder="Seleccione color" clearable />
-            <FormSelect v-model="formData.tecnologia" label="Tecnología" id="tecnologia" :error="errors.tecnologia"
-                :options="tecnologiaOptions" placeholder="Seleccione tecnología" clearable />
+            <FormSelect v-model="formData.tecnologia" label="Tecnologia" id="tecnologia" :error="errors.tecnologia"
+                :options="tecnologiaOptions" placeholder="Seleccione tecnologia" clearable />
         </FormFieldsContainer>
+
+        <FormFieldsContainer>
+            <FormTextField v-model="formData.caracteristica1" label="Caracteristica 1" id="caracteristica1"
+                placeholder="Ingrese la primera caracteristica" :error="errors.caracteristica1" />
+            <FormImageField v-model="formData.icono1" id="icono1" label="Icono 1 (48px x 48px)" :error="errors.icono1"
+                targetFolder="rohermet-productos" @upload-start="handleIconStart1"
+                @upload-complete="handleIconComplete1" />
+        </FormFieldsContainer>
+
+        <FormFieldsContainer>
+            <FormTextField v-model="formData.caracteristica2" label="Caracteristica 2" id="caracteristica2"
+                placeholder="Ingrese la segunda caracteristica" :error="errors.caracteristica2" />
+            <FormImageField v-model="formData.icono2" id="icono2" label="Icono 2 (48px x 48px)" :error="errors.icono2"
+                targetFolder="rohermet-productos" @upload-start="handleIconStart2"
+                @upload-complete="handleIconComplete2" />
+        </FormFieldsContainer>
+
+        <FormFieldsContainer>
+            <FormTextField v-model="formData.caracteristica3" label="Caracteristica 3" id="caracteristica3"
+                placeholder="Ingrese la tercera caracteristica" :error="errors.caracteristica3" />
+            <FormImageField v-model="formData.icono3" id="icono3" label="Icono 3 (48px x 48px)" :error="errors.icono3"
+                targetFolder="rohermet-productos" @upload-start="handleIconStart3"
+                @upload-complete="handleIconComplete3" />
+        </FormFieldsContainer>
+
+        <div v-if="formData.categoria_id && productosRelacionados.length > 0" class="w-full flex flex-col gap-2">
+            <FormLabel>Productos Relacionados</FormLabel>
+            <FormCheckboxGroupField v-model="formData.productos_relacionados" id="productos_relacionados"
+                :options="productosRelacionados" :error="errors.productos_relacionados" />
+        </div>
 
         <div v-if="showButtons" class="w-full flex flex-col lg:flex-row items-center gap-5 mt-8">
             <ButtonPrimary @click="$emit('cancel')" type="button" class="!bg-gray-mid !text-dark">
@@ -120,14 +157,22 @@ const imagen = ref(null)
 const render3d = ref(null)
 const archivoHtml = ref(null)
 const fichaTecnica = ref(null)
+const manualInstalacion = ref(null)
+const icono1 = ref(null)
+const icono2 = ref(null)
+const icono3 = ref(null)
 
 const removedFiles = reactive({
     render3d: false,
     archivoHtml: false,
-    fichaTecnica: false
+    fichaTecnica: false,
+    manualInstalacion: false
 })
 
 const { categorias, fetchCategorias } = useRohermetCategorias()
+const { fetchProductosByCategoria } = useRohermetProductos()
+
+const productosRelacionados = ref([])
 
 const categoriasOptions = computed(() => {
     return categorias.value.map(categoria => ({
@@ -167,6 +212,7 @@ const formData = reactive({
     render_3d: null,
     archivo_html: null,
     ficha_tecnica: null,
+    manual_instalacion: null,
     estado: true,
     altura_cm: null,
     ancho_cm: null,
@@ -176,7 +222,14 @@ const formData = reactive({
     orientacion: '',
     color: '',
     tecnologia: '',
-    opcion: ''
+    opcion: '',
+    caracteristica1: '',
+    icono1: null,
+    caracteristica2: '',
+    icono2: null,
+    caracteristica3: '',
+    icono3: null,
+    productos_relacionados: []
 })
 
 const errors = reactive({
@@ -188,6 +241,7 @@ const errors = reactive({
     render_3d: '',
     archivo_html: '',
     ficha_tecnica: '',
+    manual_instalacion: '',
     estado: '',
     altura_cm: '',
     ancho_cm: '',
@@ -197,7 +251,37 @@ const errors = reactive({
     orientacion: '',
     color: '',
     tecnologia: '',
-    opcion: ''
+    opcion: '',
+    caracteristica1: '',
+    icono1: '',
+    caracteristica2: '',
+    icono2: '',
+    caracteristica3: '',
+    icono3: '',
+    productos_relacionados: ''
+})
+
+watch(() => formData.categoria_id, async (newCategoriaId, oldCategoriaId) => {
+    if (newCategoriaId) {
+        try {
+            const productos = await fetchProductosByCategoria(newCategoriaId)
+
+            const filteredProductos = props.isEditing && props.initialData?.id
+                ? productos.filter(p => p.id !== props.initialData.id)
+                : productos
+
+            productosRelacionados.value = filteredProductos.map(p => ({
+                value: p.id,
+                label: p.nombre
+            }))
+
+        } catch (error) {
+            productosRelacionados.value = []
+        }
+    } else {
+        productosRelacionados.value = []
+        formData.productos_relacionados = []
+    }
 })
 
 watch(() => props.initialData, async (newData) => {
@@ -229,6 +313,7 @@ watch(() => props.initialData, async (newData) => {
             render_3d: newData.render_3d || null,
             archivo_html: newData.archivo_html || null,
             ficha_tecnica: newData.ficha_tecnica || null,
+            manual_instalacion: newData.manual_instalacion || null,
             estado: newData.estado !== false,
             altura_cm: newData.altura_cm ?? null,
             ancho_cm: newData.ancho_cm ?? null,
@@ -238,7 +323,14 @@ watch(() => props.initialData, async (newData) => {
             orientacion: newData.orientacion || '',
             color: newData.color || '',
             tecnologia: newData.tecnologia || '',
-            opcion: newData.opcion || ''
+            opcion: newData.opcion || '',
+            caracteristica1: newData.caracteristica1 || '',
+            icono1: newData.icono1 || null,
+            caracteristica2: newData.caracteristica2 || '',
+            icono2: newData.icono2 || null,
+            caracteristica3: newData.caracteristica3 || '',
+            icono3: newData.icono3 || null,
+            productos_relacionados: newData.productos_relacionados || []
         })
 
         await nextTick()
@@ -250,7 +342,7 @@ onMounted(async () => {
     try {
         await fetchCategorias()
     } catch (error) {
-        console.error('Error al cargar categorías:', error)
+        console.error('Error al cargar categorias:', error)
     }
 })
 
@@ -296,12 +388,48 @@ const handleFichaTecnicaComplete = () => {
     errors.ficha_tecnica = ''
 }
 
+const handleManualInstalacionStart = (file) => {
+    manualInstalacion.value = file
+    errors.manual_instalacion = ''
+}
+
+const handleManualInstalacionComplete = () => {
+    errors.manual_instalacion = ''
+}
+
 const handleGaleriaStart = () => {
     errors.galeria = ''
 }
 
 const handleGaleriaComplete = () => {
     errors.galeria = ''
+}
+
+const handleIconStart1 = (file) => {
+    icono1.value = file
+    errors.icono1 = ''
+}
+
+const handleIconComplete1 = () => {
+    errors.icono1 = ''
+}
+
+const handleIconStart2 = (file) => {
+    icono2.value = file
+    errors.icono2 = ''
+}
+
+const handleIconComplete2 = () => {
+    errors.icono2 = ''
+}
+
+const handleIconStart3 = (file) => {
+    icono3.value = file
+    errors.icono3 = ''
+}
+
+const handleIconComplete3 = () => {
+    errors.icono3 = ''
 }
 
 const validateForm = () => {
@@ -317,12 +445,12 @@ const validateForm = () => {
     }
 
     if (!formData.categoria_id) {
-        errors.categoria_id = 'La categoría es requerida'
+        errors.categoria_id = 'La categoria es requerida'
         isValid = false
     }
 
     if (!formData.descripcion.trim()) {
-        errors.descripcion = 'La descripción es requerida'
+        errors.descripcion = 'La descripcion es requerida'
         isValid = false
     }
 
@@ -332,7 +460,7 @@ const validateForm = () => {
     }
 
     if (typeof formData.estado !== 'boolean') {
-        errors.estado = 'El estado debe ser válido'
+        errors.estado = 'El estado debe ser valido'
         isValid = false
     }
 
@@ -342,7 +470,7 @@ const validateForm = () => {
 const handleSubmit = async () => {
     if (!validateForm()) {
         showValidationError('Por favor, completa todos los campos requeridos', {
-            title: 'Validación incompleta'
+            title: 'Validacion incompleta'
         })
         return
     }
@@ -363,7 +491,11 @@ const handleSubmit = async () => {
             orientacion: formData.orientacion || null,
             color: formData.color || null,
             tecnologia: formData.tecnologia || null,
-            opcion: formData.opcion || null
+            opcion: formData.opcion || null,
+            caracteristica1: formData.caracteristica1.trim() || null,
+            caracteristica2: formData.caracteristica2.trim() || null,
+            caracteristica3: formData.caracteristica3.trim() || null,
+            productos_relacionados: formData.productos_relacionados || []
         }
 
         if (props.isEditing) {
@@ -386,6 +518,16 @@ const handleSubmit = async () => {
             } else if (!fichaTecnica.value) {
                 productoData.ficha_tecnica = formData.ficha_tecnica
             }
+
+            if (removedFiles.manualInstalacion) {
+                productoData.manual_instalacion = null
+            } else if (!manualInstalacion.value) {
+                productoData.manual_instalacion = formData.manual_instalacion
+            }
+
+            if (!icono1.value) productoData.icono1 = formData.icono1
+            if (!icono2.value) productoData.icono2 = formData.icono2
+            if (!icono3.value) productoData.icono3 = formData.icono3
         }
 
         emit('submit', {
@@ -394,7 +536,13 @@ const handleSubmit = async () => {
                 imagen: imagen.value,
                 render3d: render3d.value,
                 archivoHtml: archivoHtml.value,
-                fichaTecnica: fichaTecnica.value
+                fichaTecnica: fichaTecnica.value,
+                manualInstalacion: manualInstalacion.value
+            },
+            iconos: {
+                icono1: icono1.value,
+                icono2: icono2.value,
+                icono3: icono3.value
             },
             galeria: formData.galeria
         })

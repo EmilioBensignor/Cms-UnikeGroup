@@ -80,7 +80,8 @@
             </div>
         </div>
 
-        <FormError v-if="error && showError">{{ error }}</FormError>
+        <FormError v-if="localError">{{ localError }}</FormError>
+        <FormError v-else-if="error && showError">{{ error }}</FormError>
     </div>
 </template>
 
@@ -108,7 +109,7 @@ const props = defineProps({
     },
     maxSize: {
         type: Number,
-        default: 5 * 1024 * 1024
+        default: 10 * 1024 * 1024
     },
     maxFiles: {
         type: Number,
@@ -125,6 +126,7 @@ const uploading = ref(false)
 const uploadProgress = ref(0)
 const showError = ref(false)
 const isUpdatingFromParent = ref(false)
+const localError = ref('')
 
 const inputId = computed(() => props.id)
 
@@ -222,6 +224,7 @@ const processFiles = async (files) => {
         emit('upload-start', files)
 
         const newImages = []
+        let hasErrors = false
 
         for (let i = 0; i < files.length; i++) {
             const file = files[i]
@@ -252,6 +255,8 @@ const processFiles = async (files) => {
                 uploadProgress.value = ((i + 1) / files.length) * 100
 
             } catch (error) {
+                hasErrors = true
+                localError.value = `${file.name}: ${error.message}`
                 emit('upload-error', `${file.name}: ${error.message}`)
             }
         }
@@ -264,8 +269,11 @@ const processFiles = async (files) => {
 
         emit('upload-complete', newImages)
 
-        if (showError.value) {
-            showError.value = false
+        if (!hasErrors) {
+            localError.value = ''
+            if (showError.value) {
+                showError.value = false
+            }
         }
 
         if (fileInput.value) {
@@ -275,6 +283,7 @@ const processFiles = async (files) => {
     } catch (error) {
         uploading.value = false
         uploadProgress.value = 0
+        localError.value = error.message
         emit('upload-error', error.message)
 
         if (fileInput.value) {

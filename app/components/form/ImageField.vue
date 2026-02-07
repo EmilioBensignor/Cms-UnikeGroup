@@ -33,7 +33,8 @@
             </div>
         </div>
 
-        <FormError v-if="error && showError">{{ error }}</FormError>
+        <FormError v-if="localError">{{ localError }}</FormError>
+        <FormError v-else-if="error && showError">{{ error }}</FormError>
     </div>
 </template>
 
@@ -61,7 +62,7 @@ const props = defineProps({
     },
     maxSize: {
         type: Number,
-        default: 5 * 1024 * 1024
+        default: 10 * 1024 * 1024
     },
     currentImage: {
         type: String,
@@ -78,6 +79,7 @@ const isDragging = ref(false)
 const uploading = ref(false)
 const uploadProgress = ref(0)
 const showError = ref(false)
+const localError = ref('')
 
 const inputId = computed(() => props.id)
 
@@ -150,13 +152,14 @@ const processFile = async (file) => {
 
         await simulateUpload(file)
 
+        localError.value = ''
         if (showError.value) {
             showError.value = false
         }
 
     } catch (error) {
+        localError.value = error.message
         emit('upload-error', error.message)
-        console.error('Error al procesar archivo:', error)
     }
 }
 

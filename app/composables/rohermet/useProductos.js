@@ -3,13 +3,16 @@ export const useRohermetProductos = () => {
     const {
         uploadProductoImage,
         uploadProductoFile,
+        uploadProductoIcon,
         uploadProductoGaleriaImagenes,
         deleteProductoImage,
         deleteProductoFile,
+        deleteProductoIcon,
         deleteProductoGaleriaImagen,
         deleteProductoRender3d,
         getProductoImageUrl,
         getProductoFileUrl,
+        getProductoIconUrl,
         getProductoGaleriaImageUrl,
         deleteProductoFolder,
         generateUniqueProductFolderName
@@ -40,6 +43,10 @@ export const useRohermetProductos = () => {
                 render_3d: producto.render_3d ? getProductoFileUrl(producto.render_3d, 'rohermet', true) : null,
                 archivo_html: producto.archivo_html ? getProductoFileUrl(producto.archivo_html, 'rohermet', true) : null,
                 ficha_tecnica: producto.ficha_tecnica ? getProductoFileUrl(producto.ficha_tecnica, 'rohermet', true) : null,
+                manual_instalacion: producto.manual_instalacion ? getProductoFileUrl(producto.manual_instalacion, 'rohermet', true) : null,
+                icono1: producto.icono1 ? getProductoIconUrl(producto.icono1, 'rohermet', true) : null,
+                icono2: producto.icono2 ? getProductoIconUrl(producto.icono2, 'rohermet', true) : null,
+                icono3: producto.icono3 ? getProductoIconUrl(producto.icono3, 'rohermet', true) : null,
                 categoria_nombre: producto.categoria?.nombre || ''
             }))
 
@@ -74,6 +81,10 @@ export const useRohermetProductos = () => {
                 render_3d: data.render_3d ? getProductoFileUrl(data.render_3d, 'rohermet', true) : null,
                 archivo_html: data.archivo_html ? getProductoFileUrl(data.archivo_html, 'rohermet', true) : null,
                 ficha_tecnica: data.ficha_tecnica ? getProductoFileUrl(data.ficha_tecnica, 'rohermet', true) : null,
+                manual_instalacion: data.manual_instalacion ? getProductoFileUrl(data.manual_instalacion, 'rohermet', true) : null,
+                icono1: data.icono1 ? getProductoIconUrl(data.icono1, 'rohermet', true) : null,
+                icono2: data.icono2 ? getProductoIconUrl(data.icono2, 'rohermet', true) : null,
+                icono3: data.icono3 ? getProductoIconUrl(data.icono3, 'rohermet', true) : null,
                 galeria: data.galeria ?
                     data.galeria.map((img, index) => ({
                         id: `galeria-${index}`,
@@ -147,7 +158,7 @@ export const useRohermetProductos = () => {
         }
     }
 
-    const createProducto = async (productoData, archivos, galeria = []) => {
+    const createProducto = async (productoData, archivos, iconos, galeria = []) => {
         loading.value = true
         error.value = null
 
@@ -162,7 +173,13 @@ export const useRohermetProductos = () => {
             let render3dPath = null
             let archivoHtmlPath = null
             let fichaTecnicaPath = null
+            let manualInstalacionPath = null
             let galeriaPaths = []
+            let iconPaths = {
+                icono1: null,
+                icono2: null,
+                icono3: null
+            }
 
             if (archivos.imagen) {
                 imagenPath = await uploadProductoImage(archivos.imagen, productoNombre, capacidadLts, marca)
@@ -180,6 +197,20 @@ export const useRohermetProductos = () => {
                 fichaTecnicaPath = await uploadProductoFile(archivos.fichaTecnica, productoNombre + '-ficha', capacidadLts, marca, folderName)
             }
 
+            if (archivos.manualInstalacion) {
+                manualInstalacionPath = await uploadProductoFile(archivos.manualInstalacion, productoNombre + '-manual', capacidadLts, marca, folderName)
+            }
+
+            if (iconos.icono1) {
+                iconPaths.icono1 = await uploadProductoIcon(iconos.icono1, productoNombre, 1, capacidadLts, marca, folderName)
+            }
+            if (iconos.icono2) {
+                iconPaths.icono2 = await uploadProductoIcon(iconos.icono2, productoNombre, 2, capacidadLts, marca, folderName)
+            }
+            if (iconos.icono3) {
+                iconPaths.icono3 = await uploadProductoIcon(iconos.icono3, productoNombre, 3, capacidadLts, marca, folderName)
+            }
+
             if (galeria && Array.isArray(galeria) && galeria.length > 0) {
                 const nuevasImagenes = galeria.filter(img => img.file && !img.isExisting)
                 if (nuevasImagenes.length > 0) {
@@ -193,6 +224,10 @@ export const useRohermetProductos = () => {
                 render_3d: render3dPath,
                 archivo_html: archivoHtmlPath,
                 ficha_tecnica: fichaTecnicaPath,
+                manual_instalacion: manualInstalacionPath,
+                icono1: iconPaths.icono1,
+                icono2: iconPaths.icono2,
+                icono3: iconPaths.icono3,
                 galeria: galeriaPaths
             }
 
@@ -209,7 +244,11 @@ export const useRohermetProductos = () => {
                 imagen: data.imagen ? getProductoImageUrl(data.imagen, 'rohermet', true) : null,
                 render_3d: data.render_3d ? getProductoFileUrl(data.render_3d, 'rohermet', true) : null,
                 archivo_html: data.archivo_html ? getProductoFileUrl(data.archivo_html, 'rohermet', true) : null,
-                ficha_tecnica: data.ficha_tecnica ? getProductoFileUrl(data.ficha_tecnica, 'rohermet', true) : null
+                ficha_tecnica: data.ficha_tecnica ? getProductoFileUrl(data.ficha_tecnica, 'rohermet', true) : null,
+                manual_instalacion: data.manual_instalacion ? getProductoFileUrl(data.manual_instalacion, 'rohermet', true) : null,
+                icono1: data.icono1 ? getProductoIconUrl(data.icono1, 'rohermet', true) : null,
+                icono2: data.icono2 ? getProductoIconUrl(data.icono2, 'rohermet', true) : null,
+                icono3: data.icono3 ? getProductoIconUrl(data.icono3, 'rohermet', true) : null
             }
 
             productos.value.push(dataWithUrls)
@@ -225,14 +264,14 @@ export const useRohermetProductos = () => {
         }
     }
 
-    const updateProducto = async (id, productoData, archivos, galeria = []) => {
+    const updateProducto = async (id, productoData, archivos, iconos, galeria = [], removedImages = {}) => {
         loading.value = true
         error.value = null
 
         try {
             const { data: currentData, error: fetchError } = await supabase
                 .from('rohermet-productos')
-                .select('nombre, imagen, render_3d, archivo_html, ficha_tecnica, galeria')
+                .select('nombre, imagen, render_3d, archivo_html, ficha_tecnica, manual_instalacion, icono1, icono2, icono3, galeria')
                 .eq('id', id)
                 .single()
 
@@ -251,6 +290,14 @@ export const useRohermetProductos = () => {
                 folderName = currentData.archivo_html.split('/')[0]
             } else if (currentData?.ficha_tecnica) {
                 folderName = currentData.ficha_tecnica.split('/')[0]
+            } else if (currentData?.manual_instalacion) {
+                folderName = currentData.manual_instalacion.split('/')[0]
+            } else if (currentData?.icono1) {
+                folderName = currentData.icono1.split('/')[0]
+            } else if (currentData?.icono2) {
+                folderName = currentData.icono2.split('/')[0]
+            } else if (currentData?.icono3) {
+                folderName = currentData.icono3.split('/')[0]
             } else if (currentData?.galeria && currentData.galeria.length > 0) {
                 folderName = currentData.galeria[0].split('/')[0]
             }
@@ -263,9 +310,20 @@ export const useRohermetProductos = () => {
             let render3dPath = currentData?.render_3d
             let archivoHtmlPath = currentData?.archivo_html
             let fichaTecnicaPath = currentData?.ficha_tecnica
+            let manualInstalacionPath = currentData?.manual_instalacion
+            let iconPaths = {
+                icono1: currentData?.icono1,
+                icono2: currentData?.icono2,
+                icono3: currentData?.icono3
+            }
             let galeriaPaths = []
 
-            if (archivos.imagen) {
+            if (removedImages.imagen) {
+                if (currentData?.imagen) {
+                    await deleteProductoImage(currentData.imagen, marca)
+                }
+                imagenPath = null
+            } else if (archivos.imagen) {
                 if (currentData?.imagen) {
                     await deleteProductoImage(currentData.imagen, marca)
                 }
@@ -300,6 +358,38 @@ export const useRohermetProductos = () => {
             } else if (productoData.ficha_tecnica === null && currentData?.ficha_tecnica) {
                 await deleteProductoFile(currentData.ficha_tecnica, marca)
                 fichaTecnicaPath = null
+            }
+
+            if (archivos.manualInstalacion) {
+                if (currentData?.manual_instalacion) {
+                    await deleteProductoFile(currentData.manual_instalacion, marca)
+                }
+                manualInstalacionPath = await uploadProductoFile(archivos.manualInstalacion, productoNombre + '-manual', capacidadLts, marca, folderName)
+            } else if (productoData.manual_instalacion === null && currentData?.manual_instalacion) {
+                await deleteProductoFile(currentData.manual_instalacion, marca)
+                manualInstalacionPath = null
+            }
+
+            if (removedImages.icono1) {
+                if (currentData?.icono1) await deleteProductoIcon(currentData.icono1, marca)
+                iconPaths.icono1 = null
+            } else if (iconos.icono1) {
+                if (currentData?.icono1) await deleteProductoIcon(currentData.icono1, marca)
+                iconPaths.icono1 = await uploadProductoIcon(iconos.icono1, productoNombre, 1, capacidadLts, marca, folderName)
+            }
+            if (removedImages.icono2) {
+                if (currentData?.icono2) await deleteProductoIcon(currentData.icono2, marca)
+                iconPaths.icono2 = null
+            } else if (iconos.icono2) {
+                if (currentData?.icono2) await deleteProductoIcon(currentData.icono2, marca)
+                iconPaths.icono2 = await uploadProductoIcon(iconos.icono2, productoNombre, 2, capacidadLts, marca, folderName)
+            }
+            if (removedImages.icono3) {
+                if (currentData?.icono3) await deleteProductoIcon(currentData.icono3, marca)
+                iconPaths.icono3 = null
+            } else if (iconos.icono3) {
+                if (currentData?.icono3) await deleteProductoIcon(currentData.icono3, marca)
+                iconPaths.icono3 = await uploadProductoIcon(iconos.icono3, productoNombre, 3, capacidadLts, marca, folderName)
             }
 
             if (galeria && Array.isArray(galeria) && galeria.length > 0) {
@@ -351,6 +441,10 @@ export const useRohermetProductos = () => {
                 render_3d: render3dPath,
                 archivo_html: archivoHtmlPath,
                 ficha_tecnica: fichaTecnicaPath,
+                manual_instalacion: manualInstalacionPath,
+                icono1: iconPaths.icono1,
+                icono2: iconPaths.icono2,
+                icono3: iconPaths.icono3,
                 galeria: galeriaPaths
             }
 
@@ -368,7 +462,11 @@ export const useRohermetProductos = () => {
                 imagen: data.imagen ? getProductoImageUrl(data.imagen, 'rohermet', true) : null,
                 render_3d: data.render_3d ? getProductoFileUrl(data.render_3d, 'rohermet', true) : null,
                 archivo_html: data.archivo_html ? getProductoFileUrl(data.archivo_html, 'rohermet', true) : null,
-                ficha_tecnica: data.ficha_tecnica ? getProductoFileUrl(data.ficha_tecnica, 'rohermet', true) : null
+                ficha_tecnica: data.ficha_tecnica ? getProductoFileUrl(data.ficha_tecnica, 'rohermet', true) : null,
+                manual_instalacion: data.manual_instalacion ? getProductoFileUrl(data.manual_instalacion, 'rohermet', true) : null,
+                icono1: data.icono1 ? getProductoIconUrl(data.icono1, 'rohermet', true) : null,
+                icono2: data.icono2 ? getProductoIconUrl(data.icono2, 'rohermet', true) : null,
+                icono3: data.icono3 ? getProductoIconUrl(data.icono3, 'rohermet', true) : null
             }
 
             const index = productos.value.findIndex(prod => prod.id === id)

@@ -100,7 +100,8 @@ const handleFormSubmit = async (formData) => {
             formData.productoData,
             formData.archivos,
             formData.iconos,
-            caracteristicasAdicionales.value
+            caracteristicasAdicionales.value,
+            formData.removedImages
         )
 
         success('Producto actualizado exitosamente', {

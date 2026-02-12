@@ -360,7 +360,7 @@ export const useWaterplastProductos = () => {
         }
     }
 
-    const updateProducto = async (id, productoData, archivos, iconos, caracteristicasAdicionales = []) => {
+    const updateProducto = async (id, productoData, archivos, iconos, caracteristicasAdicionales = [], removedImages = {}) => {
         loading.value = true
         error.value = null
 
@@ -412,10 +412,11 @@ export const useWaterplastProductos = () => {
                 icono3: currentData?.icono3
             }
 
-            if (archivos.imagen) {
-                if (currentData?.imagen) {
-                    await deleteProductoImage(currentData.imagen)
-                }
+            if (removedImages.imagen) {
+                if (currentData?.imagen) await deleteProductoImage(currentData.imagen)
+                imagenPath = null
+            } else if (archivos.imagen) {
+                if (currentData?.imagen) await deleteProductoImage(currentData.imagen)
                 imagenPath = await uploadProductoImage(archivos.imagen, productoNombre, capacidadLts, marca, folderName)
             }
 
@@ -461,22 +462,25 @@ export const useWaterplastProductos = () => {
                 archivoHtmlPath = null
             }
 
-            if (iconos.icono1) {
-                if (currentData?.icono1) {
-                    await deleteProductoIcon(currentData.icono1)
-                }
+            if (removedImages.icono1) {
+                if (currentData?.icono1) await deleteProductoIcon(currentData.icono1)
+                iconPaths.icono1 = null
+            } else if (iconos.icono1) {
+                if (currentData?.icono1) await deleteProductoIcon(currentData.icono1)
                 iconPaths.icono1 = await uploadProductoIcon(iconos.icono1, productoNombre, 1, capacidadLts, marca, folderName)
             }
-            if (iconos.icono2) {
-                if (currentData?.icono2) {
-                    await deleteProductoIcon(currentData.icono2)
-                }
+            if (removedImages.icono2) {
+                if (currentData?.icono2) await deleteProductoIcon(currentData.icono2)
+                iconPaths.icono2 = null
+            } else if (iconos.icono2) {
+                if (currentData?.icono2) await deleteProductoIcon(currentData.icono2)
                 iconPaths.icono2 = await uploadProductoIcon(iconos.icono2, productoNombre, 2, capacidadLts, marca, folderName)
             }
-            if (iconos.icono3) {
-                if (currentData?.icono3) {
-                    await deleteProductoIcon(currentData.icono3)
-                }
+            if (removedImages.icono3) {
+                if (currentData?.icono3) await deleteProductoIcon(currentData.icono3)
+                iconPaths.icono3 = null
+            } else if (iconos.icono3) {
+                if (currentData?.icono3) await deleteProductoIcon(currentData.icono3)
                 iconPaths.icono3 = await uploadProductoIcon(iconos.icono3, productoNombre, 3, capacidadLts, marca, folderName)
             }
 
@@ -492,7 +496,6 @@ export const useWaterplastProductos = () => {
                 icono3: iconPaths.icono3
             }
 
-            // Limpiar xr_images_folder solo cuando se borren AMBOS campos
             if (!render3dPath && !archivoHtmlPath) {
                 finalProductoData.xr_images_folder = null
             }

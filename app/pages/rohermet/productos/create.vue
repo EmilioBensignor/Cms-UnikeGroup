@@ -42,6 +42,7 @@ const handleFormSubmit = async (formData) => {
         await createProducto(
             formData.productoData,
             formData.archivos,
+            formData.iconos,
             formData.galeria
         )
 

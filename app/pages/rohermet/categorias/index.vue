@@ -37,6 +37,43 @@ const tabla = {
             key: 'imagen',
             label: 'Imagen',
             type: 'image'
+        },
+        {
+            key: 'imagen_xl_categorias',
+            label: 'Img XL',
+            type: 'image'
+        },
+        {
+            key: 'caracteristica1',
+            label: 'Caract. 1',
+        },
+        {
+            key: 'icono1',
+            label: 'Icono 1',
+            type: 'image'
+        },
+        {
+            key: 'caracteristica2',
+            label: 'Caract. 2',
+        },
+        {
+            key: 'icono2',
+            label: 'Icono 2',
+            type: 'image'
+        },
+        {
+            key: 'caracteristica3',
+            label: 'Caract. 3',
+        },
+        {
+            key: 'icono3',
+            label: 'Icono 3',
+            type: 'image'
+        },
+        {
+            key: 'imagenes_redes_count',
+            label: 'Redes',
+            type: 'text'
         }
     ]
 }

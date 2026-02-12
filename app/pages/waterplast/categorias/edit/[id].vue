@@ -69,7 +69,8 @@ const handleSubmit = async (formData) => {
             formData.categoriaData,
             formData.imagenes,
             formData.iconos,
-            formData.imagenesRedes
+            formData.imagenesRedes,
+            formData.removedImages
         )
 
         success('Categoría actualizada exitosamente', {

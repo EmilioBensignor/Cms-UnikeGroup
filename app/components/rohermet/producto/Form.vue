@@ -3,19 +3,22 @@
         <FormFieldsContainer>
             <FormTextField v-model="formData.nombre" label="Nombre" id="nombre"
                 placeholder="Ingrese el nombre del producto" required :error="errors.nombre" />
+            <FormTextField v-model="formData.orden" label="Numero de Orden" id="orden" type="number"
+                placeholder="Ingrese el numero de orden" required :error="errors.orden"
+                @keydown="preventInvalidNumber" />
+        </FormFieldsContainer>
+
+        <FormFieldsContainer>
             <FormSelect v-model="formData.categoria_id" label="Categoria" id="categoria_id" required
                 :error="errors.categoria_id" :options="categoriasOptions" placeholder="Seleccione una categoria" />
+            <FormImageField v-model="formData.imagen" id="imagen" label="Imagen principal (450px x 380px)" :error="errors.imagen"
+                required targetFolder="rohermet-productos" @upload-start="handleImagenStart"
+                @upload-complete="handleImagenComplete" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
             <FormTextarea v-model="formData.descripcion" label="Descripcion" id="descripcion"
                 placeholder="Ingrese la descripcion del producto" required :error="errors.descripcion" />
-        </FormFieldsContainer>
-
-        <FormFieldsContainer>
-            <FormImageField v-model="formData.imagen" id="imagen" label="Imagen principal (450px x 380px)" :error="errors.imagen"
-                required targetFolder="rohermet-productos" @upload-start="handleImagenStart"
-                @upload-complete="handleImagenComplete" />
         </FormFieldsContainer>
 
         <FormFieldsContainer>
@@ -212,6 +215,7 @@ const opcionOptions = [
 
 const formData = reactive({
     nombre: '',
+    orden: null,
     categoria_id: '',
     descripcion: '',
     imagen: null,
@@ -241,6 +245,7 @@ const formData = reactive({
 
 const errors = reactive({
     nombre: '',
+    orden: '',
     categoria_id: '',
     descripcion: '',
     imagen: '',
@@ -268,7 +273,7 @@ const errors = reactive({
     productos_relacionados: ''
 })
 
-watch(() => formData.categoria_id, async (newCategoriaId, oldCategoriaId) => {
+watch(() => formData.categoria_id, async (newCategoriaId) => {
     if (newCategoriaId) {
         try {
             const productos = await fetchProductosByCategoria(newCategoriaId)
@@ -314,6 +319,7 @@ watch(() => props.initialData, async (newData) => {
 
         Object.assign(formData, {
             nombre: newData.nombre || '',
+            orden: newData.orden ?? null,
             categoria_id: newData.categoria_id || '',
             descripcion: newData.descripcion || '',
             imagen: newData.imagen || null,
@@ -468,6 +474,11 @@ const validateForm = () => {
         isValid = false
     }
 
+    if (!formData.orden || formData.orden < 1) {
+        errors.orden = 'El numero de orden es requerido y debe ser mayor a 0'
+        isValid = false
+    }
+
     if (!formData.categoria_id) {
         errors.categoria_id = 'La categoria es requerida'
         isValid = false
@@ -534,6 +545,7 @@ const handleSubmit = async () => {
     try {
         const productoData = {
             nombre: formData.nombre.trim(),
+            orden: parseInt(formData.orden),
             categoria_id: formData.categoria_id,
             descripcion: formData.descripcion.trim(),
             estado: formData.estado,

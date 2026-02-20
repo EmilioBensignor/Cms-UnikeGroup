@@ -43,6 +43,11 @@ const filtros = reactive({
 const tabla = {
     columns: [
         {
+            key: 'orden',
+            label: 'Orden',
+            type: 'number'
+        },
+        {
             key: 'nombre',
             label: 'Nombre',
         },

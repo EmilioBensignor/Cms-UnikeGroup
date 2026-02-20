@@ -33,7 +33,7 @@ export const useRohermetProductos = () => {
                     *,
                     categoria:categoria_id(id, nombre)
                 `)
-                .order('nombre', { ascending: true })
+                .order('orden', { ascending: true })
 
             if (supabaseError) throw supabaseError
 

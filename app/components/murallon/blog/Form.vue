@@ -3,14 +3,12 @@
         <FormFieldsContainer>
             <FormTextField v-model="formData.titulo" label="Título" id="titulo" placeholder="Ingrese el título del blog"
                 required :error="errors.titulo" />
-            <FormImageField v-model="imagePreview" id="imagen" label="Imagen Principal (1200px x 400px)" :error="errors.imagen"
-                required targetFolder="blog" @upload-start="handleImageStart" @upload-complete="handleImageComplete" />
-        </FormFieldsContainer>
-        <FormFieldsContainer>
             <FormDateField v-model="formData.fecha" label="Fecha" id="fecha" required
                 :error="errors.fecha" :max="today" />
-            <FormSelect v-model="formData.creado_por" label="Creado por" id="creado_por"
-                placeholder="Seleccione quién crea el blog" :options="creadoPorOptions" required :error="errors.creado_por" />
+        </FormFieldsContainer>
+        <FormFieldsContainer>
+            <FormImageField v-model="imagePreview" id="imagen" label="Imagen Principal (1200px x 400px)" :error="errors.imagen"
+                required targetFolder="blog-murallon" @upload-start="handleImageStart" @upload-complete="handleImageComplete" />
         </FormFieldsContainer>
         <FormFieldsContainer>
             <FormTextarea v-model="formData.contenido" label="Contenido" id="contenido"
@@ -54,19 +52,11 @@ const imagenOriginal = ref(null)
 
 const today = computed(() => new Date().toISOString().split('T')[0])
 
-const creadoPorOptions = [
-    { label: 'Unike Group', value: 'Unike Group' },
-    { label: 'Waterplast', value: 'Waterplast' },
-    { label: 'Rohermet', value: 'Rohermet' },
-    { label: 'Murallón', value: 'Murallón' }
-]
-
 const formData = reactive({
     titulo: '',
     imagen: null,
     contenido: '',
     fecha: new Date().toISOString().split('T')[0],
-    creado_por: '',
 })
 
 const errors = reactive({
@@ -74,7 +64,6 @@ const errors = reactive({
     imagen: '',
     contenido: '',
     fecha: '',
-    creado_por: ''
 })
 
 onMounted(() => {
@@ -84,7 +73,6 @@ onMounted(() => {
             imagen: props.initialData.imagen_principal_path || null,
             contenido: props.initialData.contenido || '',
             fecha: props.initialData.fecha || new Date().toISOString().split('T')[0],
-            creado_por: props.initialData.creado_por || '',
         })
 
         if (props.initialData.imagen_principal) {
@@ -148,11 +136,6 @@ const validateForm = () => {
         }
     }
 
-    if (!formData.creado_por) {
-        errors.creado_por = 'Debe seleccionar quién crea el blog'
-        isValid = false
-    }
-
     const hasNewImage = !!imagen.value
     const hasImagePreview = !!imagePreview.value
     const imagenWasDeleted = imagenOriginal.value && !imagePreview.value && !imagen.value
@@ -192,7 +175,6 @@ const handleSubmit = async () => {
             titulo: formData.titulo.trim(),
             contenido: formData.contenido.trim(),
             fecha: formData.fecha,
-            creado_por: formData.creado_por,
         }
 
         if (props.isEditing) {

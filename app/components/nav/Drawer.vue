@@ -51,6 +51,17 @@
                         </NuxtLink>
                     </div>
                 </div>
+                <div class="flex flex-col gap-2">
+                    <p class="text-xs text-terciary font-medium px-3">MURALLÓN</p>
+                    <div>
+                        <NuxtLink v-for="(item, index) in menuMurallon" :key="index" :to="item.route"
+                            class="flex items-center gap-3 text-light hover:bg-white/10 rounded-lg p-3 transition-colors duration-300"
+                            @click="$emit('close')">
+                            <Icon :name="`tabler:${item.icon}`" class="w-5 h-5" />
+                            <span class="font-medium">{{ item.title }}</span>
+                        </NuxtLink>
+                    </div>
+                </div>
             </div>
             <button @click="handleSignOut" :disabled="loggingOut"
                 class="h-12 flex items-center gap-3 bg-primary rounded-xl text-light font-light py-3 px-6">
@@ -132,6 +143,19 @@ const menuRohermet = [
         route: ROUTE_NAMES.ROHERMET.IMAGENES_DESTACADAS,
         title: "Imágenes Destacadas",
         icon: "photo-star",
+    },
+];
+
+const menuMurallon = [
+    {
+        route: ROUTE_NAMES.MURALLON.BLOG,
+        title: "Blog",
+        icon: "article",
+    },
+    {
+        route: ROUTE_NAMES.MURALLON.INSPIRACION,
+        title: "Inspiración",
+        icon: "photo-heart",
     },
 ];
 

@@ -1359,6 +1359,140 @@ export const useStorage = () => {
         return url
     }
 
+    const uploadMurallonBlogImage = async (file, blogTitulo) => {
+        try {
+            uploading.value = true
+            uploadProgress.value = 0
+            error.value = null
+
+            validateImageFile(file)
+
+            const cleanName = blogTitulo.toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-z0-9\s]/g, '')
+                .replace(/\s+/g, '-')
+                .substring(0, 30)
+
+            const extension = file.name.split('.').pop().toLowerCase()
+            const randomNum = Math.floor(1000 + Math.random() * 9000)
+            const fileName = `${cleanName}-Blog-Murallon-${randomNum}.${extension}`
+
+            const { data, error: uploadError } = await supabase.storage
+                .from('blog-murallon')
+                .upload(fileName, file, {
+                    cacheControl: '3600',
+                    upsert: false
+                })
+
+            if (uploadError) throw uploadError
+
+            uploadProgress.value = 100
+            return data.path
+
+        } catch (err) {
+            error.value = err.message
+            throw err
+        } finally {
+            uploading.value = false
+        }
+    }
+
+    const deleteMurallonBlogImage = async (storagePath) => {
+        try {
+            error.value = null
+
+            const { error: deleteError } = await supabase.storage
+                .from('blog-murallon')
+                .remove([storagePath])
+
+            if (deleteError) throw deleteError
+
+        } catch (err) {
+            error.value = err.message
+            throw err
+        }
+    }
+
+    const getMurallonBlogImageUrl = (storagePath, cacheBust = false) => {
+        if (!storagePath) return null
+        let url = `${config.public.supabase.url}/storage/v1/object/public/blog-murallon/${storagePath}`
+
+        if (cacheBust) {
+            const timestamp = Date.now()
+            url += `?v=${timestamp}`
+        }
+
+        return url
+    }
+
+    const uploadMurallonInspiracionImage = async (file, titulo, tipo) => {
+        try {
+            uploading.value = true
+            uploadProgress.value = 0
+            error.value = null
+
+            validateImageFile(file)
+
+            const cleanName = titulo.toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-z0-9\s]/g, '')
+                .replace(/\s+/g, '-')
+                .substring(0, 30)
+
+            const extension = file.name.split('.').pop().toLowerCase()
+            const randomNum = Math.floor(1000 + Math.random() * 9000)
+            const fileName = `${cleanName}-${tipo}-${randomNum}.${extension}`
+
+            const { data, error: uploadError } = await supabase.storage
+                .from('inspiracion-murallon')
+                .upload(fileName, file, {
+                    cacheControl: '3600',
+                    upsert: false
+                })
+
+            if (uploadError) throw uploadError
+
+            uploadProgress.value = 100
+            return data.path
+
+        } catch (err) {
+            error.value = err.message
+            throw err
+        } finally {
+            uploading.value = false
+        }
+    }
+
+    const deleteMurallonInspiracionImage = async (storagePath) => {
+        try {
+            error.value = null
+
+            const { error: deleteError } = await supabase.storage
+                .from('inspiracion-murallon')
+                .remove([storagePath])
+
+            if (deleteError) throw deleteError
+
+        } catch (err) {
+            error.value = err.message
+            throw err
+        }
+    }
+
+    const getMurallonInspiracionImageUrl = (storagePath, cacheBust = false) => {
+        if (!storagePath) return null
+        let url = `${config.public.supabase.url}/storage/v1/object/public/inspiracion-murallon/${storagePath}`
+
+        if (cacheBust) {
+            const timestamp = Date.now()
+            url += `?v=${timestamp}`
+        }
+
+        return url
+    }
+
     return {
         uploading: readonly(uploading),
         uploadProgress: readonly(uploadProgress),
@@ -1418,6 +1552,14 @@ export const useStorage = () => {
         uploadBlogImage,
         deleteBlogImage,
         getBlogImageUrl,
+
+        uploadMurallonBlogImage,
+        deleteMurallonBlogImage,
+        getMurallonBlogImageUrl,
+
+        uploadMurallonInspiracionImage,
+        deleteMurallonInspiracionImage,
+        getMurallonInspiracionImageUrl,
 
         validateImageFile,
         cleanCategoryName

@@ -148,6 +148,11 @@ const menuRohermet = [
 
 const menuMurallon = [
     {
+        route: ROUTE_NAMES.MURALLON.PRODUCTOS,
+        title: "Productos",
+        icon: "cards",
+    },
+    {
         route: ROUTE_NAMES.MURALLON.BLOG,
         title: "Blog",
         icon: "article",

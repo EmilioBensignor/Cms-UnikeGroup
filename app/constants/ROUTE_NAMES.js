@@ -47,5 +47,8 @@ export const ROUTE_NAMES = {
         INSPIRACION: "/murallon/inspiracion",
         CREAR_INSPIRACION: "/murallon/inspiracion/crear",
         EDITAR_INSPIRACION: (id) => `/murallon/inspiracion/editar/${id}`,
+        PRODUCTOS: "/murallon/productos",
+        CREAR_PRODUCTO: "/murallon/productos/crear",
+        EDITAR_PRODUCTO: (id) => `/murallon/productos/editar/${id}`,
     },
 };

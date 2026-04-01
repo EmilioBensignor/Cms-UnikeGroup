@@ -29,6 +29,8 @@
         </FormFieldsContainer>
         <FormFieldsContainer>
             <FormSwitch v-model="formData.destacado" label="Destacado" id="destacado" />
+            <FormTextField v-model="formData.codigo_color_card" label="Código de color Card HEX (sin el #)" id="codigo_color_card"
+                placeholder="Ej: 62CBC9" :error="errors.codigo_color_card" />
         </FormFieldsContainer>
 
         <div v-if="showButtons" class="w-full flex flex-col lg:flex-row items-center gap-5 mt-8">
@@ -95,6 +97,7 @@ const formData = reactive({
     tamanos_disponibles: [],
     rendimiento: '',
     destacado: false,
+    codigo_color_card: '',
 })
 
 const errors = reactive({
@@ -105,6 +108,7 @@ const errors = reactive({
     uso: '',
     tamanos_disponibles: '',
     rendimiento: '',
+    codigo_color_card: '',
 })
 
 const opcionesCategorias = computed(() => {
@@ -142,6 +146,7 @@ onMounted(async () => {
             tamanos_disponibles: props.initialData.tamanos_disponibles || [],
             rendimiento: props.initialData.rendimiento || '',
             destacado: props.initialData.destacado || false,
+            codigo_color_card: props.initialData.codigo_color_card || '',
         })
 
         if (props.initialData.imagen_principal) {
@@ -211,6 +216,7 @@ const handleSubmit = async () => {
             tamanos_disponibles: formData.tamanos_disponibles,
             rendimiento: formData.rendimiento.trim(),
             destacado: formData.destacado,
+            codigo_color_card: formData.codigo_color_card.trim(),
         }
 
         if (props.isEditing) {

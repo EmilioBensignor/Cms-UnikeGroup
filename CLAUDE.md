@@ -1,6 +1,6 @@
 # CmsUnike
 
-CMS multi-marca para Unike Group. Panel de administración que gestiona contenido de tres marcas: **Unike Group**, **Waterplast** y **Rohermet**. Frontend-only SPA que se comunica directamente con Supabase (sin directorio `server/`, sin API routes).
+CMS multi-marca para Unike Group. Panel de administración que gestiona contenido de cuatro marcas: **Unike Group**, **Waterplast**, **Rohermet** y **Murallón**. Frontend-only SPA que se comunica directamente con Supabase (sin directorio `server/`, sin API routes).
 
 ## Tech Stack
 
@@ -26,13 +26,14 @@ app/
 ├── layouts/
 │   ├── default.vue            # Header + Main + Footer + NotificationContainer
 │   └── auth.vue               # Layout para login/register/password
-├── pages/                     # ~32 páginas, routing por archivo
+├── pages/                     # ~41 páginas, routing por archivo
 │   ├── login, register, forgot-password, reset-password (auth)
 │   ├── blog/ (CRUD)
 │   ├── opiniones/ (CRUD)
 │   ├── distribuidores/ (CRUD)
 │   ├── waterplast/ (categorias, subcategorias, productos, imagenes-destacadas)
-│   └── rohermet/ (categorias, productos, imagenes-destacadas)
+│   ├── rohermet/ (categorias, productos, imagenes-destacadas)
+│   └── murallon/ (blog, inspiracion, productos)
 ├── components/
 │   ├── form/                  # 16 campos reutilizables (TextField, Select, ImageField, MultiImageField, etc.)
 │   ├── table/                 # Layout (tabla genérica con acciones), CellRenderer
@@ -46,6 +47,7 @@ app/
 │   ├── nav/Drawer.vue         # Drawer de navegación
 │   ├── waterplast/            # Forms: categoria, subcategoria, producto, imagen-destacada, CaracteristicasAdicionalesForm
 │   ├── rohermet/              # Forms: categoria, producto, imagen-destacada
+│   ├── murallon/              # Forms: blog, inspiracion, producto
 │   └── unike/                 # Forms: distribuidor, opinion
 ├── composables/
 │   ├── useNotification.js     # Toast global: success(), error(), warning(), info()
@@ -55,7 +57,8 @@ app/
 │   ├── useDebounce.js
 │   ├── useBlog.js
 │   ├── waterplast/            # useCategorias, useSubcategorias, useProductos, useImagenesDestacadas, useDistribuidores, useOpiniones
-│   └── rohermet/              # useCategorias, useProductos, useImagenesDestacadas
+│   ├── rohermet/              # useCategorias, useProductos, useImagenesDestacadas
+│   └── murallon/              # useBlog, useInspiracion, useProductos, useCategorias, useTiposAplicacion
 ├── utils/errorHandler.js      # handleSupabaseError() — errores Supabase → mensajes en español
 ├── constants/ROUTE_NAMES.js   # Rutas centralizadas, rutas dinámicas son funciones: (id) => `/path/${id}`
 └── shared/waterplast/         # Datos estáticos (categorias, opiniones)
@@ -70,8 +73,8 @@ app/
 ### Patrón Composable (capa de datos)
 Cada entidad tiene un composable que retorna `{ loading, error, data, fetch*, create*, update*, delete* }`:
 - Usa `useSupabaseClient()` directamente
-- Naming composable: `use{Marca}{Entidad}` → `useWaterplastProductos`, `useRohermetCategorias`
-- Tablas Supabase: `{marca}-{entidad}` → `waterplast-productos`, `rohermet-categorias`
+- Naming composable: `use{Marca}{Entidad}` → `useWaterplastProductos`, `useRohermetCategorias`, `useMurallonBlog`
+- Tablas Supabase: `{marca}-{entidad}` → `waterplast-productos`, `rohermet-categorias`, `blog-murallon`, `inspiracion-murallon`, `murallon-productos`
 - Storage buckets: `{marca}-{entidad}/{carpeta-unica}/archivo.ext`
 
 ### Patrón de Páginas

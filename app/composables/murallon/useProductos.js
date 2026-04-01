@@ -96,7 +96,8 @@ export const useMurallonProductos = () => {
                     tipos_aplicacion_id: productoData.tipos_aplicacion_id,
                     categorias_id: productoData.categorias_id,
                     rendimiento: productoData.rendimiento,
-                    destacado: productoData.destacado
+                    destacado: productoData.destacado,
+                    codigo_color_card: productoData.codigo_color_card || null
                 }])
                 .select()
 
@@ -149,7 +150,8 @@ export const useMurallonProductos = () => {
                     tipos_aplicacion_id: productoData.tipos_aplicacion_id,
                     categorias_id: productoData.categorias_id,
                     rendimiento: productoData.rendimiento,
-                    destacado: productoData.destacado
+                    destacado: productoData.destacado,
+                    codigo_color_card: productoData.codigo_color_card || null
                 })
                 .eq('id', id)
                 .select()

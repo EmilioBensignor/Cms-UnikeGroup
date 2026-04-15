@@ -1,5 +1,6 @@
 <template>
     <FormLayout @submit.prevent="handleSubmit">
+        <!-- Datos principales -->
         <FormFieldsContainer>
             <FormTextField v-model="formData.nombre" label="Nombre" id="nombre"
                 placeholder="Ingrese el nombre del producto" required :error="errors.nombre" />
@@ -31,6 +32,93 @@
             <FormSwitch v-model="formData.destacado" label="Destacado" id="destacado" />
             <FormTextField v-model="formData.codigo_color_card" label="Código de color Card HEX (sin el #)" id="codigo_color_card"
                 placeholder="Ej: 62CBC9" :error="errors.codigo_color_card" />
+        </FormFieldsContainer>
+
+        <!-- Descripción -->
+        <HeadingH2>Descripción</HeadingH2>
+        <FormFieldsContainer>
+            <FormTextarea v-model="formData.descripcion" label="Descripción" id="descripcion"
+                placeholder="Descripción del producto" :rows="4" />
+        </FormFieldsContainer>
+
+        <!-- Galería de Imágenes -->
+        <HeadingH2>Galería de Imágenes</HeadingH2>
+        <FormFieldsContainer>
+            <FormMultiImageField v-model="galeriaImages" id="galeria" label="Galería"
+                targetFolder="murallon-productos" @images-changed="handleGaleriaChanged" />
+        </FormFieldsContainer>
+
+        <!-- Ficha Técnica -->
+        <FormFieldsContainer>
+            <FormTextField v-model="formData.ficha_tecnica" label="Ficha Técnica" id="ficha_tecnica"
+                placeholder="Ficha técnica del producto" />
+        </FormFieldsContainer>
+
+        <!-- USOS -->
+        <HeadingH2>Usos</HeadingH2>
+        <FormFieldsContainer>
+            <FormTextarea v-model="formData.usos" label="Usos" id="usos"
+                placeholder="Descripción de usos del producto" :rows="4" />
+        </FormFieldsContainer>
+
+        <!-- CARACTERÍSTICAS PRINCIPALES -->
+        <HeadingH2>Características Principales</HeadingH2>
+        <FormFieldsContainer>
+            <FormTextarea v-model="formData.colores" label="Colores" id="colores"
+                placeholder="Colores disponibles" :rows="3" />
+            <FormTextField v-model="formData.acabado" label="Acabado" id="acabado"
+                placeholder="Tipo de acabado" />
+        </FormFieldsContainer>
+        <FormFieldsContainer>
+            <FormTextField v-model="formData.poder_cubritivo" label="Poder Cubritivo" id="poder_cubritivo"
+                placeholder="Poder cubritivo" />
+            <FormTextField v-model="formData.consistencia_o_viscocidad" label="Consistencia o Viscosidad" id="consistencia_o_viscocidad"
+                placeholder="Consistencia o viscosidad" />
+        </FormFieldsContainer>
+        <FormFieldsContainer>
+            <FormTextarea v-model="formData.rendimiento_caracteristicas" label="Rendimiento" id="rendimiento_caracteristicas"
+                placeholder="Rendimiento del producto" :rows="3" />
+            <FormTextarea v-model="formData.secado" label="Secado" id="secado"
+                placeholder="Tiempos de secado" :rows="3" />
+        </FormFieldsContainer>
+        <FormFieldsContainer>
+            <FormTextField v-model="formData.peso_especifico" label="Peso Específico" id="peso_especifico"
+                placeholder="Peso específico" />
+        </FormFieldsContainer>
+
+        <!-- MODO DE EMPLEO -->
+        <HeadingH2>Modo de Empleo</HeadingH2>
+        <FormFieldsContainer>
+            <FormTextarea v-model="formData.modo_de_empleo" label="Modo de Empleo" id="modo_de_empleo"
+                placeholder="Instrucciones de uso" :rows="5" />
+        </FormFieldsContainer>
+
+        <!-- APLICACIÓN -->
+        <HeadingH2>Aplicación</HeadingH2>
+        <FormFieldsContainer>
+            <FormTextarea v-model="formData.aplicacion" label="Aplicación" id="aplicacion"
+                placeholder="Métodos de aplicación" :rows="5" />
+        </FormFieldsContainer>
+
+        <!-- RECOMENDACIONES GENERALES -->
+        <HeadingH2>Recomendaciones Generales</HeadingH2>
+        <FormFieldsContainer>
+            <FormTextarea v-model="formData.recomendaciones_generales" label="Recomendaciones Generales" id="recomendaciones_generales"
+                placeholder="Recomendaciones generales" :rows="5" />
+        </FormFieldsContainer>
+
+        <!-- RECOMENDACIONES DE SEGURIDAD -->
+        <HeadingH2>Recomendaciones de Seguridad</HeadingH2>
+        <FormFieldsContainer>
+            <FormTextarea v-model="formData.recomendaciones_seguridad" label="Recomendaciones de Seguridad" id="recomendaciones_seguridad"
+                placeholder="Recomendaciones de seguridad" :rows="5" />
+        </FormFieldsContainer>
+
+        <!-- NOTAS LEGALES -->
+        <HeadingH2>Notas Legales</HeadingH2>
+        <FormFieldsContainer>
+            <FormTextarea v-model="formData.notas_legales" label="Notas Legales" id="notas_legales"
+                placeholder="Notas legales" :rows="5" />
         </FormFieldsContainer>
 
         <div v-if="showButtons" class="w-full flex flex-col lg:flex-row items-center gap-5 mt-8">
@@ -76,6 +164,8 @@ const { tiposAplicacion, fetchTiposAplicacion } = useMurallonTiposAplicacion()
 const submitting = ref(false)
 const imagen = ref(null)
 const imagePreview = ref(null)
+const galeriaImages = ref([])
+const removedGaleriaImages = ref([])
 
 const usoOptions = [
     { value: 'Interior', label: 'Interior' },
@@ -98,6 +188,21 @@ const formData = reactive({
     rendimiento: '',
     destacado: false,
     codigo_color_card: '',
+    descripcion: '',
+    ficha_tecnica: '',
+    usos: '',
+    colores: '',
+    acabado: '',
+    poder_cubritivo: '',
+    rendimiento_caracteristicas: '',
+    consistencia_o_viscocidad: '',
+    secado: '',
+    peso_especifico: '',
+    modo_de_empleo: '',
+    aplicacion: '',
+    recomendaciones_generales: '',
+    recomendaciones_seguridad: '',
+    notas_legales: '',
 })
 
 const errors = reactive({
@@ -105,10 +210,6 @@ const errors = reactive({
     imagen_principal: '',
     categorias_id: '',
     tipos_aplicacion_id: '',
-    uso: '',
-    tamanos_disponibles: '',
-    rendimiento: '',
-    codigo_color_card: '',
 })
 
 const opcionesCategorias = computed(() => {
@@ -147,10 +248,29 @@ onMounted(async () => {
             rendimiento: props.initialData.rendimiento || '',
             destacado: props.initialData.destacado || false,
             codigo_color_card: props.initialData.codigo_color_card || '',
+            descripcion: props.initialData.descripcion || '',
+            ficha_tecnica: props.initialData.ficha_tecnica || '',
+            usos: props.initialData.usos || '',
+            colores: props.initialData.colores || '',
+            acabado: props.initialData.acabado || '',
+            poder_cubritivo: props.initialData.poder_cubritivo || '',
+            rendimiento_caracteristicas: props.initialData.rendimiento_caracteristicas || '',
+            consistencia_o_viscocidad: props.initialData.consistencia_o_viscocidad || '',
+            secado: props.initialData.secado || '',
+            peso_especifico: props.initialData.peso_especifico || '',
+            modo_de_empleo: props.initialData.modo_de_empleo || '',
+            aplicacion: props.initialData.aplicacion || '',
+            recomendaciones_generales: props.initialData.recomendaciones_generales || '',
+            recomendaciones_seguridad: props.initialData.recomendaciones_seguridad || '',
+            notas_legales: props.initialData.notas_legales || '',
         })
 
         if (props.initialData.imagen_principal) {
             imagePreview.value = props.initialData.imagen_principal
+        }
+
+        if (props.initialData.galeria && Array.isArray(props.initialData.galeria)) {
+            galeriaImages.value = props.initialData.galeria
         }
     }
 })
@@ -163,6 +283,19 @@ const handleImageStart = (file) => {
 const handleImageComplete = (imageUrl) => {
     imagePreview.value = imageUrl
     errors.imagen_principal = ''
+}
+
+const handleGaleriaChanged = (images) => {
+    const removed = galeriaImages.value
+        .filter(img => img.isExisting && !images.find(i => i.id === img.id))
+        .map(img => img.storagePath)
+        .filter(Boolean)
+
+    if (removed.length > 0) {
+        removedGaleriaImages.value.push(...removed)
+    }
+
+    galeriaImages.value = images
 }
 
 const validateForm = () => {
@@ -217,6 +350,21 @@ const handleSubmit = async () => {
             rendimiento: formData.rendimiento.trim(),
             destacado: formData.destacado,
             codigo_color_card: formData.codigo_color_card.trim(),
+            descripcion: formData.descripcion.trim(),
+            ficha_tecnica: formData.ficha_tecnica.trim(),
+            usos: formData.usos.trim(),
+            colores: formData.colores.trim(),
+            acabado: formData.acabado.trim(),
+            poder_cubritivo: formData.poder_cubritivo.trim(),
+            rendimiento_caracteristicas: formData.rendimiento_caracteristicas.trim(),
+            consistencia_o_viscocidad: formData.consistencia_o_viscocidad.trim(),
+            secado: formData.secado.trim(),
+            peso_especifico: formData.peso_especifico.trim(),
+            modo_de_empleo: formData.modo_de_empleo.trim(),
+            aplicacion: formData.aplicacion.trim(),
+            recomendaciones_generales: formData.recomendaciones_generales.trim(),
+            recomendaciones_seguridad: formData.recomendaciones_seguridad.trim(),
+            notas_legales: formData.notas_legales.trim(),
         }
 
         if (props.isEditing) {
@@ -225,7 +373,9 @@ const handleSubmit = async () => {
 
         emit('submit', {
             productoData,
-            imagen: imagen.value
+            imagen: imagen.value,
+            galeria: galeriaImages.value,
+            removedImages: removedGaleriaImages.value
         })
     } catch (error) {
         console.error('Error al procesar el formulario:', error)

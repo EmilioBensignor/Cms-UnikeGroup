@@ -34,7 +34,7 @@ const handleFormSubmit = async (formData) => {
     submitting.value = true
 
     try {
-        await createProducto(formData.productoData, formData.imagen)
+        await createProducto(formData.productoData, formData.imagen, formData.galeria)
 
         success('Producto creado exitosamente', {
             title: 'Producto creado'

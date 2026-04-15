@@ -3,12 +3,43 @@ export const useMurallonProductos = () => {
     const {
         uploadMurallonProductoImage,
         deleteMurallonProductoImage,
-        getMurallonProductoImageUrl
+        getMurallonProductoImageUrl,
+        uploadProductoGaleriaImagenes,
+        deleteProductoGaleriaImagen,
+        getProductoGaleriaImageUrl
     } = useStorage()
     const loading = ref(false)
     const productos = ref([])
     const currentProducto = ref(null)
     const error = ref(null)
+
+    const generateSlug = (titulo) => {
+        return titulo.toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/[^a-z0-9\s]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/^-+|-+$/g, '')
+    }
+
+    const buildTextFields = (data) => ({
+        slug: generateSlug(data.nombre),
+        descripcion: data.descripcion || null,
+        ficha_tecnica: data.ficha_tecnica || null,
+        usos: data.usos || null,
+        colores: data.colores || null,
+        acabado: data.acabado || null,
+        poder_cubritivo: data.poder_cubritivo || null,
+        rendimiento_caracteristicas: data.rendimiento_caracteristicas || null,
+        consistencia_o_viscocidad: data.consistencia_o_viscocidad || null,
+        secado: data.secado || null,
+        peso_especifico: data.peso_especifico || null,
+        modo_de_empleo: data.modo_de_empleo || null,
+        aplicacion: data.aplicacion || null,
+        recomendaciones_generales: data.recomendaciones_generales || null,
+        recomendaciones_seguridad: data.recomendaciones_seguridad || null,
+        notas_legales: data.notas_legales || null,
+    })
 
     const fetchProductos = async () => {
         loading.value = true
@@ -63,7 +94,15 @@ export const useMurallonProductos = () => {
             currentProducto.value = {
                 ...data,
                 imagen_principal: data.imagen_principal ? getMurallonProductoImageUrl(data.imagen_principal, true) : null,
-                imagen_principal_path: data.imagen_principal
+                imagen_principal_path: data.imagen_principal,
+                galeria: data.galeria ?
+                    data.galeria.map((img, index) => ({
+                        id: `galeria-${index}`,
+                        name: `imagen-${index + 1}.jpg`,
+                        url: getProductoGaleriaImageUrl(img, 'murallon', true),
+                        storagePath: img,
+                        isExisting: true
+                    })) : []
             }
 
             return currentProducto.value
@@ -75,15 +114,23 @@ export const useMurallonProductos = () => {
         }
     }
 
-    const createProducto = async (productoData, imagenFile) => {
+    const createProducto = async (productoData, imagenFile, galeria = []) => {
         loading.value = true
         error.value = null
 
         try {
             let imagenPath = null
+            let galeriaPaths = []
 
             if (imagenFile) {
                 imagenPath = await uploadMurallonProductoImage(imagenFile, productoData.nombre)
+            }
+
+            if (galeria && Array.isArray(galeria) && galeria.length > 0) {
+                const nuevasImagenes = galeria.filter(img => img.file && !img.isExisting)
+                if (nuevasImagenes.length > 0) {
+                    galeriaPaths = await uploadProductoGaleriaImagenes(nuevasImagenes, productoData.nombre, 'murallon')
+                }
             }
 
             const { data, error: supabaseError } = await supabase
@@ -97,7 +144,9 @@ export const useMurallonProductos = () => {
                     categorias_id: productoData.categorias_id,
                     rendimiento: productoData.rendimiento,
                     destacado: productoData.destacado,
-                    codigo_color_card: productoData.codigo_color_card || null
+                    codigo_color_card: productoData.codigo_color_card || null,
+                    galeria: galeriaPaths.length > 0 ? galeriaPaths : null,
+                    ...buildTextFields(productoData)
                 }])
                 .select()
 
@@ -112,19 +161,20 @@ export const useMurallonProductos = () => {
         }
     }
 
-    const updateProducto = async (id, productoData, imagenFile) => {
+    const updateProducto = async (id, productoData, imagenFile, galeria = [], removedImages = []) => {
         loading.value = true
         error.value = null
 
         try {
             const { data: currentData, error: fetchError } = await supabase
                 .from('murallon-productos')
-                .select('imagen_principal')
+                .select('imagen_principal, galeria')
                 .eq('id', id)
                 .single()
 
             if (fetchError) throw fetchError
 
+            // Imagen principal
             let imagenPath = currentData.imagen_principal
 
             if (imagenFile) {
@@ -140,6 +190,32 @@ export const useMurallonProductos = () => {
                 imagenPath = productoData.imagen_principal_path
             }
 
+            // Galería
+            // Borrar imágenes eliminadas del storage
+            if (removedImages && removedImages.length > 0) {
+                for (const path of removedImages) {
+                    try {
+                        await deleteProductoGaleriaImagen(path, 'murallon')
+                    } catch (err) {
+                        console.warn('Error al borrar imagen de galería:', err)
+                    }
+                }
+            }
+
+            // Paths existentes que no fueron eliminados
+            const existingPaths = galeria
+                .filter(img => img.isExisting && img.storagePath)
+                .map(img => img.storagePath)
+
+            // Subir nuevas imágenes
+            let newPaths = []
+            const nuevasImagenes = galeria.filter(img => img.file && !img.isExisting)
+            if (nuevasImagenes.length > 0) {
+                newPaths = await uploadProductoGaleriaImagenes(nuevasImagenes, productoData.nombre, 'murallon')
+            }
+
+            const galeriaPaths = [...existingPaths, ...newPaths]
+
             const { data, error: supabaseError } = await supabase
                 .from('murallon-productos')
                 .update({
@@ -151,7 +227,9 @@ export const useMurallonProductos = () => {
                     categorias_id: productoData.categorias_id,
                     rendimiento: productoData.rendimiento,
                     destacado: productoData.destacado,
-                    codigo_color_card: productoData.codigo_color_card || null
+                    codigo_color_card: productoData.codigo_color_card || null,
+                    galeria: galeriaPaths.length > 0 ? galeriaPaths : null,
+                    ...buildTextFields(productoData)
                 })
                 .eq('id', id)
                 .select()
@@ -174,7 +252,7 @@ export const useMurallonProductos = () => {
         try {
             const { data: currentData, error: fetchError } = await supabase
                 .from('murallon-productos')
-                .select('imagen_principal')
+                .select('imagen_principal, galeria')
                 .eq('id', id)
                 .single()
 
@@ -185,6 +263,16 @@ export const useMurallonProductos = () => {
                     await deleteMurallonProductoImage(currentData.imagen_principal)
                 } catch (err) {
                     console.warn('Error al borrar imagen:', err)
+                }
+            }
+
+            if (currentData.galeria && Array.isArray(currentData.galeria)) {
+                for (const path of currentData.galeria) {
+                    try {
+                        await deleteProductoGaleriaImagen(path, 'murallon')
+                    } catch (err) {
+                        console.warn('Error al borrar imagen de galería:', err)
+                    }
                 }
             }
 

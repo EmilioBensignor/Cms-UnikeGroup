@@ -49,7 +49,7 @@ const handleFormSubmit = async (formData) => {
 
     try {
         const id = route.params.id
-        await updateProducto(id, formData.productoData, formData.imagen)
+        await updateProducto(id, formData.productoData, formData.imagen, formData.galeria, formData.removedImages)
 
         success('Producto actualizado exitosamente', {
             title: 'Producto actualizado'

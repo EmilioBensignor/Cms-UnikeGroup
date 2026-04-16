@@ -99,8 +99,8 @@ export const useMurallonProductos = () => {
                 imagen_principal_path: data.imagen_principal,
                 ficha_tecnica: data.ficha_tecnica ? getMurallonProductoFileUrl(data.ficha_tecnica, true) : null,
                 ficha_tecnica_path: data.ficha_tecnica,
-                galeria: data.galeria_de_imagenes ?
-                    data.galeria_de_imagenes.map((img, index) => ({
+                galeria: data.galeria_imagenes ?
+                    data.galeria_imagenes.map((img, index) => ({
                         id: `galeria-${index}`,
                         name: `imagen-${index + 1}.jpg`,
                         url: getProductoGaleriaImageUrl(img, 'murallon', true),
@@ -155,7 +155,7 @@ export const useMurallonProductos = () => {
                     rendimiento: productoData.rendimiento,
                     destacado: productoData.destacado,
                     codigo_color_card: productoData.codigo_color_card || null,
-                    galeria_de_imagenes: galeriaPaths.length > 0 ? galeriaPaths : null,
+                    galeria_imagenes: galeriaPaths.length > 0 ? galeriaPaths : null,
                     ...buildTextFields(productoData)
                 }])
                 .select()
@@ -178,7 +178,7 @@ export const useMurallonProductos = () => {
         try {
             const { data: currentData, error: fetchError } = await supabase
                 .from('murallon-productos')
-                .select('imagen_principal, ficha_tecnica, galeria_de_imagenes')
+                .select('imagen_principal, ficha_tecnica, galeria_imagenes')
                 .eq('id', id)
                 .single()
 
@@ -256,7 +256,7 @@ export const useMurallonProductos = () => {
                     rendimiento: productoData.rendimiento,
                     destacado: productoData.destacado,
                     codigo_color_card: productoData.codigo_color_card || null,
-                    galeria_de_imagenes: galeriaPaths.length > 0 ? galeriaPaths : null,
+                    galeria_imagenes: galeriaPaths.length > 0 ? galeriaPaths : null,
                     ...buildTextFields(productoData)
                 })
                 .eq('id', id)
@@ -280,7 +280,7 @@ export const useMurallonProductos = () => {
         try {
             const { data: currentData, error: fetchError } = await supabase
                 .from('murallon-productos')
-                .select('imagen_principal, ficha_tecnica, galeria_de_imagenes')
+                .select('imagen_principal, ficha_tecnica, galeria_imagenes')
                 .eq('id', id)
                 .single()
 
@@ -302,8 +302,8 @@ export const useMurallonProductos = () => {
                 }
             }
 
-            if (currentData.galeria_de_imagenes && Array.isArray(currentData.galeria_de_imagenes)) {
-                for (const path of currentData.galeria_de_imagenes) {
+            if (currentData.galeria_imagenes && Array.isArray(currentData.galeria_imagenes)) {
+                for (const path of currentData.galeria_imagenes) {
                     try {
                         await deleteProductoGaleriaImagen(path, 'murallon')
                     } catch (err) {

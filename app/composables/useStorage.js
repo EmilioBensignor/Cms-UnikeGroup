@@ -1493,7 +1493,6 @@ export const useStorage = () => {
         return url
     }
 
-    // --- Murallón Productos ---
     const uploadMurallonProductoImage = async (file, productoNombre) => {
         try {
             uploading.value = true
@@ -1547,6 +1546,71 @@ export const useStorage = () => {
             error.value = err.message
             throw err
         }
+    }
+
+    const uploadMurallonProductoFile = async (file, productoNombre, sufijo = 'ficha-tecnica') => {
+        try {
+            uploading.value = true
+            uploadProgress.value = 0
+            error.value = null
+
+            const cleanName = productoNombre.toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-z0-9\s]/g, '')
+                .replace(/\s+/g, '-')
+                .substring(0, 30)
+
+            const extension = file.name.split('.').pop().toLowerCase()
+            const randomNum = Math.floor(1000 + Math.random() * 9000)
+            const fileName = `${cleanName}-${sufijo}-${randomNum}.${extension}`
+
+            const { data, error: uploadError } = await supabase.storage
+                .from('murallon-productos')
+                .upload(fileName, file, {
+                    cacheControl: '3600',
+                    upsert: false
+                })
+
+            if (uploadError) throw uploadError
+
+            uploadProgress.value = 100
+            return data.path
+
+        } catch (err) {
+            error.value = err.message
+            throw err
+        } finally {
+            uploading.value = false
+        }
+    }
+
+    const deleteMurallonProductoFile = async (storagePath) => {
+        try {
+            error.value = null
+
+            const { error: deleteError } = await supabase.storage
+                .from('murallon-productos')
+                .remove([storagePath])
+
+            if (deleteError) throw deleteError
+
+        } catch (err) {
+            error.value = err.message
+            throw err
+        }
+    }
+
+    const getMurallonProductoFileUrl = (storagePath, cacheBust = false) => {
+        if (!storagePath) return null
+        let url = `${config.public.supabase.url}/storage/v1/object/public/murallon-productos/${storagePath}`
+
+        if (cacheBust) {
+            const timestamp = Date.now()
+            url += `?v=${timestamp}`
+        }
+
+        return url
     }
 
     const getMurallonProductoImageUrl = (storagePath, cacheBust = false) => {
@@ -1632,6 +1696,9 @@ export const useStorage = () => {
         uploadMurallonProductoImage,
         deleteMurallonProductoImage,
         getMurallonProductoImageUrl,
+        uploadMurallonProductoFile,
+        deleteMurallonProductoFile,
+        getMurallonProductoFileUrl,
 
         validateImageFile,
         cleanCategoryName

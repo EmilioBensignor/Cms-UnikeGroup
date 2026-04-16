@@ -1,11 +1,10 @@
 <template>
     <FormLayout @submit.prevent="handleSubmit">
-        <!-- Datos principales -->
         <FormFieldsContainer>
             <FormTextField v-model="formData.nombre" label="Nombre" id="nombre"
                 placeholder="Ingrese el nombre del producto" required :error="errors.nombre" />
             <FormTextField v-model="formData.rendimiento" label="Rendimiento" id="rendimiento"
-                placeholder="Ej: 10 – 16 m² / L" :error="errors.rendimiento" />
+                placeholder="Ej: 10 - 16 m² / L" required :error="errors.rendimiento" />
         </FormFieldsContainer>
         <FormFieldsContainer>
             <FormSelect v-model="formData.categorias_id" label="Categoría" id="categorias_id"
@@ -19,106 +18,88 @@
             <FormImageField v-model="imagePreview" id="imagen_principal" label="Imagen Principal"
                 :error="errors.imagen_principal" required targetFolder="murallon-productos"
                 @upload-start="handleImageStart" @upload-complete="handleImageComplete" />
+            <FormFileField v-model="formData.ficha_tecnica" id="ficha_tecnica" label="Ficha Técnica (PDF)"
+                :acceptedTypes="['pdf']" targetFolder="murallon-productos" @upload-start="handleFichaTecnicaStart"
+                @upload-complete="handleFichaTecnicaComplete" @file-removed="() => removedFiles.fichaTecnica = true" />
         </FormFieldsContainer>
         <FormFieldsContainer>
-            <FormCheckboxGroupField v-model="formData.uso" label="Uso" id="uso" :options="usoOptions"
+            <FormCheckboxGroupField v-model="formData.uso" label="Uso" id="uso" :options="usoOptions" required
                 :error="errors.uso" />
         </FormFieldsContainer>
         <FormFieldsContainer>
             <FormCheckboxGroupField v-model="formData.tamanos_disponibles" label="Tamaños Disponibles"
-                id="tamanos_disponibles" :options="tamanosOptions" :error="errors.tamanos_disponibles" />
+                id="tamanos_disponibles" :options="tamanosOptions" required :error="errors.tamanos_disponibles" />
         </FormFieldsContainer>
         <FormFieldsContainer>
             <FormSwitch v-model="formData.destacado" label="Destacado" id="destacado" />
-            <FormTextField v-model="formData.codigo_color_card" label="Código de color Card HEX (sin el #)" id="codigo_color_card"
-                placeholder="Ej: 62CBC9" :error="errors.codigo_color_card" />
+            <FormTextField v-model="formData.codigo_color_card" label="Código de color Card HEX (sin el #)"
+                id="codigo_color_card" placeholder="Ej: 62CBC9" required :error="errors.codigo_color_card" />
         </FormFieldsContainer>
 
-        <!-- Descripción -->
-        <HeadingH2>Descripción</HeadingH2>
         <FormFieldsContainer>
             <FormTextarea v-model="formData.descripcion" label="Descripción" id="descripcion"
-                placeholder="Descripción del producto" :rows="4" />
+                placeholder="Descripción del producto" required :error="errors.descripcion" :show-formatting="true"
+                :rows="4" />
         </FormFieldsContainer>
 
-        <!-- Galería de Imágenes -->
-        <HeadingH2>Galería de Imágenes</HeadingH2>
         <FormFieldsContainer>
-            <FormMultiImageField v-model="galeriaImages" id="galeria" label="Galería"
+            <FormMultiImageField v-model="galeriaImages" id="galeria" label="Galería de Imágenes"
                 targetFolder="murallon-productos" @images-changed="handleGaleriaChanged" />
         </FormFieldsContainer>
 
-        <!-- Ficha Técnica -->
         <FormFieldsContainer>
-            <FormTextField v-model="formData.ficha_tecnica" label="Ficha Técnica" id="ficha_tecnica"
-                placeholder="Ficha técnica del producto" />
+            <FormTextarea v-model="formData.usos" label="Usos" id="usos" placeholder="Descripción de usos del producto"
+                :show-formatting="true" :rows="4" />
         </FormFieldsContainer>
 
-        <!-- USOS -->
-        <HeadingH2>Usos</HeadingH2>
         <FormFieldsContainer>
-            <FormTextarea v-model="formData.usos" label="Usos" id="usos"
-                placeholder="Descripción de usos del producto" :rows="4" />
+            <FormTextarea v-model="formData.colores" label="Colores" id="colores" placeholder="Colores disponibles"
+                :show-formatting="true" :rows="3" />
         </FormFieldsContainer>
-
-        <!-- CARACTERÍSTICAS PRINCIPALES -->
-        <HeadingH2>Características Principales</HeadingH2>
         <FormFieldsContainer>
-            <FormTextarea v-model="formData.colores" label="Colores" id="colores"
-                placeholder="Colores disponibles" :rows="3" />
-            <FormTextField v-model="formData.acabado" label="Acabado" id="acabado"
-                placeholder="Tipo de acabado" />
+            <FormTextField v-model="formData.acabado" label="Acabado" id="acabado" placeholder="Tipo de acabado" />
+            <FormTextField v-model="formData.peso_especifico" label="Peso Específico" id="peso_especifico"
+                placeholder="Peso específico" />
         </FormFieldsContainer>
         <FormFieldsContainer>
             <FormTextField v-model="formData.poder_cubritivo" label="Poder Cubritivo" id="poder_cubritivo"
                 placeholder="Poder cubritivo" />
-            <FormTextField v-model="formData.consistencia_o_viscocidad" label="Consistencia o Viscosidad" id="consistencia_o_viscocidad"
-                placeholder="Consistencia o viscosidad" />
+            <FormTextField v-model="formData.consistencia_o_viscocidad" label="Consistencia o Viscosidad"
+                id="consistencia_o_viscocidad" placeholder="Consistencia o viscosidad" />
         </FormFieldsContainer>
         <FormFieldsContainer>
-            <FormTextarea v-model="formData.rendimiento_caracteristicas" label="Rendimiento" id="rendimiento_caracteristicas"
-                placeholder="Rendimiento del producto" :rows="3" />
-            <FormTextarea v-model="formData.secado" label="Secado" id="secado"
-                placeholder="Tiempos de secado" :rows="3" />
-        </FormFieldsContainer>
-        <FormFieldsContainer>
-            <FormTextField v-model="formData.peso_especifico" label="Peso Específico" id="peso_especifico"
-                placeholder="Peso específico" />
+            <FormTextarea v-model="formData.rendimiento_caracteristicas" label="Rendimiento (Características)"
+                id="rendimiento_caracteristicas" placeholder="Rendimiento del producto" :show-formatting="true"
+                :rows="3" />
+            <FormTextarea v-model="formData.secado" label="Secado" id="secado" placeholder="Tiempos de secado"
+                :show-formatting="true" :rows="3" />
         </FormFieldsContainer>
 
-        <!-- MODO DE EMPLEO -->
-        <HeadingH2>Modo de Empleo</HeadingH2>
         <FormFieldsContainer>
             <FormTextarea v-model="formData.modo_de_empleo" label="Modo de Empleo" id="modo_de_empleo"
-                placeholder="Instrucciones de uso" :rows="5" />
+                placeholder="Instrucciones de uso" :show-formatting="true" :rows="5" />
         </FormFieldsContainer>
 
-        <!-- APLICACIÓN -->
-        <HeadingH2>Aplicación</HeadingH2>
         <FormFieldsContainer>
             <FormTextarea v-model="formData.aplicacion" label="Aplicación" id="aplicacion"
-                placeholder="Métodos de aplicación" :rows="5" />
+                placeholder="Métodos de aplicación" :show-formatting="true" :rows="5" />
         </FormFieldsContainer>
 
-        <!-- RECOMENDACIONES GENERALES -->
-        <HeadingH2>Recomendaciones Generales</HeadingH2>
         <FormFieldsContainer>
-            <FormTextarea v-model="formData.recomendaciones_generales" label="Recomendaciones Generales" id="recomendaciones_generales"
-                placeholder="Recomendaciones generales" :rows="5" />
+            <FormTextarea v-model="formData.recomendaciones_generales" label="Recomendaciones Generales"
+                id="recomendaciones_generales" placeholder="Recomendaciones generales" :show-formatting="true"
+                :rows="5" />
         </FormFieldsContainer>
 
-        <!-- RECOMENDACIONES DE SEGURIDAD -->
-        <HeadingH2>Recomendaciones de Seguridad</HeadingH2>
         <FormFieldsContainer>
-            <FormTextarea v-model="formData.recomendaciones_seguridad" label="Recomendaciones de Seguridad" id="recomendaciones_seguridad"
-                placeholder="Recomendaciones de seguridad" :rows="5" />
+            <FormTextarea v-model="formData.recomendaciones_seguridad" label="Recomendaciones de Seguridad"
+                id="recomendaciones_seguridad" placeholder="Recomendaciones de seguridad" :show-formatting="true"
+                :rows="5" />
         </FormFieldsContainer>
 
-        <!-- NOTAS LEGALES -->
-        <HeadingH2>Notas Legales</HeadingH2>
         <FormFieldsContainer>
             <FormTextarea v-model="formData.notas_legales" label="Notas Legales" id="notas_legales"
-                placeholder="Notas legales" :rows="5" />
+                placeholder="Notas legales" :show-formatting="true" :rows="5" />
         </FormFieldsContainer>
 
         <div v-if="showButtons" class="w-full flex flex-col lg:flex-row items-center gap-5 mt-8">
@@ -166,6 +147,8 @@ const imagen = ref(null)
 const imagePreview = ref(null)
 const galeriaImages = ref([])
 const removedGaleriaImages = ref([])
+const fichaTecnicaFile = ref(null)
+const removedFiles = reactive({ fichaTecnica: false })
 
 const usoOptions = [
     { value: 'Interior', label: 'Interior' },
@@ -210,6 +193,11 @@ const errors = reactive({
     imagen_principal: '',
     categorias_id: '',
     tipos_aplicacion_id: '',
+    rendimiento: '',
+    uso: '',
+    tamanos_disponibles: '',
+    codigo_color_card: '',
+    descripcion: '',
 })
 
 const opcionesCategorias = computed(() => {
@@ -285,6 +273,14 @@ const handleImageComplete = (imageUrl) => {
     errors.imagen_principal = ''
 }
 
+const handleFichaTecnicaStart = (file) => {
+    fichaTecnicaFile.value = file
+}
+
+const handleFichaTecnicaComplete = (fileUrl) => {
+    formData.ficha_tecnica = fileUrl
+}
+
 const handleGaleriaChanged = (images) => {
     const removed = galeriaImages.value
         .filter(img => img.isExisting && !images.find(i => i.id === img.id))
@@ -320,6 +316,31 @@ const validateForm = () => {
         isValid = false
     }
 
+    if (!formData.rendimiento.trim()) {
+        errors.rendimiento = 'El rendimiento es requerido'
+        isValid = false
+    }
+
+    if (!formData.uso || formData.uso.length === 0) {
+        errors.uso = 'Debe seleccionar al menos un uso'
+        isValid = false
+    }
+
+    if (!formData.tamanos_disponibles || formData.tamanos_disponibles.length === 0) {
+        errors.tamanos_disponibles = 'Debe seleccionar al menos un tamaño'
+        isValid = false
+    }
+
+    if (!formData.codigo_color_card.trim()) {
+        errors.codigo_color_card = 'El código de color es requerido'
+        isValid = false
+    }
+
+    if (!formData.descripcion.trim()) {
+        errors.descripcion = 'La descripción es requerida'
+        isValid = false
+    }
+
     if (!props.isEditing) {
         if (!imagen.value && !imagePreview.value) {
             errors.imagen_principal = 'La imagen es requerida'
@@ -351,7 +372,6 @@ const handleSubmit = async () => {
             destacado: formData.destacado,
             codigo_color_card: formData.codigo_color_card.trim(),
             descripcion: formData.descripcion.trim(),
-            ficha_tecnica: formData.ficha_tecnica.trim(),
             usos: formData.usos.trim(),
             colores: formData.colores.trim(),
             acabado: formData.acabado.trim(),
@@ -374,6 +394,8 @@ const handleSubmit = async () => {
         emit('submit', {
             productoData,
             imagen: imagen.value,
+            fichaTecnica: fichaTecnicaFile.value,
+            removedFiles: { ...removedFiles },
             galeria: galeriaImages.value,
             removedImages: removedGaleriaImages.value
         })

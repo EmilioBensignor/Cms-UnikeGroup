@@ -40,4 +40,15 @@ export const ROUTE_NAMES = {
         IMAGENES_DESTACADAS: "/rohermet/imagenes-destacadas",
         EDITAR_IMAGEN_DESTACADA: (id) => `/rohermet/imagenes-destacadas/edit/${id}`,
     },
+    MURALLON: {
+        BLOG: "/murallon/blog",
+        CREAR_BLOG: "/murallon/blog/crear",
+        EDITAR_BLOG: (id) => `/murallon/blog/editar/${id}`,
+        INSPIRACION: "/murallon/inspiracion",
+        CREAR_INSPIRACION: "/murallon/inspiracion/crear",
+        EDITAR_INSPIRACION: (id) => `/murallon/inspiracion/editar/${id}`,
+        PRODUCTOS: "/murallon/productos",
+        CREAR_PRODUCTO: "/murallon/productos/crear",
+        EDITAR_PRODUCTO: (id) => `/murallon/productos/editar/${id}`,
+    },
 };

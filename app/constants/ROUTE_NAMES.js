@@ -50,5 +50,7 @@ export const ROUTE_NAMES = {
         PRODUCTOS: "/murallon/productos",
         CREAR_PRODUCTO: "/murallon/productos/crear",
         EDITAR_PRODUCTO: (id) => `/murallon/productos/editar/${id}`,
+        IMAGENES_DESTACADAS: "/murallon/imagenes-destacadas",
+        EDITAR_IMAGEN_DESTACADA: (id) => `/murallon/imagenes-destacadas/edit/${id}`,
     },
 };

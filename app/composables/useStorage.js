@@ -710,6 +710,139 @@ export const useStorage = () => {
         return url
     }
 
+    const uploadMurallonImagenDestacadaChica = async (dataUrl, imagenType) => {
+        try {
+            uploading.value = true
+            uploadProgress.value = 0
+            error.value = null
+
+            const response = await fetch(dataUrl)
+            const blob = await response.blob()
+            const file = new File([blob], 'image.png', { type: blob.type })
+
+            validateImageFile(file)
+
+            const extension = file.type.split('/')[1] || 'png'
+            const fileName = `${imagenType}/imagen-chica-murallon.${extension}`
+
+            const { data, error: uploadError } = await supabase.storage
+                .from('murallon-imagenes-destacadas')
+                .upload(fileName, file, {
+                    cacheControl: '3600',
+                    upsert: true
+                })
+
+            if (uploadError) throw uploadError
+
+            uploadProgress.value = 100
+            return data.path
+
+        } catch (err) {
+            error.value = err.message
+            throw err
+        } finally {
+            uploading.value = false
+        }
+    }
+
+    const uploadMurallonImagenDestacadaMediana = async (dataUrl, imagenType) => {
+        try {
+            uploading.value = true
+            uploadProgress.value = 0
+            error.value = null
+
+            const response = await fetch(dataUrl)
+            const blob = await response.blob()
+            const file = new File([blob], 'image.png', { type: blob.type })
+
+            validateImageFile(file)
+
+            const extension = file.type.split('/')[1] || 'png'
+            const fileName = `${imagenType}/imagen-mediana-murallon.${extension}`
+
+            const { data, error: uploadError } = await supabase.storage
+                .from('murallon-imagenes-destacadas')
+                .upload(fileName, file, {
+                    cacheControl: '3600',
+                    upsert: true
+                })
+
+            if (uploadError) throw uploadError
+
+            uploadProgress.value = 100
+            return data.path
+
+        } catch (err) {
+            error.value = err.message
+            throw err
+        } finally {
+            uploading.value = false
+        }
+    }
+
+    const uploadMurallonImagenDestacadaGrande = async (dataUrl, imagenType) => {
+        try {
+            uploading.value = true
+            uploadProgress.value = 0
+            error.value = null
+
+            const response = await fetch(dataUrl)
+            const blob = await response.blob()
+            const file = new File([blob], 'image.png', { type: blob.type })
+
+            validateImageFile(file)
+
+            const extension = file.type.split('/')[1] || 'png'
+            const fileName = `${imagenType}/imagen-grande-murallon.${extension}`
+
+            const { data, error: uploadError } = await supabase.storage
+                .from('murallon-imagenes-destacadas')
+                .upload(fileName, file, {
+                    cacheControl: '3600',
+                    upsert: true
+                })
+
+            if (uploadError) throw uploadError
+
+            uploadProgress.value = 100
+            return data.path
+
+        } catch (err) {
+            error.value = err.message
+            throw err
+        } finally {
+            uploading.value = false
+        }
+    }
+
+    const deleteMurallonImagenDestacada = async (storagePath) => {
+        try {
+            error.value = null
+
+            const { error: deleteError } = await supabase.storage
+                .from('murallon-imagenes-destacadas')
+                .remove([storagePath])
+
+            if (deleteError) throw deleteError
+
+        } catch (err) {
+            error.value = err.message
+            throw err
+        }
+    }
+
+    const getMurallonImagenDestacadaUrl = (storagePath, cacheBust = false) => {
+        if (!storagePath) return null
+        let url = `${config.public.supabase.url}/storage/v1/object/public/murallon-imagenes-destacadas/${storagePath}`
+
+        if (cacheBust) {
+            const timestamp = Date.now()
+            url += `?v=${timestamp}`
+        }
+
+        return url
+    }
+
     const uploadRohermetCategoriaImage = async (dataUrlOrFile, categoriaNombre) => {
         try {
             uploading.value = true
@@ -1655,6 +1788,12 @@ export const useStorage = () => {
         uploadRohermetImagenDestacadaGrande,
         deleteRohermetImagenDestacada,
         getRohermetImagenDestacadaUrl,
+
+        uploadMurallonImagenDestacadaChica,
+        uploadMurallonImagenDestacadaMediana,
+        uploadMurallonImagenDestacadaGrande,
+        deleteMurallonImagenDestacada,
+        getMurallonImagenDestacadaUrl,
 
         uploadRohermetCategoriaImage,
         deleteRohermetCategoriaImage,

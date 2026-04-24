@@ -162,6 +162,11 @@ const menuMurallon = [
         title: "Inspiración",
         icon: "photo-heart",
     },
+    {
+        route: ROUTE_NAMES.MURALLON.IMAGENES_DESTACADAS,
+        title: "Imágenes Destacadas",
+        icon: "photo-star",
+    },
 ];
 
 const loggingOut = ref(false)

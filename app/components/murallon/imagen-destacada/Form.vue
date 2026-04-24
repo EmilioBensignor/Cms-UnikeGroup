@@ -60,9 +60,9 @@ const errors = reactive({
 
 const IMAGEN_DIMENSIONS = {
     'imagen-hero-home': {
-        chica: 'Imagen Chica (640px x 332px)',
-        mediana: 'Imagen Mediana (768px x 316px)',
-        grande: 'Imagen Grande (1512px x 570px)'
+        chica: 'Imagen Chica (320px x 200px)',
+        mediana: 'Imagen Mediana (540px x 500px)',
+        grande: 'Imagen Grande (720px x 500px)'
     }
 }
 

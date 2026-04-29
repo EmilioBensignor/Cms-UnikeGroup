@@ -31,9 +31,9 @@ onMounted(async () => {
     }
 })
 
-const handleSubmit = async ({ blogData, imagen }) => {
+const handleSubmit = async ({ blogData, imagen, productosRecomendados }) => {
     try {
-        await updateBlog(route.params.id, blogData, imagen)
+        await updateBlog(route.params.id, blogData, imagen, productosRecomendados)
 
         success('Blog actualizado exitosamente', {
             title: 'Blog actualizado'

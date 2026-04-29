@@ -15,6 +15,9 @@
                 placeholder="Ingrese el contenido del blog" required :error="errors.contenido"
                 :show-formatting="true" :rows="10" />
         </FormFieldsContainer>
+        <FormFieldsContainer>
+            <MurallonBlogProductosRecomendados v-model="productosRecomendados" />
+        </FormFieldsContainer>
         <div class="w-full flex flex-col lg:flex-row items-center gap-5 mt-8">
             <ButtonPrimary @click="$emit('cancel')" type="button" class="!bg-gray-mid !text-dark">
                 Cancelar
@@ -49,6 +52,7 @@ const submitting = ref(false)
 const imagen = ref(null)
 const imagePreview = ref(null)
 const imagenOriginal = ref(null)
+const productosRecomendados = ref([])
 
 const today = computed(() => new Date().toISOString().split('T')[0])
 
@@ -78,6 +82,10 @@ onMounted(() => {
         if (props.initialData.imagen_principal) {
             imagePreview.value = props.initialData.imagen_principal
             imagenOriginal.value = props.initialData.imagen_principal_path || props.initialData.imagen_principal
+        }
+
+        if (Array.isArray(props.initialData.productos_recomendados)) {
+            productosRecomendados.value = [...props.initialData.productos_recomendados]
         }
     }
 })
@@ -188,7 +196,8 @@ const handleSubmit = async () => {
 
         emit('submit', {
             blogData,
-            imagen: imagen.value
+            imagen: imagen.value,
+            productosRecomendados: productosRecomendados.value.map(p => p.id)
         })
 
     } catch (error) {

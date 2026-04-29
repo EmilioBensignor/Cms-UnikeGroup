@@ -50,16 +50,100 @@ export const useMurallonBlog = () => {
 
             if (supabaseError) throw supabaseError
 
+            // Traer productos recomendados asociados al blog
+            const productosRecomendados = await fetchProductosRecomendados(id)
+
             currentBlog.value = {
                 ...data,
                 imagen_principal: data.imagen_principal ? getMurallonBlogImageUrl(data.imagen_principal) : null,
-                imagen_principal_path: data.imagen_principal
+                imagen_principal_path: data.imagen_principal,
+                productos_recomendados: productosRecomendados
             }
         } catch (err) {
             error.value = err.message
         } finally {
             loading.value = false
         }
+    }
+
+    // Trae productos recomendados de un blog ordenados por orden asc (nulls al final)
+    const fetchProductosRecomendados = async (blogId) => {
+        try {
+            const { getMurallonProductoImageUrl } = useStorage()
+
+            const { data, error: supabaseError } = await supabase
+                .from('blog-murallon-productos')
+                .select(`
+                    orden,
+                    producto:producto_id (
+                        id,
+                        nombre,
+                        slug,
+                        imagen_principal,
+                        descripcion
+                    )
+                `)
+                .eq('blog_id', blogId)
+                .order('orden', { ascending: true, nullsFirst: false })
+
+            if (supabaseError) throw supabaseError
+
+            return (data || [])
+                .filter(item => item.producto)
+                .map(item => ({
+                    id: item.producto.id,
+                    nombre: item.producto.nombre,
+                    slug: item.producto.slug,
+                    descripcion: item.producto.descripcion,
+                    imagen_principal: item.producto.imagen_principal
+                        ? getMurallonProductoImageUrl(item.producto.imagen_principal, true)
+                        : null,
+                    imagen_principal_path: item.producto.imagen_principal,
+                    orden: item.orden
+                }))
+        } catch (err) {
+            console.warn('Error al traer productos recomendados:', err)
+            return []
+        }
+    }
+
+    // Reemplaza el set completo de productos recomendados de un blog.
+    // Estrategia: borrar todos los existentes e insertar los nuevos en orden.
+    const saveProductosRecomendados = async (blogId, productoIds = []) => {
+        const { error: deleteError } = await supabase
+            .from('blog-murallon-productos')
+            .delete()
+            .eq('blog_id', blogId)
+
+        if (deleteError) throw deleteError
+
+        if (!productoIds.length) return []
+
+        const rows = productoIds.map((producto_id, index) => ({
+            blog_id: blogId,
+            producto_id,
+            orden: index + 1
+        }))
+
+        const { data, error: insertError } = await supabase
+            .from('blog-murallon-productos')
+            .insert(rows)
+            .select()
+
+        if (insertError) throw insertError
+
+        return data
+    }
+
+    // Elimina un producto recomendado puntual de un blog.
+    const removeProductoRecomendado = async (blogId, productoId) => {
+        const { error: deleteError } = await supabase
+            .from('blog-murallon-productos')
+            .delete()
+            .eq('blog_id', blogId)
+            .eq('producto_id', productoId)
+
+        if (deleteError) throw deleteError
     }
 
     const generateSlug = (titulo) => {
@@ -71,7 +155,7 @@ export const useMurallonBlog = () => {
             .replace(/^-+|-+$/g, '')
     }
 
-    const createBlog = async (blogData, imagenFile) => {
+    const createBlog = async (blogData, imagenFile, productosRecomendados = []) => {
         loading.value = true
         error.value = null
 
@@ -97,7 +181,18 @@ export const useMurallonBlog = () => {
 
             if (supabaseError) throw supabaseError
 
-            return data[0]
+            const blogCreado = data[0]
+
+            // Persistir productos recomendados asociados al blog recién creado
+            if (Array.isArray(productosRecomendados) && productosRecomendados.length > 0) {
+                try {
+                    await saveProductosRecomendados(blogCreado.id, productosRecomendados)
+                } catch (err) {
+                    console.warn('Error al guardar productos recomendados:', err)
+                }
+            }
+
+            return blogCreado
         } catch (err) {
             error.value = err.message
             throw err
@@ -106,7 +201,7 @@ export const useMurallonBlog = () => {
         }
     }
 
-    const updateBlog = async (id, blogData, imagenFile) => {
+    const updateBlog = async (id, blogData, imagenFile, productosRecomendados = null) => {
         loading.value = true
         error.value = null
 
@@ -157,6 +252,15 @@ export const useMurallonBlog = () => {
                 .select()
 
             if (supabaseError) throw supabaseError
+
+            // Si vino el array de productos recomendados, reemplazar el set completo
+            if (Array.isArray(productosRecomendados)) {
+                try {
+                    await saveProductosRecomendados(id, productosRecomendados)
+                } catch (err) {
+                    console.warn('Error al actualizar productos recomendados:', err)
+                }
+            }
 
             return data[0]
         } catch (err) {
@@ -213,6 +317,9 @@ export const useMurallonBlog = () => {
         fetchBlogById,
         createBlog,
         updateBlog,
-        deleteBlog
+        deleteBlog,
+        fetchProductosRecomendados,
+        saveProductosRecomendados,
+        removeProductoRecomendado
     }
 }

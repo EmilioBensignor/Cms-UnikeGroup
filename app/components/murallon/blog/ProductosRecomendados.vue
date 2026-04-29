@@ -5,10 +5,12 @@
         <!-- Buscador de productos para agregar -->
         <div class="w-full relative">
             <input
+                ref="searchInput"
                 v-model="searchQuery"
                 type="text"
                 placeholder="Buscar producto por nombre..."
                 @focus="showSuggestions = true"
+                @input="showSuggestions = true"
                 @blur="handleBlurSearch"
                 class="w-full bg-light border border-dark rounded-md outline-none lg:text-xl font-light text-dark lg:placeholder:text-xl placeholder:font-light placeholder:text-gray-dark py-3 pr-3 pl-10"
             />
@@ -136,13 +138,12 @@ const { productos, loading: loadingProductos, fetchProductos } = useMurallonProd
 const seleccionados = ref([])
 const searchQuery = ref('')
 const showSuggestions = ref(false)
+const searchInput = ref(null)
 
-// Cargar productos disponibles al montar
 onMounted(async () => {
     await fetchProductos()
 })
 
-// Sincronizar selección con modelValue (entrada desde el padre)
 watch(
     () => props.modelValue,
     (newValue) => {
@@ -150,7 +151,6 @@ watch(
             seleccionados.value = []
             return
         }
-        // Evitar reasignar si ya coinciden los IDs en el mismo orden
         const sameIds =
             newValue.length === seleccionados.value.length &&
             newValue.every((p, i) => (p?.id || p) === seleccionados.value[i]?.id)
@@ -167,7 +167,6 @@ watch(
     { immediate: true, deep: true }
 )
 
-// Productos disponibles filtrados por búsqueda y excluyendo los ya seleccionados
 const filteredProductos = computed(() => {
     const query = searchQuery.value.trim().toLowerCase()
     const seleccionadosIds = new Set(seleccionados.value.map(p => p.id))
@@ -179,7 +178,6 @@ const filteredProductos = computed(() => {
 })
 
 const handleBlurSearch = () => {
-    // Pequeño delay para que el mousedown del item se dispare antes
     setTimeout(() => {
         showSuggestions.value = false
     }, 150)
@@ -194,8 +192,11 @@ const addProducto = (producto) => {
         descripcion: producto.descripcion
     })
     searchQuery.value = ''
-    showSuggestions.value = false
+    showSuggestions.value = true
     emitUpdate()
+    nextTick(() => {
+        searchInput.value?.focus()
+    })
 }
 
 const removeProducto = (index) => {

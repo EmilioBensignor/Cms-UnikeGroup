@@ -50,7 +50,6 @@ export const useMurallonBlog = () => {
 
             if (supabaseError) throw supabaseError
 
-            // Traer productos recomendados asociados al blog
             const productosRecomendados = await fetchProductosRecomendados(id)
 
             currentBlog.value = {
@@ -66,7 +65,6 @@ export const useMurallonBlog = () => {
         }
     }
 
-    // Trae productos recomendados de un blog ordenados por orden asc (nulls al final)
     const fetchProductosRecomendados = async (blogId) => {
         try {
             const { getMurallonProductoImageUrl } = useStorage()
@@ -107,8 +105,6 @@ export const useMurallonBlog = () => {
         }
     }
 
-    // Reemplaza el set completo de productos recomendados de un blog.
-    // Estrategia: borrar todos los existentes e insertar los nuevos en orden.
     const saveProductosRecomendados = async (blogId, productoIds = []) => {
         const { error: deleteError } = await supabase
             .from('blog-murallon-productos')
@@ -135,7 +131,6 @@ export const useMurallonBlog = () => {
         return data
     }
 
-    // Elimina un producto recomendado puntual de un blog.
     const removeProductoRecomendado = async (blogId, productoId) => {
         const { error: deleteError } = await supabase
             .from('blog-murallon-productos')
@@ -183,7 +178,6 @@ export const useMurallonBlog = () => {
 
             const blogCreado = data[0]
 
-            // Persistir productos recomendados asociados al blog recién creado
             if (Array.isArray(productosRecomendados) && productosRecomendados.length > 0) {
                 try {
                     await saveProductosRecomendados(blogCreado.id, productosRecomendados)
@@ -253,7 +247,6 @@ export const useMurallonBlog = () => {
 
             if (supabaseError) throw supabaseError
 
-            // Si vino el array de productos recomendados, reemplazar el set completo
             if (Array.isArray(productosRecomendados)) {
                 try {
                     await saveProductosRecomendados(id, productosRecomendados)

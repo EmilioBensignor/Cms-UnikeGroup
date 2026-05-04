@@ -12,9 +12,9 @@ import { useMurallonBlog } from '~/composables/murallon/useBlog.js'
 const { success, error } = useNotification()
 const { createBlog } = useMurallonBlog()
 
-const handleSubmit = async ({ blogData, imagen }) => {
+const handleSubmit = async ({ blogData, imagen, productosRecomendados }) => {
     try {
-        await createBlog(blogData, imagen)
+        await createBlog(blogData, imagen, productosRecomendados)
 
         success('Blog creado exitosamente', {
             title: 'Blog agregado'

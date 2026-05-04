@@ -105,7 +105,6 @@ notifyError('Error al crear el producto')
 ### Error Handling
 ```js
 import { handleSupabaseError } from '~/utils/errorHandler.js'
-// Retorna mensaje en español a partir del error de Supabase
 ```
 
 ### Rutas

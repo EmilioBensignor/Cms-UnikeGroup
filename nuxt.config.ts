@@ -55,7 +55,7 @@ export default defineNuxtConfig({
   },
   vite: {
     optimizeDeps: {
-      include: ['pinia']
+      include: ['pinia', '@vue/devtools-core', '@vue/devtools-kit']
     },
     build: {
       cssCodeSplit: true,

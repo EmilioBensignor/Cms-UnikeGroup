@@ -159,7 +159,11 @@ const tamanosOptions = [
     { value: '1 L', label: '1 L' },
     { value: '4 L', label: '4 L' },
     { value: '10 L', label: '10 L' },
-    { value: '20 L', label: '20 L' }
+    { value: '20 L', label: '20 L' },
+    { value: '1 KG', label: '1 KG' },
+    { value: '4 KG', label: '4 KG' },
+    { value: '10 KG', label: '10 KG' },
+    { value: '20 KG', label: '20 KG' }
 ]
 
 const formData = reactive({

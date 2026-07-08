@@ -8,6 +8,7 @@ export const ROUTE_NAMES = {
     RESET_PASSWORD: "/reset-password",
     // Auth
     HOME: '/',
+    CATALOGOS: '/catalogos',
     UNIKE: {
         BLOG: "/blog",
         CREAR_BLOG: "/blog/crear",

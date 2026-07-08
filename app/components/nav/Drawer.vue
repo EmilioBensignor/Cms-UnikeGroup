@@ -103,6 +103,11 @@ const menuUnike = [
         title: "Blogs",
         icon: "article",
     },
+    {
+        route: ROUTE_NAMES.CATALOGOS,
+        title: "Catálogos",
+        icon: "file-type-pdf",
+    },
 ];
 
 const menuWaterplast = [

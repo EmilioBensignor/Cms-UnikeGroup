@@ -4,14 +4,14 @@
             <FormTextField v-model="formData.nombre" label="Nombre" id="nombre"
                 placeholder="Ingrese el nombre del producto" required :error="errors.nombre" />
             <FormTextField v-model="formData.rendimiento" label="Rendimiento" id="rendimiento"
-                placeholder="Ej: 10 - 16 m² / L" required :error="errors.rendimiento" />
+                placeholder="Ej: 10 - 16 m² / L" :error="errors.rendimiento" />
         </FormFieldsContainer>
         <FormFieldsContainer>
             <FormSelect v-model="formData.categorias_id" label="Categoría" id="categorias_id"
                 placeholder="Seleccione una categoría" :options="opcionesCategorias" required
                 :error="errors.categorias_id" />
             <FormSelect v-model="formData.tipos_aplicacion_id" label="Tipo de Aplicación" id="tipos_aplicacion_id"
-                placeholder="Seleccione un tipo de aplicación" :options="opcionesTiposAplicacion" required
+                placeholder="Seleccione un tipo de aplicación" :options="opcionesTiposAplicacion"
                 :error="errors.tipos_aplicacion_id" />
         </FormFieldsContainer>
         <FormFieldsContainer>
@@ -23,12 +23,12 @@
                 @upload-complete="handleFichaTecnicaComplete" @file-removed="() => removedFiles.fichaTecnica = true" />
         </FormFieldsContainer>
         <FormFieldsContainer>
-            <FormCheckboxGroupField v-model="formData.uso" label="Uso" id="uso" :options="usoOptions" required
+            <FormCheckboxGroupField v-model="formData.uso" label="Uso" id="uso" :options="usoOptions"
                 :error="errors.uso" />
         </FormFieldsContainer>
         <FormFieldsContainer>
             <FormCheckboxGroupField v-model="formData.tamanos_disponibles" label="Tamaños Disponibles"
-                id="tamanos_disponibles" :options="tamanosOptions" required :error="errors.tamanos_disponibles" />
+                id="tamanos_disponibles" :options="tamanosOptions" :error="errors.tamanos_disponibles" />
         </FormFieldsContainer>
         <FormFieldsContainer>
             <FormSwitch v-model="formData.destacado" label="Destacado" id="destacado" />
@@ -315,26 +315,6 @@ const validateForm = () => {
         isValid = false
     }
 
-    if (!formData.tipos_aplicacion_id) {
-        errors.tipos_aplicacion_id = 'El tipo de aplicación es requerido'
-        isValid = false
-    }
-
-    if (!formData.rendimiento.trim()) {
-        errors.rendimiento = 'El rendimiento es requerido'
-        isValid = false
-    }
-
-    if (!formData.uso || formData.uso.length === 0) {
-        errors.uso = 'Debe seleccionar al menos un uso'
-        isValid = false
-    }
-
-    if (!formData.tamanos_disponibles || formData.tamanos_disponibles.length === 0) {
-        errors.tamanos_disponibles = 'Debe seleccionar al menos un tamaño'
-        isValid = false
-    }
-
     if (!formData.codigo_color_card.trim()) {
         errors.codigo_color_card = 'El código de color es requerido'
         isValid = false
@@ -369,7 +349,7 @@ const handleSubmit = async () => {
         const productoData = {
             nombre: formData.nombre.trim(),
             categorias_id: formData.categorias_id,
-            tipos_aplicacion_id: formData.tipos_aplicacion_id,
+            tipos_aplicacion_id: formData.tipos_aplicacion_id || null,
             uso: formData.uso,
             tamanos_disponibles: formData.tamanos_disponibles,
             rendimiento: formData.rendimiento.trim(),

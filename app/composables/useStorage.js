@@ -967,11 +967,18 @@ export const useStorage = () => {
             const extension = file.name.split('.').pop().toLowerCase()
             const bucketName = `${marca}-productos`
 
+            const sufijoSlug = sufijo
+                .trim()
+                .toLowerCase()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/^-+|-+$/g, '') || 'archivo'
+
             let finalFileName
             if (extension === 'zip') {
-                finalFileName = `${folder}/images/${sufijo}.${extension}`
+                finalFileName = `${folder}/images/${sufijoSlug}.${extension}`
             } else {
-                finalFileName = `${folder}/${sufijo}.${extension}`
+                finalFileName = `${folder}/${sufijoSlug}.${extension}`
             }
 
             const { data, error: uploadError } = await supabase.storage

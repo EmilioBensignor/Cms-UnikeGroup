@@ -331,12 +331,10 @@ export const useRohermetProductos = () => {
             }
 
             if (archivos.render3d) {
-                if (currentData?.render_3d) {
-                    await deleteProductoRender3d(currentData.render_3d, productoNombre, marca)
-                }
+                await deleteProductoRender3d(currentData?.render_3d || null, folderName, marca)
                 render3dPath = await uploadProductoFile(archivos.render3d, productoNombre + '-render3d', capacidadLts, marca, folderName)
             } else if (productoData.render_3d === null && currentData?.render_3d) {
-                await deleteProductoRender3d(currentData.render_3d, productoNombre, marca)
+                await deleteProductoRender3d(currentData.render_3d, folderName, marca)
                 render3dPath = null
             }
 

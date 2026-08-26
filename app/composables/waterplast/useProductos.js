@@ -420,14 +420,20 @@ export const useWaterplastProductos = () => {
                 imagenPath = await uploadProductoImage(archivos.imagen, productoNombre, capacidadLts, marca, folderName)
             }
 
-            if (archivos.render3d) {
-                if (currentData?.render_3d) {
-                    await deleteProductoRender3d(currentData.render_3d, productoNombre)
-                }
-                render3dPath = await uploadProductoFile(archivos.render3d, productoNombre + '-render3d', capacidadLts, marca, folderName)
+            const subeZipNuevo = Boolean(archivos.render3d)
+            const limpiaHtml = Boolean(archivos.archivoHtml) || (productoData.archivo_html === null && currentData?.archivo_html)
+
+            if (subeZipNuevo) {
+                await deleteProductoRender3d(currentData?.render_3d || null, folderName)
             } else if (productoData.render_3d === null && currentData?.render_3d) {
-                await deleteProductoRender3d(currentData.render_3d, productoNombre)
+                await deleteProductoRender3d(currentData.render_3d, folderName)
                 render3dPath = null
+            } else if (limpiaHtml) {
+                await deleteProductoRender3d(null, folderName)
+            }
+
+            if (archivos.render3d) {
+                render3dPath = await uploadProductoFile(archivos.render3d, productoNombre + '-render3d', capacidadLts, marca, folderName)
             }
 
             if (archivos.fichaTecnica) {
@@ -454,11 +460,9 @@ export const useWaterplastProductos = () => {
                 if (currentData?.archivo_html) {
                     await deleteProductoFile(currentData.archivo_html)
                 }
-                await deleteProductoRender3d(null, folderName)
                 archivoHtmlPath = await uploadProductoFile(archivos.archivoHtml, productoNombre + '-html', capacidadLts, marca, folderName)
             } else if (productoData.archivo_html === null && currentData?.archivo_html) {
                 await deleteProductoFile(currentData.archivo_html)
-                await deleteProductoRender3d(null, folderName)
                 archivoHtmlPath = null
             }
 

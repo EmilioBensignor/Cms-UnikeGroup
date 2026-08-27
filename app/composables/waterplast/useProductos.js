@@ -57,6 +57,31 @@ export const useWaterplastProductos = () => {
     }
 
 
+    const guardarCarpetaInterna = async (productoId, unzipResult) => {
+        const carpetaInterna = unzipResult?.carpeta_interna
+        if (!carpetaInterna) return null
+
+        const { error: updateError } = await supabase
+            .from('waterplast-productos')
+            .update({ xr_images_folder: carpetaInterna })
+            .eq('id', productoId)
+
+        if (updateError) {
+            console.error('Error guardando xr_images_folder:', updateError)
+            return null
+        }
+
+        const index = productos.value.findIndex(prod => prod.id === productoId)
+        if (index !== -1) {
+            productos.value[index].xr_images_folder = carpetaInterna
+        }
+        if (currentProducto.value?.id === productoId) {
+            currentProducto.value.xr_images_folder = carpetaInterna
+        }
+
+        return carpetaInterna
+    }
+
     const fetchProductos = async () => {
         loading.value = true
         error.value = null
@@ -350,6 +375,8 @@ export const useWaterplastProductos = () => {
             productos.value.push(dataWithUrls)
 
             const unzipResult = await callUnzipImages(data.id)
+            const carpetaInterna = await guardarCarpetaInterna(data.id, unzipResult)
+            if (carpetaInterna) dataWithUrls.xr_images_folder = carpetaInterna
 
             return dataWithUrls
         } catch (err) {
@@ -623,6 +650,8 @@ export const useWaterplastProductos = () => {
 
             if (zipActualizado) {
                 const unzipResult = await callUnzipImages(id)
+                const carpetaInterna = await guardarCarpetaInterna(id, unzipResult)
+                if (carpetaInterna) dataWithUrls.xr_images_folder = carpetaInterna
             }
 
             return dataWithUrls

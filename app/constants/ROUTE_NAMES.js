@@ -9,6 +9,7 @@ export const ROUTE_NAMES = {
     // Auth
     HOME: '/',
     CATALOGOS: '/catalogos',
+    VIDEOS: '/videos',
     UNIKE: {
         BLOG: "/blog",
         CREAR_BLOG: "/blog/crear",

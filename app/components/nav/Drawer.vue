@@ -108,6 +108,11 @@ const menuUnike = [
         title: "Catálogos",
         icon: "file-type-pdf",
     },
+    {
+        route: ROUTE_NAMES.VIDEOS,
+        title: "Videos",
+        icon: "brand-youtube",
+    },
 ];
 
 const menuWaterplast = [
